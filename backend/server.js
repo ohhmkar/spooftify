@@ -203,7 +203,7 @@ api.get("/lyrics/:id", async (req, res) => {
   if (!lyricsCache.has(song._id)) {
     const artist = await tables.Artist.findById(song.artist_id);
     const url = `https://lrclib.net/api/search?${new URLSearchParams({ track_name: song.song_name, artist_name: artist?.artist_name ?? "" })}`;
-    const hits = await (await fetch(url, { headers: { "User-Agent": "SpootifyMiniProject/1.0" } })).json().catch(() => []);
+    const hits = await (await fetch(url, { headers: { "User-Agent": "SpooftifyMiniProject/1.0" } })).json().catch(() => []);
     const withText = hits.filter((h) => h.plainLyrics);
     const best = (withText.length ? withText : hits.filter((h) => h.instrumental)).sort((a, b) => Math.abs(a.duration - song.duration) - Math.abs(b.duration - song.duration))[0];
     lyricsCache.set(song._id, best ? { plain: best.plainLyrics, synced: best.syncedLyrics, instrumental: best.instrumental } : { plain: null });

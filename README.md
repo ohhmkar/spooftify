@@ -1,5 +1,5 @@
 # DBMS Mini Project
-## Spootify Database Management System
+## Spooftify Database Management System
 
 MERN port of `spotify_miniproject.sql`: same tables, CHECKs, FKs, 5 triggers and 3 views, running on MongoDB.
 
@@ -11,7 +11,7 @@ cd backend  && npm i && npm run seed && npm run dev   # API on :5050 (:1312 if b
 cd frontend && npm i && npm run dev                   # UI on :3000
 ```
 
-Every seeded user logs in with the password `spootify123` (for example `omkar@gmail.com`). New accounts: `/signup`.
+Every seeded user logs in with the password `spooftify123` (for example `omkar@gmail.com`). New accounts: `/signup`.
 
 `npm run media` (backend) backfills artist pictures and YouTube ids / view counts; `node build-seed-data.js` rebuilds `seed-data.json` from Deezer, iTunes and Wikipedia.
 

@@ -37,7 +37,7 @@ for (const a of oldArtists) {
   let wiki = {};
   for (let i = 0; i < 6 && !wiki.query; i++) {
     await sleep(1500 * (i + 1)); // Wikipedia asks for politeness; back off on "too many requests"
-    wiki = await (await fetch(`https://en.wikipedia.org/w/api.php?${wp}`, { headers: { "User-Agent": "SpootifyMiniProject/1.0 (college DBMS project)" } })).json().catch(() => ({}));
+    wiki = await (await fetch(`https://en.wikipedia.org/w/api.php?${wp}`, { headers: { "User-Agent": "SpooftifyMiniProject/1.0 (college DBMS project)" } })).json().catch(() => ({}));
   }
   const page = Object.values(wiki.query?.pages ?? {}).find((p) => !p.missing);
   artists.push({ id: a._id, name, country: a.country, image: hit?.picture_xl ?? a.image, fans: hit?.nb_fan ?? 0, bio: page?.extract?.replace(/\s+/g, " ").trim(), bio_url: page?.fullurl, wiki_title: page?.title });

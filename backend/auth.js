@@ -11,7 +11,7 @@ export const checkPassword = (pw, stored) => {
 };
 
 // ponytail: dev fallback secret, set SESSION_SECRET in backend/.env for anything public
-const SECRET = process.env.SESSION_SECRET ?? "spootify-dev-secret";
+const SECRET = process.env.SESSION_SECRET ?? "spooftify-dev-secret";
 const DAYS = 30;
 const sign = (payload) => createHmac("sha256", SECRET).update(payload).digest("hex");
 export const makeToken = (userId) => {

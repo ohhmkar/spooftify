@@ -12,8 +12,8 @@ import "./globals.css";
 const figtree = Figtree({ variable: "--font-figtree", subsets: ["latin"] });
 
 export const metadata: Metadata = {
-  title: "Spootify — DBMS Mini Project",
-  description: "Spootify, a Spotify clone on MongoDB: tables, views and triggers from spotify_miniproject.sql",
+  title: "Spooftify — DBMS Mini Project",
+  description: "Spooftify, a Spotify clone on MongoDB: tables, views and triggers from spotify_miniproject.sql",
 };
 
 export default async function RootLayout({ children }: LayoutProps<"/">) {

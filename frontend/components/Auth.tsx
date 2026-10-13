@@ -19,7 +19,7 @@ export function AuthForm({ mode }: { mode: "login" | "signup" }) {
           .catch((e) => setErr(e.message));
       }}
     >
-      <h1 className="mb-4 text-4xl font-black">{signup ? "Sign up for Spootify" : "Log in to Spootify"}</h1>
+      <h1 className="mb-4 text-4xl font-black">{signup ? "Sign up for Spooftify" : "Log in to Spooftify"}</h1>
       {signup && <input name="user_name" required maxLength={20} placeholder="Username" aria-label="Username" className={field} />}
       <input name="email" type="email" required placeholder="Email" aria-label="Email" className={field} />
       {signup && <input name="phone" required pattern="\d{10}" title="10 digit phone number" placeholder="Phone (10 digits)" aria-label="Phone" className={field} />}

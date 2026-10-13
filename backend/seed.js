@@ -1,6 +1,6 @@
 // Loads the database from seed-data.json (real artists, albums, songs: see build-seed-data.js) plus users, playlists and listening activity.
 // Everything goes through Model.create so the triggers run exactly like the SQL INSERTs.
-// Every seeded user logs in with the password "spootify123".
+// Every seeded user logs in with the password "spooftify123".
 import mongoose from "mongoose";
 import { readFileSync } from "node:fs";
 import { User, Artist, Genre, Album, Songs, Playlist, Contains, RemovedSong, Liked, Follow, Listen, Collaborator } from "./models.js";
@@ -15,7 +15,7 @@ await Promise.all([User, Artist, Genre, Album, Songs, Playlist, Contains, Liked,
 
 // ---------- User (id, name, email, phone) ----------
 // emails are deliberately mixed-case: before_user_insert lowercases them. Phones are dummy numbers in a valid 10-digit format.
-const password_hash = hashPassword("spootify123");
+const password_hash = hashPassword("spooftify123");
 const users = [
   [1, "omkar_g", "Omkar@gmail.com"], [2, "ibrahim_f", "ibrahim@gmail.com"], [3, "keval_g", "Keval@yahoo.com"],
   [4, "samridihi_g", "samridihi@gmail.com"], [5, "parth_g", "ParthG@gmail.com"], [6, "heet_m", "heetm@gmail.com"],

@@ -19,7 +19,7 @@ export async function stats(db) {
       first("s"),
       { $project: { _id: 0, song_id: "$_id", playlists: 1, song_name: "$s.song_name", artist_name: "$s.artist_name", plays: "$s.plays", yt_views: "$s.yt_views", youtube_id: "$s.youtube_id" } },
     ]).toArray(),
-    // streams: most played in Spootify, with the YouTube view count next to it
+    // streams: most played in Spooftify, with the YouTube view count next to it
     songs({ plays: -1, song_id: 1 }, 10),
     // b. longest / shortest
     songs({ duration: -1, song_id: 1 }, 5),
