@@ -1,0 +1,2443 @@
+{
+ "artists": [
+  {
+   "id": 1,
+   "name": "Arijit Singh",
+   "country": "IN",
+   "image": "https://cdn-images.dzcdn.net/images/artist/ac5350cff290edd5b69fa584b8b1bd4f/1000x1000-000000-80-0-0.jpg",
+   "fans": 233229,
+   "bio": "Arijit Singh (Bengali pronunciation: [ɔɾid͡ʒit̪ ʃiŋɦo]; born 25 April 1987) is an Indian singer, composer, and music producer. He has been described by critics as one of the most influential and commercially successful vocalists in Indian music, and is noted for his emotive vocal style and work across multiple genres. He has received two National Film Awards and eight Filmfare Awards.",
+   "bio_url": "https://en.wikipedia.org/wiki/Arijit_Singh",
+   "wiki_title": "Arijit Singh"
+  },
+  {
+   "id": 2,
+   "name": "Ed Sheeran",
+   "country": "UK",
+   "image": "https://cdn-images.dzcdn.net/images/artist/d6bb84390641d8ae9118228d9544e53d/1000x1000-000000-80-0-0.jpg",
+   "fans": 20929291,
+   "bio": "Edward Christopher Sheeran ( SHEER-ən; born 17 February 1991) is an English singer-songwriter. Born in Halifax, West Yorkshire, and raised in Framlingham, Suffolk, he began writing songs around the age of eleven. In early 2011, Sheeran independently released the extended play No.5 Collaborations Project.",
+   "bio_url": "https://en.wikipedia.org/wiki/Ed_Sheeran",
+   "wiki_title": "Ed Sheeran"
+  },
+  {
+   "id": 3,
+   "name": "Taylor Swift",
+   "country": "US",
+   "image": "https://cdn-images.dzcdn.net/images/artist/cc2495870fe1a792ad0cdb05501ad5ec/1000x1000-000000-80-0-0.jpg",
+   "fans": 12742148,
+   "bio": "Taylor Alison Swift (born December 13, 1989) is an American singer-songwriter. An influential figure in popular culture, Swift is known for her autobiographical songwriting and artistic reinventions. She is the highest-grossing live music artist, the wealthiest female musician, and one of the best-selling music artists of all time.",
+   "bio_url": "https://en.wikipedia.org/wiki/Taylor_Swift",
+   "wiki_title": "Taylor Swift"
+  },
+  {
+   "id": 4,
+   "name": "The Weeknd",
+   "country": "US",
+   "image": "https://cdn-images.dzcdn.net/images/artist/581693b4724a7fcfa754455101e13a44/1000x1000-000000-80-0-0.jpg",
+   "fans": 14723803,
+   "bio": "Abel Tesfaye (born Abel Makkonen Tesfaye; February 16, 1990), known professionally as the Weeknd, is a Canadian singer, songwriter, record producer, and actor. Regarded as an influential figure in popular music, he is known for his light-lyric tenor vocal range and falsetto, alternative R&B sound, and dark aesthetics, as well as the cinematic visuals and storytelling of his music videos. His accolades include 4 Grammy Awards, 20 Billboard Music Awards, 22 Juno Awards, 6 American Music Awards, 3 MTV Video Music Awards, and a Latin Grammy Award.",
+   "bio_url": "https://en.wikipedia.org/wiki/The_Weeknd",
+   "wiki_title": "The Weeknd"
+  },
+  {
+   "id": 5,
+   "name": "The Strokes",
+   "country": "US",
+   "image": "https://cdn-images.dzcdn.net/images/artist/88e8ecd06aae5cd69d414af57a67f339/1000x1000-000000-80-0-0.jpg",
+   "fans": 1754661,
+   "bio": "The Strokes are an American rock band from New York City that formed in 1998. It has maintained the same lineup since inception: lead vocalist and primary songwriter Julian Casablancas; guitarists Nick Valensi and Albert Hammond Jr.; bassist Nikolai Fraiture; and drummer Fabrizio Moretti. They were a leading group of the early-2000s garage rock revival and post-punk revival movements.",
+   "bio_url": "https://en.wikipedia.org/wiki/The_Strokes",
+   "wiki_title": "The Strokes"
+  },
+  {
+   "id": 6,
+   "name": "Billie Eilish",
+   "country": "US",
+   "image": "https://cdn-images.dzcdn.net/images/artist/8eab1a9a644889aabaca1e193e05f984/1000x1000-000000-80-0-0.jpg",
+   "fans": 9269376,
+   "bio": "Billie Eilish Pirate Baird O'Connell ( EYE-lish; born December 18, 2001) is an American singer-songwriter. Known for her distinctive musical sound and vocal style, she is a prominent figure in 2020s pop culture. Eilish's production style frequently uses harmony lines and vocal layering, an extension of double tracking.",
+   "bio_url": "https://en.wikipedia.org/wiki/Billie_Eilish",
+   "wiki_title": "Billie Eilish"
+  },
+  {
+   "id": 7,
+   "name": "A.R. Rahman",
+   "country": "IN",
+   "image": "https://cdn-images.dzcdn.net/images/artist/bd34315ef977a62a9e28c1ab19bb8ac4/1000x1000-000000-80-0-0.jpg",
+   "fans": 284310,
+   "bio": "Allah Rakha Rahman (; born A. S. Dileep Kumar; 6 January 1967), also known as ARR, is an Indian music composer, record producer, singer, songwriter, multi-instrumentalist, and philanthropist known for his works in Indian cinema; predominantly in Tamil and Hindi films, with occasional forays in international cinema. He is a recipient of seven National Film Awards, two Academy Awards, two Grammy Awards, a BAFTA Award, a Golden Globe Award, seven Tamil Nadu State Film Awards, fifteen Filmfare Awards, and eighteen Filmfare Awards South. In 2010, the Government of India conferred him with the Padma Bhushan, the nation's third-highest civilian award.",
+   "bio_url": "https://en.wikipedia.org/wiki/A._R._Rahman",
+   "wiki_title": "A. R. Rahman"
+  },
+  {
+   "id": 8,
+   "name": "Karan Aujla",
+   "country": "CA",
+   "image": "https://cdn-images.dzcdn.net/images/artist/a91a1d5ea91e85e4f0966569b50e8d6a/1000x1000-000000-80-0-0.jpg",
+   "fans": 33240,
+   "bio": "Jaskaran Singh Aujla (born 18 January 1997) is an Indian singer, rapper and songwriter who is primarily associated with Punjabi music. He is known for his numerous tracks which have charted on the UK Asian chart published by the Official Charts Company, while seven have charted on the Global YouTube music chart. His debut album Bacthafucup peaked at number 20 on Billboard Canadian Albums chart and 34th on the New Zealand albums chart, earning him the title of the Largest Digital Artist 2021 on Spotify and had been listed in their Most Popular Artists in Punjabi Music Industry.",
+   "bio_url": "https://en.wikipedia.org/wiki/Karan_Aujla",
+   "wiki_title": "Karan Aujla"
+  },
+  {
+   "id": 9,
+   "name": "Kanye West",
+   "country": "US",
+   "image": "https://cdn-images.dzcdn.net/images/artist/bb76c2ee3b068726ab4c37b0aabdb57a/1000x1000-000000-80-0-0.jpg",
+   "fans": 4551049,
+   "bio": "Ye ( YAY; born Kanye Omari West KAHN-yay oh-MAH-ree, June 8, 1977) is an American rapper, songwriter, and record producer. He has been listed among the greatest rappers of all time and referred to as one of the most prominent figures in hip-hop. His music, characterized by frequent stylistic shifts, has been credited with facilitating the emergence of rappers who did not conform to gangsta rap conventions.",
+   "bio_url": "https://en.wikipedia.org/wiki/Kanye_West",
+   "wiki_title": "Kanye West"
+  },
+  {
+   "id": 10,
+   "name": "Pritam",
+   "country": "IN",
+   "image": "https://cdn-images.dzcdn.net/images/artist/d4914ccd414067cd5e2c108867079a85/1000x1000-000000-80-0-0.jpg",
+   "fans": 71348,
+   "bio": "Pritam Chakraborty (born 14 June 1971), also popularly known mononymously as Pritam, is a National Film Award winning Indian composer. Graduating from FTII in Sound Engineering, he worked as an ad jingle composer, sound designer & theme music composer for TV serials, and later debuted as a co-composer alongside Jeet Gannguli in the 2001 Hindi film Tere Liye. He debuted as a solo composer with the 2003 film Stumped.",
+   "bio_url": "https://en.wikipedia.org/wiki/Pritam_Chakraborty",
+   "wiki_title": "Pritam Chakraborty"
+  },
+  {
+   "id": 11,
+   "name": "Shreya Ghoshal",
+   "country": "IN",
+   "image": "https://cdn-images.dzcdn.net/images/artist/3bb832d37d10ff2affcfa9afdc7c68a0/1000x1000-000000-80-0-0.jpg",
+   "fans": 256683,
+   "bio": "Shreya Ghoshal (Bengali pronunciation: [sɾea ɡʱoʃal]; born 12 March 1984) is an Indian singer. Noted for her wide vocal range and versatility, she is one of the most prolific and influential singers of India. She has recorded songs for films and albums in various Indian and foreign languages, receiving numerous accolades, including five National Film Awards, four Kerala State Film Awards, two Tamil Nadu State Film Awards, two BFJA Awards, seven Filmfare Awards and ten Filmfare Awards South.",
+   "bio_url": "https://en.wikipedia.org/wiki/Shreya_Ghoshal",
+   "wiki_title": "Shreya Ghoshal"
+  },
+  {
+   "id": 12,
+   "name": "Diljit Dosanjh",
+   "country": "IN",
+   "image": "https://cdn-images.dzcdn.net/images/artist/79b85e695e0ca6529e56bf3b628e92bd/1000x1000-000000-80-0-0.jpg",
+   "fans": 46402,
+   "bio": "Diljit Dosanjh (Punjabi: [d̪ɪldʒiːt̪ d̪oːsáːndʒ], born 6 January 1984) is an Indian-born American singer, actor, and film producer who works in Punjabi music as well as Punjabi and Hindi cinema. Dosanjh entered the Social 50 chart by Billboard in 2020. He has been featured in various music charts, including the Canadian Albums Chart, the UK Asian chart by Official Charts Company and the New Zealand Hot Singles.",
+   "bio_url": "https://en.wikipedia.org/wiki/Diljit_Dosanjh",
+   "wiki_title": "Diljit Dosanjh"
+  },
+  {
+   "id": 13,
+   "name": "AP Dhillon",
+   "country": "CA",
+   "image": "https://cdn-images.dzcdn.net/images/artist/52594ac9fa763dc163ed13d21cb130ec/1000x1000-000000-80-0-0.jpg",
+   "fans": 28717,
+   "bio": "Amritpal Singh \"AP\" Dhillon (born January 10, 1993) is an Indo-Canadian singer-rapper and record producer associated with Punjabi music. Five of his singles have peaked on the Official Charts Company UK Asian and Punjabi charts, while \"Majhail\" and \"Brown Munde\" have topped Billboard charts. Dhillon, alongside his label-mates Gurinder Gill, Shinda Kahlon, and Gminxr, works as a group under their label, Run-Up Records.",
+   "bio_url": "https://en.wikipedia.org/wiki/AP_Dhillon",
+   "wiki_title": "AP Dhillon"
+  },
+  {
+   "id": 14,
+   "name": "Anirudh Ravichander",
+   "country": "IN",
+   "image": "https://cdn-images.dzcdn.net/images/artist/9da0a547b39e99bc35c6a9724aef91bf/1000x1000-000000-80-0-0.jpg",
+   "fans": 53491,
+   "bio": "Anirudh Ravichander (born 16 October 1990), also credited mononymously as Anirudh, is an Indian composer and playback singer who works primarily in Tamil cinema. He has also composed for Telugu and Hindi films. He has won two Filmfare Awards South, ten SIIMA Awards, six Edison Awards and five Vijay awards.",
+   "bio_url": "https://en.wikipedia.org/wiki/Anirudh_Ravichander",
+   "wiki_title": "Anirudh Ravichander"
+  },
+  {
+   "id": 15,
+   "name": "Atif Aslam",
+   "country": "PK",
+   "image": "https://cdn-images.dzcdn.net/images/artist/0ea90444148fff9c11d77f06a344724e/1000x1000-000000-80-0-0.jpg",
+   "fans": 221316,
+   "bio": "Atif Aslam (Punjabi pronunciation: [ɑːt̪ɪf əsləm]; born 12 March 1983), also known mononymously by the hypocorism Aadeez, is a Pakistani playback singer, songwriter, composer, and actor. He has recorded many songs in both Pakistani films and Indian films, and is known for his vocal belting technique. His music style has been described as a mixture of Pakistani pop and Sufi rock.",
+   "bio_url": "https://en.wikipedia.org/wiki/Atif_Aslam",
+   "wiki_title": "Atif Aslam"
+  },
+  {
+   "id": 16,
+   "name": "Dua Lipa",
+   "country": "UK",
+   "image": "https://cdn-images.dzcdn.net/images/artist/877872aaf75694f11d53c318700ab2b5/1000x1000-000000-80-0-0.jpg",
+   "fans": 8790233,
+   "bio": "Dua Lipa ( DOO-ə LEE-pə; Albanian: [ˈdua ˈlipa] ; born 22 August 1995) is an English singer and songwriter. Her accolades include seven Brit Awards and three Grammy Awards. Lipa worked as a model before venturing into music and signing with Warner Bros.",
+   "bio_url": "https://en.wikipedia.org/wiki/Dua_Lipa",
+   "wiki_title": "Dua Lipa"
+  },
+  {
+   "id": 17,
+   "name": "Coldplay",
+   "country": "UK",
+   "image": "https://cdn-images.dzcdn.net/images/artist/3087954bca22f306324912e5ac8375c3/1000x1000-000000-80-0-0.jpg",
+   "fans": 18410861,
+   "bio": "Coldplay are a British rock band formed in London in 1997. They consist of vocalist and pianist Chris Martin, lead guitarist Jonny Buckland, bassist Guy Berryman and drummer Will Champion; manager Phil Harvey is also credited as a full member. The group are known for their live performances and have had a significant impact on popular culture.",
+   "bio_url": "https://en.wikipedia.org/wiki/Coldplay",
+   "wiki_title": "Coldplay"
+  },
+  {
+   "id": 18,
+   "name": "Drake",
+   "country": "CA",
+   "image": "https://cdn-images.dzcdn.net/images/artist/eb0ed5b21d1ea5af021fc074ded0e91f/1000x1000-000000-80-0-0.jpg",
+   "fans": 24101184,
+   "bio": "Aubrey Drake Graham (born October 24, 1986) is a Canadian rapper and singer. He is credited with popularizing R&B sensibilities in hip-hop music through rap-singing. Drake first gained recognition as Jimmy Brooks in the CTV teen drama series Degrassi: The Next Generation (2001–2008) and began his music career by independently releasing the mixtapes Room for Improvement (2006), Comeback Season (2007), and So Far Gone (2009), before signing with Young Money Entertainment.",
+   "bio_url": "https://en.wikipedia.org/wiki/Drake_(musician)",
+   "wiki_title": "Drake (musician)"
+  },
+  {
+   "id": 19,
+   "name": "Post Malone",
+   "country": "US",
+   "image": "https://cdn-images.dzcdn.net/images/artist/a5a8cca44e7eab2db7d44e039bed2574/1000x1000-000000-80-0-0.jpg",
+   "fans": 4207188,
+   "bio": "Austin Richard Post (born July 4, 1995), known professionally as Post Malone, is an American singer, rapper, songwriter, record producer, and actor. His music blends various genres including pop, hip-hop, trap, country, R&B, and rock. Malone began his musical career in 2010, and earned mainstream recognition with his 2015 cloud rap debut single, \"White Iverson\".",
+   "bio_url": "https://en.wikipedia.org/wiki/Post_Malone",
+   "wiki_title": "Post Malone"
+  },
+  {
+   "id": 20,
+   "name": "Olivia Rodrigo",
+   "country": "US",
+   "image": "https://cdn-images.dzcdn.net/images/artist/2c9e480317183c037eaebcd7ba96daf4/1000x1000-000000-80-0-0.jpg",
+   "fans": 1833737,
+   "bio": "Olivia Isabel Rodrigo (born February 20, 2003) is an American singer-songwriter and actress. Rodrigo began her career as a child actress, appearing in commercials and the direct-to-video film An American Girl: Grace Stirs Up Success (2015). She rose to prominence with her leading roles in the Disney Channel series Bizaardvark (2016–2019) and the Disney+ series High School Musical: The Musical: The Series (2019–2022).",
+   "bio_url": "https://en.wikipedia.org/wiki/Olivia_Rodrigo",
+   "wiki_title": "Olivia Rodrigo"
+  },
+  {
+   "id": 21,
+   "name": "Bruno Mars",
+   "country": "US",
+   "image": "https://cdn-images.dzcdn.net/images/artist/90f0b5b11df4f87ee878f38569b5995b/1000x1000-000000-80-0-0.jpg",
+   "fans": 12812416,
+   "bio": "Peter Gene Hernandez (born October 8, 1985), known professionally as Bruno Mars, is an American singer-songwriter, record producer and dancer. Regarded as a pop icon, he is known for his three-octave tenor vocal range, live performances, retro showmanship, and musical versatility. He is accompanied by his band, the Hooligans.",
+   "bio_url": "https://en.wikipedia.org/wiki/Bruno_Mars",
+   "wiki_title": "Bruno Mars"
+  },
+  {
+   "id": 22,
+   "name": "Imagine Dragons",
+   "country": "US",
+   "image": "https://cdn-images.dzcdn.net/images/artist/1ba025c23cae3dee14b51152990285fc/1000x1000-000000-80-0-0.jpg",
+   "fans": 9539789,
+   "bio": "Imagine Dragons are an American pop rock band formed in 2008, based in Las Vegas, Nevada. The band currently consists of lead singer Dan Reynolds, guitarist Wayne Sermon, and bassist Ben McKee. Their debut single, \"It's Time\", was released in February 2012, reaching the Top 20 of various charts around the world.",
+   "bio_url": "https://en.wikipedia.org/wiki/Imagine_Dragons",
+   "wiki_title": "Imagine Dragons"
+  },
+  {
+   "id": 23,
+   "name": "Arctic Monkeys",
+   "country": "UK",
+   "image": "https://cdn-images.dzcdn.net/images/artist/6c03e4c7c36800897fd468633286db24/1000x1000-000000-80-0-0.jpg",
+   "fans": 4966648,
+   "bio": "Arctic Monkeys are an English rock band formed in Sheffield in 2002. They comprise lead singer and guitarist Alex Turner, drummer Matt Helders, guitarist Jamie Cook and bassist Nick O'Malley, who replaced co-founder and original bassist Andy Nicholson in 2006. Though initially associated with the short-lived landfill indie movement, Arctic Monkeys were one of the earliest bands to come to public attention via the Internet, during the emerging \"blog rock\" era.",
+   "bio_url": "https://en.wikipedia.org/wiki/Arctic_Monkeys",
+   "wiki_title": "Arctic Monkeys"
+  },
+  {
+   "id": 24,
+   "name": "Sabrina Carpenter",
+   "country": "US",
+   "image": "https://cdn-images.dzcdn.net/images/artist/4a9cdc7737e2a0e59b4917b47884b859/1000x1000-000000-80-0-0.jpg",
+   "fans": 1822648,
+   "bio": "Sabrina Annlynn Carpenter (born May 11, 1999) is an American singer, songwriter, and actress. Her accolades include two Grammy Awards, an Emmy Award, three American Music Awards, a Brit Award and six MTV Video Music Awards. She was recognized by Time in their Time 100 Next list in 2024.",
+   "bio_url": "https://en.wikipedia.org/wiki/Sabrina_Carpenter",
+   "wiki_title": "Sabrina Carpenter"
+  },
+  {
+   "id": 25,
+   "name": "Kendrick Lamar",
+   "country": "US",
+   "image": "https://cdn-images.dzcdn.net/images/artist/be0a7c550567f4af0ed202d7235b74d6/1000x1000-000000-80-0-0.jpg",
+   "fans": 6181535,
+   "bio": "Kendrick Lamar Duckworth (born June 17, 1987) is an American rapper and songwriter. Rooted in West Coast hip-hop, his music features conscious, introspective lyrics, with political criticism and social commentary concerning African-American culture. Music journalists have listed Lamar among the greatest rappers of all time.",
+   "bio_url": "https://en.wikipedia.org/wiki/Kendrick_Lamar",
+   "wiki_title": "Kendrick Lamar"
+  },
+  {
+   "id": 26,
+   "name": "Badshah",
+   "country": "IN",
+   "image": "https://cdn-images.dzcdn.net/images/artist/5b90b89299a7d42f81d79afa263a85d2/1000x1000-000000-80-0-0.jpg",
+   "fans": 76713,
+   "bio": "Aditya Prateek Singh, better known professionally as Badshah, is an Indian media personality who is active as a rapper, singer-songwriter, music composer, judge on reality television and businessman. As such, he influential in both Indian hip-hop and Hindi film music. He is widely credited with helping Indian hip-hop music reach global mainstream audiences.",
+   "bio_url": "https://en.wikipedia.org/wiki/Badshah_(rapper)",
+   "wiki_title": "Badshah (rapper)"
+  },
+  {
+   "id": 27,
+   "name": "Sid Sriram",
+   "country": "IN",
+   "image": "https://cdn-images.dzcdn.net/images/artist/fbe3e1d17fc6958e047f011f74233f82/1000x1000-000000-80-0-0.jpg",
+   "fans": 18132,
+   "bio": "Sidharth Sriram (born 19 May 1990) known as Sid Sriram is an Indian Carnatic musician, music producer, playback singer. He is an R&B songwriter and has been working in the Tamil, Telugu, Kannada, Malayalam, Hindi, Marathi and English music industry. He regularly collaborates with his sister Pallavi Sriram, a Bharatanatyam dancer, and music director.",
+   "bio_url": "https://en.wikipedia.org/wiki/Sid_Sriram",
+   "wiki_title": "Sid Sriram"
+  },
+  {
+   "id": 28,
+   "name": "Travis Scott",
+   "country": "US",
+   "image": "https://cdn-images.dzcdn.net/images/artist/8d8316146026d7e6ce377e314536df62/1000x1000-000000-80-0-0.jpg",
+   "fans": 3146762,
+   "bio": "Jacques Bermon Webster II (born April 30, 1991), known professionally as Travis Scott, is an American rapper, singer-songwriter, and record producer. Scott has had five number-one hits on the U.S. Billboard Hot 100 chart, along with a total of over one hundred charting songs. In addition to ten Grammy Award nominations, he has won a Latin Grammy Award, Billboard Music Award, MTV Video Music Award, and several BET Hip Hop Awards.",
+   "bio_url": "https://en.wikipedia.org/wiki/Travis_Scott",
+   "wiki_title": "Travis Scott"
+  },
+  {
+   "id": 29,
+   "name": "Harry Styles",
+   "country": "UK",
+   "image": "https://cdn-images.dzcdn.net/images/artist/1151dba9b3edc0633adf35b64c21713f/1000x1000-000000-80-0-0.jpg",
+   "fans": 2201730,
+   "bio": "Harry Edward Styles (born 1 February 1994) is an English singer, songwriter, and actor. An influential figure in popular culture, he is known for his showmanship, artistry, and flamboyant fashion. Styles's musical career began in 2010 as part of One Direction, a boy band formed on the British music competition series The X Factor after each member of the band had been eliminated from the solo contest.",
+   "bio_url": "https://en.wikipedia.org/wiki/Harry_Styles",
+   "wiki_title": "Harry Styles"
+  },
+  {
+   "id": 30,
+   "name": "Justin Bieber",
+   "country": "CA",
+   "image": "https://cdn-images.dzcdn.net/images/artist/fe097f693cebf1f882e3da79e99e3bf9/1000x1000-000000-80-0-0.jpg",
+   "fans": 11165550,
+   "bio": "Justin Drew Bieber ( BEE-bər; born March 1, 1994) is a Canadian singer. An influential figure in popular music, he is known for his image reinventions and multi-genre performances. With estimated sales of 150 million records, Bieber is one of the best-selling music artists of all time.",
+   "bio_url": "https://en.wikipedia.org/wiki/Justin_Bieber",
+   "wiki_title": "Justin Bieber"
+  },
+  {
+   "id": 31,
+   "name": "Bad Bunny",
+   "country": "PR",
+   "image": "https://cdn-images.dzcdn.net/images/artist/044a3f315b041864887a8dd8709e6926/1000x1000-000000-80-0-0.jpg",
+   "fans": 8028444,
+   "bio": "Benito Antonio Martínez Ocasio (Latin American Spanish: [beˈnito anˈtonjo maɾˈtines oˈkasjo]; born March 10, 1994), known professionally as Bad Bunny, is a Puerto Rican rapper, singer, and record producer. Dubbed the \"King of Latin Trap\", he is widely credited with helping Spanish-language rap reach mainstream global popularity and is considered one of the greatest Latino rappers of all time. Music critics have also noted Bad Bunny's role in broadening the international appeal of Latin urban music by incorporating elements of salsa, rock, and other Latin genres into his recordings.",
+   "bio_url": "https://en.wikipedia.org/wiki/Bad_Bunny",
+   "wiki_title": "Bad Bunny"
+  },
+  {
+   "id": 32,
+   "name": "BTS",
+   "country": "KR",
+   "image": "https://cdn-images.dzcdn.net/images/artist/b5c64fa8216ca158e52b4d88bd9388ff/1000x1000-000000-80-0-0.jpg",
+   "fans": 3865217,
+   "bio": "BTS (Korean: 방탄소년단; RR: Bangtan sonyeondan; lit. 'Bulletproof Boy Scouts'), also known as the Bangtan Boys, is a South Korean boy band formed in 2010. The band consists of Jin, Suga, J-Hope, RM, Jimin, V, and Jung Kook, who co-write or co-produce much of their material.",
+   "bio_url": "https://en.wikipedia.org/wiki/BTS",
+   "wiki_title": "BTS"
+  },
+  {
+   "id": 33,
+   "name": "Adele",
+   "country": "UK",
+   "image": "https://cdn-images.dzcdn.net/images/artist/e5fc443d2abc03b487234ba4de65a001/1000x1000-000000-80-0-0.jpg",
+   "fans": 15487880,
+   "bio": "Adele Laurie Blue Adkins ( ə-DEL; born 5 May 1988) is an English singer and songwriter. Regarded as a British cultural icon, she is known for her mezzo-soprano vocals and sentimental songwriting. Her accolades include 16 Grammy Awards, 12 Brit Awards (including three for British Album of the Year), an Academy Award, a Primetime Emmy Award, and a Golden Globe Award.",
+   "bio_url": "https://en.wikipedia.org/wiki/Adele",
+   "wiki_title": "Adele"
+  },
+  {
+   "id": 34,
+   "name": "Sachin-Jigar",
+   "country": "IN",
+   "image": "https://cdn-images.dzcdn.net/images/artist/d812840574d5c6177ef5480a4ba24d59/1000x1000-000000-80-0-0.jpg",
+   "fans": 9102,
+   "bio": "Sachin–Jigar are an Indian music composer duo consisting of Sachin Sanghvi and Jigar Saraiya. They are known for their compositions in Hindi and Gujarati language films.",
+   "bio_url": "https://en.wikipedia.org/wiki/Sachin%E2%80%93Jigar",
+   "wiki_title": "Sachin–Jigar"
+  },
+  {
+   "id": 35,
+   "name": "Vishal-Shekhar",
+   "country": "IN",
+   "image": "https://cdn-images.dzcdn.net/images/artist/5871137ebfd9723ea757b8380fe404c5/1000x1000-000000-80-0-0.jpg",
+   "fans": 8549,
+   "bio": "Vishal–Shekhar are an Indian music composition, production, singing, and songwriting duo consisting of Vishal Dadlani and Shekhar Ravjiani, from Mumbai. Known predominantly for their work as music composers in Hindi cinema, Vishal–Shekhar have also recorded in Telugu, Tamil and Marathi with the likes of Akon, The Vamps, Imogen Heap and Diplo. They have been streamed over 3 billion times on YouTube, have had 72 number-one singles, and have been featured on over 350 film sound tracks.",
+   "bio_url": "https://en.wikipedia.org/wiki/Vishal%E2%80%93Shekhar",
+   "wiki_title": "Vishal–Shekhar"
+  }
+ ],
+ "albums": [
+  {
+   "id": 1,
+   "name": "Aashiqui 2 (Original Motion Picture Soundtrack)",
+   "artist_id": 1,
+   "year": 2013,
+   "cover": "https://is1-ssl.mzstatic.com/image/thumb/Music221/v4/bb/23/ee/bb23eeed-0c35-4f1d-2b11-485622777ae4/8902894353007_cover.jpg/600x600bb.jpg",
+   "itunes_id": 1073359412
+  },
+  {
+   "id": 2,
+   "name": "Kesariya (From \"Brahmastra\")",
+   "artist_id": 1,
+   "year": 2022,
+   "cover": "https://is1-ssl.mzstatic.com/image/thumb/Music112/v4/9f/13/ca/9f13ca3b-e533-03e0-f19a-f0aaa774581d/196589311191.jpg/600x600bb.jpg",
+   "itunes_id": 1635013814
+  },
+  {
+   "id": 3,
+   "name": "÷",
+   "artist_id": 2,
+   "year": 2017,
+   "cover": "https://is1-ssl.mzstatic.com/image/thumb/Music111/v4/2d/1c/4f/2d1c4fd7-018c-0529-693b-c67fea53b698/190295851286.jpg/600x600bb.jpg",
+   "itunes_id": 1193700601
+  },
+  {
+   "id": 4,
+   "name": "folklore",
+   "artist_id": 3,
+   "year": 2020,
+   "cover": "https://is1-ssl.mzstatic.com/image/thumb/Music125/v4/ca/f3/67/caf367a5-2cf6-6b2e-a891-97dc57b19f08/20UMGIM64216.rgb.jpg/600x600bb.jpg",
+   "itunes_id": 1524801260
+  },
+  {
+   "id": 5,
+   "name": "One of the Girls",
+   "artist_id": 4,
+   "year": 2023,
+   "cover": "https://is1-ssl.mzstatic.com/image/thumb/Music116/v4/2a/75/7c/2a757c4d-659e-dd5d-bcce-16800fa6b031/23UM1IM62083.rgb.jpg/600x600bb.jpg",
+   "itunes_id": 1720045950
+  },
+  {
+   "id": 6,
+   "name": "Room On Fire",
+   "artist_id": 5,
+   "year": 2003,
+   "cover": "https://is1-ssl.mzstatic.com/image/thumb/Music124/v4/f7/e9/2a/f7e92a48-0e20-8286-bbbf-80bd85fbb1af/mzi.gcledsjj.jpg/600x600bb.jpg",
+   "itunes_id": 302987557
+  },
+  {
+   "id": 7,
+   "name": "WHEN WE ALL FALL ASLEEP, WHERE DO WE GO?",
+   "artist_id": 6,
+   "year": 2019,
+   "cover": "https://is1-ssl.mzstatic.com/image/thumb/Music115/v4/1a/37/d1/1a37d1b1-8508-54f2-f541-bf4e437dda76/19UMGIM05028.rgb.jpg/600x600bb.jpg",
+   "itunes_id": 1450695723
+  },
+  {
+   "id": 8,
+   "name": "Rockstar (Original Motion Picture Soundtrack)",
+   "artist_id": 7,
+   "year": 2011,
+   "cover": "https://is1-ssl.mzstatic.com/image/thumb/Music115/v4/56/ac/41/56ac41f7-99f3-3eae-3b07-443167292c4e/8902894697408_cover.jpg/600x600bb.jpg",
+   "itunes_id": 1123241840
+  },
+  {
+   "id": 9,
+   "name": "My Beautiful Dark Twisted Fantasy",
+   "artist_id": 9,
+   "year": 2010,
+   "cover": "https://is1-ssl.mzstatic.com/image/thumb/Music124/v4/d1/74/da/d174dacf-5782-dfe2-19f7-ce037dcd0237/00602527584935.rgb.jpg/600x600bb.jpg",
+   "itunes_id": 1443160553
+  },
+  {
+   "id": 10,
+   "name": "Ae Dil Hai Mushkil (Original Motion Picture Soundtrack)",
+   "artist_id": 1,
+   "year": 2016,
+   "cover": "https://is1-ssl.mzstatic.com/image/thumb/Music221/v4/bc/6e/4d/bc6e4d0c-adec-b431-7b60-16f5689f9664/886446201597.jpg/600x600bb.jpg",
+   "itunes_id": 1169015635
+  },
+  {
+   "id": 11,
+   "name": "Tamasha (Original Motion Picture Soundtrack)",
+   "artist_id": 1,
+   "year": 2015,
+   "cover": "https://is1-ssl.mzstatic.com/image/thumb/Music125/v4/cb/ac/67/cbac673a-9213-7118-bb4e-2440273afb03/8902894357470_cover.jpg/600x600bb.jpg",
+   "itunes_id": 1071074537
+  },
+  {
+   "id": 12,
+   "name": "Yeh Jawaani Hai Deewani (Original Motion Picture Soundtrack)",
+   "artist_id": 1,
+   "year": 2013,
+   "cover": "https://is1-ssl.mzstatic.com/image/thumb/Music125/v4/62/d6/74/62d67432-0670-631f-db6a-d4bac3adae4b/8902894353328_cover.jpg/600x600bb.jpg",
+   "itunes_id": 1070912669
+  },
+  {
+   "id": 13,
+   "name": "Barfi! (Original Motion Picture Soundtrack)",
+   "artist_id": 1,
+   "year": 2012,
+   "cover": "https://is1-ssl.mzstatic.com/image/thumb/Music221/v4/5b/65/4a/5b654a60-886f-8bbf-2f39-5ea0dacb8022/886443625099.jpg/600x600bb.jpg",
+   "itunes_id": 554640982
+  },
+  {
+   "id": 14,
+   "name": "x",
+   "artist_id": 2,
+   "year": 2014,
+   "cover": "https://is1-ssl.mzstatic.com/image/thumb/Music125/v4/2d/36/f9/2d36f9a7-2c3e-ce0f-7fb6-036feecb221f/825646974450.jpg/600x600bb.jpg",
+   "itunes_id": 1050204616
+  },
+  {
+   "id": 15,
+   "name": "=",
+   "artist_id": 2,
+   "year": 2021,
+   "cover": "https://is1-ssl.mzstatic.com/image/thumb/Music125/v4/c5/d8/c6/c5d8c675-63e3-6632-33db-2401eabe574d/190296491412.jpg/600x600bb.jpg",
+   "itunes_id": 1581087024
+  },
+  {
+   "id": 16,
+   "name": "Midnights",
+   "artist_id": 3,
+   "year": 2022,
+   "cover": "https://is1-ssl.mzstatic.com/image/thumb/Music116/v4/a6/85/b9/a685b9f8-dad3-2ed7-58b2-ab7f64304505/23UMGIM58157.rgb.jpg/600x600bb.jpg",
+   "itunes_id": 1689131527
+  },
+  {
+   "id": 17,
+   "name": "1989",
+   "artist_id": 3,
+   "year": 2014,
+   "cover": "https://is1-ssl.mzstatic.com/image/thumb/Music221/v4/89/4a/4a/894a4ab9-b0b0-9ea5-ca41-8da0b9b79453/14UMDIM03405.rgb.jpg/600x600bb.jpg",
+   "itunes_id": 1440935467
+  },
+  {
+   "id": 18,
+   "name": "Lover",
+   "artist_id": 3,
+   "year": 2019,
+   "cover": "https://is1-ssl.mzstatic.com/image/thumb/Music125/v4/49/3d/ab/493dab54-f920-9043-6181-80993b8116c9/19UMGIM53909.rgb.jpg/600x600bb.jpg",
+   "itunes_id": 1468058165
+  },
+  {
+   "id": 19,
+   "name": "Fearless",
+   "artist_id": 3,
+   "year": 2008,
+   "cover": "https://is1-ssl.mzstatic.com/image/thumb/Music221/v4/cb/6e/a7/cb6ea70a-6cb8-89a0-4da7-91e2d04a7bba/08PNDIM05386.rgb.jpg/600x600bb.jpg",
+   "itunes_id": 1440924803
+  },
+  {
+   "id": 20,
+   "name": "After Hours",
+   "artist_id": 4,
+   "year": 2019,
+   "cover": "https://is1-ssl.mzstatic.com/image/thumb/Music125/v4/6f/bc/e6/6fbce6c4-c38c-72d8-4fd0-66cfff32f679/20UMGIM12176.rgb.jpg/600x600bb.jpg",
+   "itunes_id": 1499378108
+  },
+  {
+   "id": 23,
+   "name": "Is This It",
+   "artist_id": 5,
+   "year": 2001,
+   "cover": "https://is1-ssl.mzstatic.com/image/thumb/Features115/v4/ea/04/d4/ea04d45d-6f5d-ede6-fb64-71f3e6a6e62f/dj.ojkzzidd.jpg/600x600bb.jpg",
+   "itunes_id": 266376953
+  },
+  {
+   "id": 24,
+   "name": "The New Abnormal",
+   "artist_id": 5,
+   "year": 2020,
+   "cover": "https://is1-ssl.mzstatic.com/image/thumb/Music115/v4/62/a6/ff/62a6ff2a-95c9-5302-31f4-2dcca9e40323/886448281085.jpg/600x600bb.jpg",
+   "itunes_id": 1498121188
+  },
+  {
+   "id": 25,
+   "name": "HIT ME HARD AND SOFT",
+   "artist_id": 6,
+   "year": 2024,
+   "cover": "https://is1-ssl.mzstatic.com/image/thumb/Music211/v4/92/9f/69/929f69f1-9977-3a44-d674-11f70c852d1b/24UMGIM36186.rgb.jpg/600x600bb.jpg",
+   "itunes_id": 1739659134
+  },
+  {
+   "id": 27,
+   "name": "Slumdog Millionaire (Music From the Motion Picture)",
+   "artist_id": 7,
+   "year": 2008,
+   "cover": "https://is1-ssl.mzstatic.com/image/thumb/Music125/v4/b0/28/2a/b0282a15-2f2c-e6f4-0be2-47d322dca5fd/00602537548699.rgb.jpg/600x600bb.jpg",
+   "itunes_id": 1443884661
+  },
+  {
+   "id": 28,
+   "name": "Dil Se (Original Motion Picture Soundtrack)",
+   "artist_id": 7,
+   "year": 1998,
+   "cover": "https://is1-ssl.mzstatic.com/image/thumb/Music114/v4/8e/f8/85/8ef88544-a6c7-018b-0a75-dc3b6b024fa0/cover.jpg/600x600bb.jpg",
+   "itunes_id": 1130322055
+  },
+  {
+   "id": 29,
+   "name": "Making Memories",
+   "artist_id": 8,
+   "year": 2023,
+   "cover": "https://is1-ssl.mzstatic.com/image/thumb/Music116/v4/d3/08/bc/d308bc6a-20e1-6532-d933-35d1b429210e/5054197755538.jpg/600x600bb.jpg",
+   "itunes_id": 1697533643
+  },
+  {
+   "id": 30,
+   "name": "Tauba Tauba (From \"Bad Newz\")",
+   "artist_id": 8,
+   "year": 2024,
+   "cover": "https://is1-ssl.mzstatic.com/image/thumb/Music211/v4/79/d2/01/79d201d2-e54d-5604-81fb-313f30db7219/198588533581.jpg/600x600bb.jpg",
+   "itunes_id": 1754562143
+  },
+  {
+   "id": 31,
+   "name": "Winning Speech",
+   "artist_id": 8,
+   "year": 2024,
+   "cover": "https://is1-ssl.mzstatic.com/image/thumb/Music221/v4/48/7c/36/487c3668-f7a4-4b1a-e09e-c74dae124dd9/5063483578089_cover.jpg/600x600bb.jpg",
+   "itunes_id": 1745062649
+  },
+  {
+   "id": 32,
+   "name": "Graduation",
+   "artist_id": 9,
+   "year": 2007,
+   "cover": "https://is1-ssl.mzstatic.com/image/thumb/Music128/v4/39/25/2d/39252d65-2d50-b991-0962-f7a98a761271/00602517483507.rgb.jpg/600x600bb.jpg",
+   "itunes_id": 1442845779
+  },
+  {
+   "id": 33,
+   "name": "808s & Heartbreak",
+   "artist_id": 9,
+   "year": 2008,
+   "cover": "https://is1-ssl.mzstatic.com/image/thumb/Music125/v4/4d/75/2d/4d752db1-022d-f65d-40a1-a2390f01427a/13UAEIM26465.rgb.jpg/600x600bb.jpg",
+   "itunes_id": 1441410287
+  },
+  {
+   "id": 34,
+   "name": "Singh Is Kinng (Original Motion Picture Soundtrack)",
+   "artist_id": 11,
+   "year": 2001,
+   "cover": "https://is1-ssl.mzstatic.com/image/thumb/Music124/v4/41/f5/72/41f572a8-c21d-fbfa-8765-1d89d3ce48aa/191773507848.jpg/600x600bb.jpg",
+   "itunes_id": 1258601469
+  },
+  {
+   "id": 35,
+   "name": "G.O.A.T.",
+   "artist_id": 12,
+   "year": 2020,
+   "cover": "https://is1-ssl.mzstatic.com/image/thumb/Music116/v4/d2/89/ac/d289ac98-749e-3822-6b6e-b06aa4815715/859740651597_cover.jpg/600x600bb.jpg",
+   "itunes_id": 1523520901
+  },
+  {
+   "id": 36,
+   "name": "MoonChild Era",
+   "artist_id": 12,
+   "year": 2021,
+   "cover": "https://is1-ssl.mzstatic.com/image/thumb/Music126/v4/8a/89/e4/8a89e445-d2c6-f8ac-a828-27818b0c1afe/859749638209_cover.jpg/600x600bb.jpg",
+   "itunes_id": 1581006360
+  },
+  {
+   "id": 37,
+   "name": "Excuses",
+   "artist_id": 13,
+   "year": 2020,
+   "cover": "https://is1-ssl.mzstatic.com/image/thumb/Music125/v4/47/47/ac/4747ac85-1658-64ae-bc82-220a4d6213d5/859747478890_cover.jpg/600x600bb.jpg",
+   "itunes_id": 1588418741
+  },
+  {
+   "id": 38,
+   "name": "Brown Munde",
+   "artist_id": 13,
+   "year": 2020,
+   "cover": "https://is1-ssl.mzstatic.com/image/thumb/Music211/v4/26/a3/ac/26a3ac64-69e4-95ec-80ab-1f5a477537d2/859742042973_cover.jpg/600x600bb.jpg",
+   "itunes_id": 1531596344
+  },
+  {
+   "id": 39,
+   "name": "With You",
+   "artist_id": 13,
+   "year": 2023,
+   "cover": "https://is1-ssl.mzstatic.com/image/thumb/Music116/v4/5a/ac/00/5aac005f-9403-70e4-bce0-cf452017476e/197189606472.jpg/600x600bb.jpg",
+   "itunes_id": 1700880665
+  },
+  {
+   "id": 40,
+   "name": "Jawan (Original Motion Picture Soundtrack)",
+   "artist_id": 14,
+   "year": 2023,
+   "cover": "https://is1-ssl.mzstatic.com/image/thumb/Music126/v4/bb/f4/f5/bbf4f511-3c12-c25e-a475-b6d06faa8c13/8902894362047_cover.jpg/600x600bb.jpg",
+   "itunes_id": 1705952061
+  },
+  {
+   "id": 41,
+   "name": "Arabic Kuthu (From \"Beast\")",
+   "artist_id": 14,
+   "year": 2022,
+   "cover": "https://is1-ssl.mzstatic.com/image/thumb/Music126/v4/e9/19/b9/e919b921-d5a8-9e9a-8508-3551da375aee/196626458629.jpg/600x600bb.jpg",
+   "itunes_id": 1609970851
+  },
+  {
+   "id": 42,
+   "name": "Hukum (From \"Jailer\")",
+   "artist_id": 14,
+   "year": 2023,
+   "cover": "https://is1-ssl.mzstatic.com/image/thumb/Music126/v4/77/e0/f8/77e0f836-c6f5-3127-d9f0-4f79895a294f/197189614248.jpg/600x600bb.jpg",
+   "itunes_id": 1701443430
+  },
+  {
+   "id": 43,
+   "name": "Race (Original Motion Picture Soundtrack)",
+   "artist_id": 15,
+   "year": 2008,
+   "cover": "https://is1-ssl.mzstatic.com/image/thumb/Music124/v4/38/44/21/384421ca-69a0-83f2-0a34-88653d45db97/8901854001385.jpg/600x600bb.jpg",
+   "itunes_id": 1537030727
+  },
+  {
+   "id": 44,
+   "name": "Prince (Original Motion Picture Soundtrack)",
+   "artist_id": 15,
+   "year": 2010,
+   "cover": "https://is1-ssl.mzstatic.com/image/thumb/Music124/v4/88/92/1d/88921d57-d5b1-25f7-8897-3dbb3858e1d4/8901854003938.jpg/600x600bb.jpg",
+   "itunes_id": 1537035115
+  },
+  {
+   "id": 45,
+   "name": "Ramaiya Vastavaiya (Original Motion Picture Soundtrack)",
+   "artist_id": 15,
+   "year": 2010,
+   "cover": "https://is1-ssl.mzstatic.com/image/thumb/Music114/v4/0c/f4/ac/0cf4acd9-9510-3c12-b453-50021a4985ec/8901854027637.jpg/600x600bb.jpg",
+   "itunes_id": 1536600356
+  },
+  {
+   "id": 48,
+   "name": "Houdini",
+   "artist_id": 16,
+   "year": 2023,
+   "cover": "https://is1-ssl.mzstatic.com/image/thumb/Music116/v4/dd/af/ea/ddafeab5-797a-5b6f-7735-f96c537b45e0/5054197894091.jpg/600x600bb.jpg",
+   "itunes_id": 1714502820
+  },
+  {
+   "id": 49,
+   "name": "Parachutes",
+   "artist_id": 17,
+   "year": 2000,
+   "cover": "https://is1-ssl.mzstatic.com/image/thumb/Music221/v4/f5/93/8c/f5938c49-964c-31d1-4b33-78b634f71fb7/190295978075.jpg/600x600bb.jpg",
+   "itunes_id": 1122782080
+  },
+  {
+   "id": 50,
+   "name": "Viva La Vida or Death and All His Friends",
+   "artist_id": 17,
+   "year": 2008,
+   "cover": "https://is1-ssl.mzstatic.com/image/thumb/Music115/v4/52/aa/85/52aa851f-15b7-6322-f91f-df84b15b7b19/190295978044.jpg/600x600bb.jpg",
+   "itunes_id": 1122773394
+  },
+  {
+   "id": 51,
+   "name": "A Rush of Blood to the Head",
+   "artist_id": 17,
+   "year": 2002,
+   "cover": "https://is1-ssl.mzstatic.com/image/thumb/Music115/v4/b9/b4/2a/b9b42ad1-1e25-5096-da43-497a247e69a3/190295978051.jpg/600x600bb.jpg",
+   "itunes_id": 1122775993
+  },
+  {
+   "id": 52,
+   "name": "X&Y",
+   "artist_id": 17,
+   "year": 2005,
+   "cover": "https://is1-ssl.mzstatic.com/image/thumb/Music115/v4/0c/82/48/0c8248a8-4a5b-d30d-8056-f32d650d2fc9/190295978068.jpg/600x600bb.jpg",
+   "itunes_id": 1123076757
+  },
+  {
+   "id": 53,
+   "name": "Scorpion",
+   "artist_id": 18,
+   "year": 2018,
+   "cover": "https://is1-ssl.mzstatic.com/image/thumb/Music115/v4/bb/6d/8f/bb6d8f67-6d04-10b5-dd62-eb5809ac54fc/00602567879152.rgb.jpg/600x600bb.jpg",
+   "itunes_id": 1406109769
+  },
+  {
+   "id": 54,
+   "name": "Views",
+   "artist_id": 18,
+   "year": 2016,
+   "cover": "https://is1-ssl.mzstatic.com/image/thumb/Music115/v4/f2/0d/8b/f20d8bff-a927-ae98-6784-20a1f51cb23e/16UMGIM27642.rgb.jpg/600x600bb.jpg",
+   "itunes_id": 1440841363
+  },
+  {
+   "id": 55,
+   "name": "Hollywood's Bleeding",
+   "artist_id": 19,
+   "year": 2019,
+   "cover": "https://is1-ssl.mzstatic.com/image/thumb/Music115/v4/6c/13/27/6c13279a-399b-2631-3cb2-6233a91d7a53/19UMGIM78325.rgb.jpg/600x600bb.jpg",
+   "itunes_id": 1477886950
+  },
+  {
+   "id": 57,
+   "name": "beerbongs & bentleys",
+   "artist_id": 19,
+   "year": 2017,
+   "cover": "https://is1-ssl.mzstatic.com/image/thumb/Music124/v4/55/9f/fb/559ffb75-3c00-abd6-7b1f-8b6b1518b173/18UMGIM22101.rgb.jpg/600x600bb.jpg",
+   "itunes_id": 1373504837
+  },
+  {
+   "id": 58,
+   "name": "SOUR",
+   "artist_id": 20,
+   "year": 2021,
+   "cover": "https://is1-ssl.mzstatic.com/image/thumb/Music115/v4/02/ed/8c/02ed8cab-c089-2fdd-7ce6-ab334a9a4e19/21UMGIM26093.rgb.jpg/600x600bb.jpg",
+   "itunes_id": 1560734944
+  },
+  {
+   "id": 59,
+   "name": "GUTS",
+   "artist_id": 20,
+   "year": 2023,
+   "cover": "https://is1-ssl.mzstatic.com/image/thumb/Music116/v4/9e/0d/17/9e0d17e0-c068-fbd9-fd85-610cc87c86aa/23UMGIM71511.rgb.jpg/600x600bb.jpg",
+   "itunes_id": 1694767605
+  },
+  {
+   "id": 60,
+   "name": "Unorthodox Jukebox",
+   "artist_id": 21,
+   "year": 2012,
+   "cover": "https://is1-ssl.mzstatic.com/image/thumb/Music115/v4/e0/a4/7c/e0a47c6f-005a-9f9f-ce29-8e858e2bcfcb/075679957283.jpg/600x600bb.jpg",
+   "itunes_id": 573962245
+  },
+  {
+   "id": 61,
+   "name": "Die With A Smile",
+   "artist_id": 21,
+   "year": 2024,
+   "cover": "https://is1-ssl.mzstatic.com/image/thumb/Music221/v4/11/ae/f2/11aef294-f57c-bab9-c9fc-529162984e62/24UMGIM85348.rgb.jpg/600x600bb.jpg",
+   "itunes_id": 1762656724
+  },
+  {
+   "id": 62,
+   "name": "Evolve",
+   "artist_id": 22,
+   "year": 2017,
+   "cover": "https://is1-ssl.mzstatic.com/image/thumb/Music126/v4/11/7a/b8/117ab805-6811-8929-18b9-0fad7baf0c25/17UMGIM98210.rgb.jpg/600x600bb.jpg",
+   "itunes_id": 1411625594
+  },
+  {
+   "id": 63,
+   "name": "Night Visions",
+   "artist_id": 22,
+   "year": 2012,
+   "cover": "https://is1-ssl.mzstatic.com/image/thumb/Music112/v4/1f/fa/09/1ffa092f-f52f-4a66-7d10-4cc5982dc747/12UMGIM46901.rgb.jpg/600x600bb.jpg",
+   "itunes_id": 1440873107
+  },
+  {
+   "id": 64,
+   "name": "AM",
+   "artist_id": 23,
+   "year": 2013,
+   "cover": "https://is1-ssl.mzstatic.com/image/thumb/Music211/v4/69/9c/b5/699cb5d6-115c-ff73-9d26-e57ea4350d72/887828031795.png/600x600bb.jpg",
+   "itunes_id": 663097964
+  },
+  {
+   "id": 65,
+   "name": "Favourite Worst Nightmare",
+   "artist_id": 23,
+   "year": 2007,
+   "cover": "https://is1-ssl.mzstatic.com/image/thumb/Music124/v4/82/90/14/829014ad-a301-62ab-bee6-f4cca4457411/mzi.hozudery.jpg/600x600bb.jpg",
+   "itunes_id": 251499221
+  },
+  {
+   "id": 67,
+   "name": "Short n' Sweet",
+   "artist_id": 24,
+   "year": 2024,
+   "cover": "https://is1-ssl.mzstatic.com/image/thumb/Music221/v4/a1/1c/ca/a11ccab6-7d4c-e041-d028-998bcebeb709/24UMGIM61704.rgb.jpg/600x600bb.jpg",
+   "itunes_id": 1752214909
+  },
+  {
+   "id": 68,
+   "name": "DAMN.",
+   "artist_id": 25,
+   "year": 2017,
+   "cover": "https://is1-ssl.mzstatic.com/image/thumb/Music112/v4/ab/16/ef/ab16efe9-e7f1-66ec-021c-5592a23f0f9e/17UMGIM88793.rgb.jpg/600x600bb.jpg",
+   "itunes_id": 1440881722
+  },
+  {
+   "id": 69,
+   "name": "Not Like Us",
+   "artist_id": 25,
+   "year": 2024,
+   "cover": "https://is1-ssl.mzstatic.com/image/thumb/Music221/v4/31/3a/3f/313a3fbc-bb8f-80c7-b5a2-e226869a38cd/24UMGIM51924.rgb.jpg/600x600bb.jpg",
+   "itunes_id": 1781353928
+  },
+  {
+   "id": 70,
+   "name": "good kid, m.A.A.d city",
+   "artist_id": 25,
+   "year": 2012,
+   "cover": "https://is1-ssl.mzstatic.com/image/thumb/Music112/v4/9a/50/a1/9a50a1d8-01c2-2504-8d99-3f2fc7e5c2ff/12UMGIM52988.rgb.jpg/600x600bb.jpg",
+   "itunes_id": 1471277623
+  },
+  {
+   "id": 71,
+   "name": "Genda Phool (feat. Payal Dev)",
+   "artist_id": 26,
+   "year": 2020,
+   "cover": "https://is1-ssl.mzstatic.com/image/thumb/Music124/v4/88/88/14/8888149b-06f3-d61e-fc46-5da101bb0d0a/886448368991.jpg/600x600bb.jpg",
+   "itunes_id": 1504032323
+  },
+  {
+   "id": 73,
+   "name": "Pushpa - The Rise, Part. 01 (Original Motion Picture Soundtrack)",
+   "artist_id": 27,
+   "year": 2021,
+   "cover": "https://is1-ssl.mzstatic.com/image/thumb/Music116/v4/ec/34/7b/ec347b9b-0add-c529-4746-799277a5e1c0/cover.jpg/600x600bb.jpg",
+   "itunes_id": 1602184415
+  },
+  {
+   "id": 74,
+   "name": "ASTROWORLD",
+   "artist_id": 28,
+   "year": 2018,
+   "cover": "https://is1-ssl.mzstatic.com/image/thumb/Music125/v4/e7/49/8f/e7498f65-df8f-bead-d6e3-2a8d4d642a79/886447235317.jpg/600x600bb.jpg",
+   "itunes_id": 1421658111
+  },
+  {
+   "id": 75,
+   "name": "Birds In The Trap Sing McKnight",
+   "artist_id": 28,
+   "year": 2016,
+   "cover": "https://is1-ssl.mzstatic.com/image/thumb/Music114/v4/b8/e5/27/b8e527c8-aaf4-c7b7-5562-c479458ed7d9/886446092645.jpg/600x600bb.jpg",
+   "itunes_id": 1151481435
+  },
+  {
+   "id": 76,
+   "name": "Harry's House",
+   "artist_id": 29,
+   "year": 2022,
+   "cover": "https://is1-ssl.mzstatic.com/image/thumb/Music126/v4/2a/19/fb/2a19fb85-2f70-9e44-f2a9-82abe679b88e/886449990061.jpg/600x600bb.jpg",
+   "itunes_id": 1615584999
+  },
+  {
+   "id": 77,
+   "name": "Fine Line",
+   "artist_id": 29,
+   "year": 2019,
+   "cover": "https://is1-ssl.mzstatic.com/image/thumb/Music115/v4/2b/c4/c9/2bc4c9d4-3bc6-ab13-3f71-df0b89b173de/886448022213.jpg/600x600bb.jpg",
+   "itunes_id": 1485802965
+  },
+  {
+   "id": 79,
+   "name": "Purpose",
+   "artist_id": 30,
+   "year": 2015,
+   "cover": "https://is1-ssl.mzstatic.com/image/thumb/Music126/v4/81/a4/dc/81a4dc50-8d7e-6ae5-71d3-f83393348248/15UMGIM59807.rgb.jpg/600x600bb.jpg",
+   "itunes_id": 1440825845
+  },
+  {
+   "id": 80,
+   "name": "BE",
+   "artist_id": 32,
+   "year": 2020,
+   "cover": "https://is1-ssl.mzstatic.com/image/thumb/Music116/v4/22/f3/8f/22f38fb9-1690-326a-d891-7aa946c2b06f/195497623273_Cover.jpg/600x600bb.jpg",
+   "itunes_id": 1596532185
+  },
+  {
+   "id": 81,
+   "name": "Proof",
+   "artist_id": 32,
+   "year": 2021,
+   "cover": "https://is1-ssl.mzstatic.com/image/thumb/Music122/v4/f7/68/9c/f7689ce3-6d41-60cd-62d2-57a91ddf5b9d/196922067341_Cover.jpg/600x600bb.jpg",
+   "itunes_id": 1627573936
+  },
+  {
+   "id": 82,
+   "name": "25",
+   "artist_id": 33,
+   "year": 2015,
+   "cover": "https://is1-ssl.mzstatic.com/image/thumb/Music116/v4/08/8c/24/088c2405-2e33-801b-5c38-e967f2c01e69/191404113974.png/600x600bb.jpg",
+   "itunes_id": 1544494115
+  },
+  {
+   "id": 83,
+   "name": "Skyfall",
+   "artist_id": 33,
+   "year": 2012,
+   "cover": "https://is1-ssl.mzstatic.com/image/thumb/Music125/v4/b3/fe/cf/b3fecf76-0359-8e14-0651-4b101fc68a3f/886443673632.jpg/600x600bb.jpg",
+   "itunes_id": 566322358
+  },
+  {
+   "id": 84,
+   "name": "30",
+   "artist_id": 33,
+   "year": 2021,
+   "cover": "https://is1-ssl.mzstatic.com/image/thumb/Music115/v4/73/6d/7c/736d7cfb-c79d-c9a9-4170-5e71d008dea1/886449666430.jpg/600x600bb.jpg",
+   "itunes_id": 1590035691
+  },
+  {
+   "id": 85,
+   "name": "Aaj Ki Raat (From \"Stree 2\")",
+   "artist_id": 34,
+   "year": 2024,
+   "cover": "https://is1-ssl.mzstatic.com/image/thumb/Music211/v4/3a/7f/47/3a7f47da-2330-c758-4460-ce12f9385a82/198588793954.jpg/600x600bb.jpg",
+   "itunes_id": 1759100523
+  },
+  {
+   "id": 87,
+   "name": "Om Shanti Om (Original Motion Picture Soundtrack)",
+   "artist_id": 35,
+   "year": 2005,
+   "cover": "https://is1-ssl.mzstatic.com/image/thumb/Music116/v4/4c/16/13/4c161318-5bf1-ea55-774d-2f55e2361d10/8902894623179_cover.jpg/600x600bb.jpg",
+   "itunes_id": 1071079468
+  },
+  {
+   "id": 88,
+   "name": "÷",
+   "artist_id": 2,
+   "year": 2017,
+   "cover": "https://is1-ssl.mzstatic.com/image/thumb/Music115/v4/15/e6/e8/15e6e8a4-4190-6a8b-86c3-ab4a51b88288/190295851286.jpg/600x600bb.jpg",
+   "itunes_id": 1193701079
+  },
+  {
+   "id": 90,
+   "name": "Tere Vaaste (From \"Zara Hatke Zara Bachke\")",
+   "artist_id": 34,
+   "year": 2023,
+   "cover": "https://is1-ssl.mzstatic.com/image/thumb/Music116/v4/33/03/f2/3303f270-fce2-293a-5bfc-4b9de994abf9/197188946401.jpg/600x600bb.jpg",
+   "itunes_id": 1688981118
+  },
+  {
+   "id": 92,
+   "name": "Geetha Govindam (Original Motion Picture Soundtrack)",
+   "artist_id": 27,
+   "year": 2018,
+   "cover": "https://is1-ssl.mzstatic.com/image/thumb/Music124/v4/68/f1/52/68f1523b-3c40-f2cc-7d4a-376642897adb/cover.jpg/600x600bb.jpg",
+   "itunes_id": 1419151786
+  },
+  {
+   "id": 95,
+   "name": "Besharam Rang (From \"Pathaan\")",
+   "artist_id": 35,
+   "year": 2022,
+   "cover": "https://is1-ssl.mzstatic.com/image/thumb/Music112/v4/4c/ee/7c/4cee7c7a-8ce6-0a91-deb4-defbfac59509/Besharam_Rang.jpg/600x600bb.jpg",
+   "itunes_id": 1658280807
+  },
+  {
+   "id": 96,
+   "name": "dont smile at me",
+   "artist_id": 6,
+   "year": 2017,
+   "cover": "https://is1-ssl.mzstatic.com/image/thumb/Music115/v4/02/1d/30/021d3036-5503-3ed3-df00-882f2833a6ae/17UM1IM17026.rgb.jpg/600x600bb.jpg",
+   "itunes_id": 1440898929
+  },
+  {
+   "id": 97,
+   "name": "Starboy",
+   "artist_id": 4,
+   "year": 2016,
+   "cover": "https://is1-ssl.mzstatic.com/image/thumb/Music115/v4/b5/92/bb/b592bb72-52e3-e756-9b26-9f56d08f47ab/16UMGIM67864.rgb.jpg/600x600bb.jpg",
+   "itunes_id": 1440870373
+  },
+  {
+   "id": 98,
+   "name": "After Hours",
+   "artist_id": 4,
+   "year": 2020,
+   "cover": "https://is1-ssl.mzstatic.com/image/thumb/Music125/v4/2b/b9/fe/2bb9fef5-d7f3-8345-25a9-db0e79fde4e4/20UMGIM11048.rgb.jpg/600x600bb.jpg",
+   "itunes_id": 1499385848
+  },
+  {
+   "id": 99,
+   "name": "Dua Lipa",
+   "artist_id": 16,
+   "year": 2017,
+   "cover": "https://is1-ssl.mzstatic.com/image/thumb/Music116/v4/31/33/cf/3133cffc-4b77-f3c6-3ee3-5c9b6cfb6bd4/190295806675.jpg/600x600bb.jpg",
+   "itunes_id": 1228741898
+  },
+  {
+   "id": 100,
+   "name": "Bhediya (Original Motion Picture Soundtrack)",
+   "artist_id": 34,
+   "year": 2022,
+   "cover": "https://is1-ssl.mzstatic.com/image/thumb/Music126/v4/29/14/de/2914deba-3fac-4a9a-e493-0efd12bf8c69/840214461774.png/600x600bb.jpg",
+   "itunes_id": 1658237925
+  },
+  {
+   "id": 102,
+   "name": "Justice",
+   "artist_id": 30,
+   "year": 2021,
+   "cover": "https://is1-ssl.mzstatic.com/image/thumb/Music115/v4/e0/92/da/e092da2d-9f6d-11dc-7843-2021e95a2b61/21UMGIM17518.rgb.jpg/600x600bb.jpg",
+   "itunes_id": 1556169567
+  },
+  {
+   "id": 103,
+   "name": "Four You",
+   "artist_id": 8,
+   "year": 2023,
+   "cover": "https://is1-ssl.mzstatic.com/image/thumb/Music221/v4/fc/bc/64/fcbc6417-8a88-7b5e-4490-8f53e537ffb0/859770181552_cover.jpg/600x600bb.jpg",
+   "itunes_id": 1859550623
+  },
+  {
+   "id": 104,
+   "name": "Uptown Special",
+   "artist_id": 21,
+   "year": 2014,
+   "cover": "https://is1-ssl.mzstatic.com/image/thumb/Music115/v4/7e/30/c5/7e30c572-aa47-5f7b-c6fd-42d50cd2c56d/886444959797.jpg/600x600bb.jpg",
+   "itunes_id": 943946661
+  },
+  {
+   "id": 105,
+   "name": "Future Nostalgia",
+   "artist_id": 16,
+   "year": 2020,
+   "cover": "https://is1-ssl.mzstatic.com/image/thumb/Music116/v4/6c/11/d6/6c11d681-aa3a-d59e-4c2e-f77e181026ab/190295092665.jpg/600x600bb.jpg",
+   "itunes_id": 1538003494
+  },
+  {
+   "id": 106,
+   "name": "Dj Waley Babu (feat. Aastha Gill)",
+   "artist_id": 26,
+   "year": 2015,
+   "cover": "https://is1-ssl.mzstatic.com/image/thumb/Music124/v4/d6/2b/f6/d62bf62b-7637-6522-7b55-1a0ca4f104f7/886445294347.jpg/600x600bb.jpg",
+   "itunes_id": 1006710236
+  },
+  {
+   "id": 107,
+   "name": "Un Verano Sin Ti",
+   "artist_id": 31,
+   "year": 2022,
+   "itunes_id": -99
+  },
+  {
+   "id": 108,
+   "name": "El Último Tour Del Mundo",
+   "artist_id": 31,
+   "year": 2020,
+   "itunes_id": -100
+  }
+ ],
+ "songs": [
+  {
+   "id": 1,
+   "name": "TUM HI HO",
+   "artist_id": 1,
+   "duration": 262,
+   "album_id": 1,
+   "track_no": 1,
+   "audio_file": "https://audio-ssl.itunes.apple.com/itunes-assets/AudioPreview211/v4/3a/8c/9b/3a8c9b0b-2def-750a-f615-1555bf941edf/mzaf_17229496441442805917.plus.aac.p.m4a",
+   "youtube_id": "Umqb9KENgmk",
+   "yt_views": 507333670,
+   "genre_id": 2
+  },
+  {
+   "id": 2,
+   "name": "KESARIYA",
+   "artist_id": 1,
+   "duration": 268,
+   "album_id": 2,
+   "track_no": 1,
+   "audio_file": "https://audio-ssl.itunes.apple.com/itunes-assets/AudioPreview211/v4/38/4c/5c/384c5c8f-3ff8-e457-b2f7-3158ce108649/mzaf_12389299033886433185.plus.aac.p.m4a",
+   "youtube_id": "BddP6PYo2gs",
+   "yt_views": 621156704,
+   "genre_id": 2
+  },
+  {
+   "id": 3,
+   "name": "Shape Of You",
+   "artist_id": 2,
+   "duration": 234,
+   "youtube_id": "JGwWNGJdvx8",
+   "yt_views": 6819580481,
+   "album_id": 88,
+   "track_no": 4,
+   "audio_file": "https://audio-ssl.itunes.apple.com/itunes-assets/AudioPreview221/v4/44/c7/4f/44c74f0d-72dc-6143-d4d0-ba14d661ca0d/mzaf_9566898362556366703.plus.aac.p.m4a",
+   "genre_id": 7
+  },
+  {
+   "id": 4,
+   "name": "PERFECT",
+   "artist_id": 2,
+   "duration": 263,
+   "album_id": 3,
+   "track_no": 5,
+   "audio_file": "https://audio-ssl.itunes.apple.com/itunes-assets/AudioPreview221/v4/9e/bf/41/9ebf4149-44e5-09d0-85f4-cd54784c26f3/mzaf_2777415777264952516.plus.aac.p.m4a",
+   "youtube_id": "CWG-GDfejmY",
+   "yt_views": 1684418,
+   "genre_id": 7
+  },
+  {
+   "id": 5,
+   "name": "CARDIGAN",
+   "artist_id": 3,
+   "duration": 240,
+   "album_id": 4,
+   "track_no": 2,
+   "audio_file": "https://audio-ssl.itunes.apple.com/itunes-assets/AudioPreview221/v4/00/b3/f2/00b3f2a0-3228-b65f-7189-91eb26f5adf6/mzaf_3535055549125623460.plus.aac.p.m4a",
+   "youtube_id": "zLSUp53y-HQ",
+   "yt_views": 47882086,
+   "genre_id": 1
+  },
+  {
+   "id": 6,
+   "name": "ONE OF THE GIRLS",
+   "artist_id": 4,
+   "duration": 245,
+   "album_id": 5,
+   "track_no": 1,
+   "audio_file": "https://audio-ssl.itunes.apple.com/itunes-assets/AudioPreview221/v4/d4/7c/d4/d47cd44a-5562-c030-091c-8682b5610dfb/mzaf_12298468795818786047.plus.aac.p.m4a",
+   "youtube_id": "f1r0XZLNlGQ",
+   "yt_views": 481922733,
+   "genre_id": 7
+  },
+  {
+   "id": 7,
+   "name": "REPTILIA",
+   "artist_id": 5,
+   "duration": 220,
+   "album_id": 6,
+   "track_no": 2,
+   "audio_file": "https://audio-ssl.itunes.apple.com/itunes-assets/AudioPreview211/v4/82/1c/f2/821cf232-955e-ace3-b24e-9e944f0d000b/mzaf_13672834633152538860.plus.aac.p.m4a",
+   "youtube_id": "b8-tXG8KrWs",
+   "yt_views": 257023943,
+   "genre_id": 1
+  },
+  {
+   "id": 8,
+   "name": "BAD GUY",
+   "artist_id": 6,
+   "duration": 194,
+   "album_id": 7,
+   "track_no": 2,
+   "audio_file": "https://audio-ssl.itunes.apple.com/itunes-assets/AudioPreview211/v4/c3/87/1f/c3871f7e-3260-d615-1c66-5fdca2c3a48f/mzaf_10721331211699880949.plus.aac.p.m4a",
+   "youtube_id": "DyDfgMOUjCI",
+   "yt_views": 1358510284,
+   "genre_id": 1
+  },
+  {
+   "id": 9,
+   "name": "52 Bars",
+   "artist_id": 8,
+   "duration": 214,
+   "album_id": 103,
+   "track_no": 1,
+   "audio_file": "https://audio-ssl.itunes.apple.com/itunes-assets/AudioPreview221/v4/52/c9/1c/52c91c69-352d-cb4e-3706-265dc01067d0/mzaf_17387125942915601585.plus.aac.p.m4a",
+   "youtube_id": "4DfVxVeqk2o",
+   "yt_views": 246443032,
+   "genre_id": 8
+  },
+  {
+   "id": 10,
+   "name": "KUN FAYA KUN",
+   "artist_id": 7,
+   "duration": 471,
+   "album_id": 8,
+   "track_no": 4,
+   "audio_file": "https://audio-ssl.itunes.apple.com/itunes-assets/AudioPreview221/v4/ce/72/5e/ce725e63-6977-b281-3766-fff46d6e0c07/mzaf_7464998292185183397.plus.aac.p.m4a",
+   "youtube_id": "IdByOJh71Ik",
+   "yt_views": 7532243,
+   "genre_id": 2
+  },
+  {
+   "id": 11,
+   "name": "Runaway",
+   "artist_id": 9,
+   "duration": 548,
+   "album_id": 9,
+   "track_no": 9,
+   "audio_file": "https://audio-ssl.itunes.apple.com/itunes-assets/AudioPreview211/v4/bc/dc/95/bcdc957a-6823-082c-0a9b-2be3ef754972/mzaf_11124816692667140659.plus.aac.p.m4a",
+   "genre_id": 3
+  },
+  {
+   "id": 12,
+   "name": "CHANNA MEREYA",
+   "artist_id": 1,
+   "duration": 289,
+   "album_id": 10,
+   "track_no": 3,
+   "audio_file": "https://audio-ssl.itunes.apple.com/itunes-assets/AudioPreview211/v4/d5/f9/98/d5f998a7-0090-ee2d-03f8-557ad6c5bf65/mzaf_14251357991592637728.plus.aac.p.m4a",
+   "youtube_id": "qZX_AylI9VQ",
+   "yt_views": 4200020,
+   "genre_id": 2
+  },
+  {
+   "id": 13,
+   "name": "AGAR TUM SAATH HO",
+   "artist_id": 1,
+   "duration": 341,
+   "album_id": 11,
+   "track_no": 3,
+   "audio_file": "https://audio-ssl.itunes.apple.com/itunes-assets/AudioPreview221/v4/75/a8/7d/75a87dcc-5b69-795d-7dcc-27d1c728f31f/mzaf_18055325784732588932.plus.aac.p.m4a",
+   "youtube_id": "sK7riqg2mr4",
+   "yt_views": 458626289,
+   "genre_id": 2
+  },
+  {
+   "id": 14,
+   "name": "ILAHI",
+   "artist_id": 1,
+   "duration": 229,
+   "album_id": 12,
+   "track_no": 3,
+   "audio_file": "https://audio-ssl.itunes.apple.com/itunes-assets/AudioPreview211/v4/75/27/64/75276455-6751-e9d7-1187-b863a2ffefbc/mzaf_4313837125483855343.plus.aac.p.m4a",
+   "youtube_id": "6uHPT_zXdx4",
+   "yt_views": 797304,
+   "genre_id": 2
+  },
+  {
+   "id": 15,
+   "name": "PHIR LE AYA DIL",
+   "artist_id": 1,
+   "duration": 306,
+   "album_id": 13,
+   "track_no": 4,
+   "audio_file": "https://audio-ssl.itunes.apple.com/itunes-assets/AudioPreview221/v4/7f/f5/d8/7ff5d850-871d-6621-2b74-3a772a6eec89/mzaf_52696194311988270.plus.aac.p.m4a",
+   "youtube_id": "Z93rAu25KqI",
+   "yt_views": 4866592,
+   "genre_id": 2
+  },
+  {
+   "id": 16,
+   "name": "THINKING OUT LOUD",
+   "artist_id": 2,
+   "duration": 282,
+   "album_id": 14,
+   "track_no": 11,
+   "audio_file": "https://audio-ssl.itunes.apple.com/itunes-assets/AudioPreview221/v4/78/a5/f2/78a5f25e-ad1b-718d-82ad-b82e676c1855/mzaf_6133970271589343093.plus.aac.p.m4a",
+   "youtube_id": "XMPgVZtADtQ",
+   "yt_views": 21311233,
+   "genre_id": 7
+  },
+  {
+   "id": 17,
+   "name": "PHOTOGRAPH",
+   "artist_id": 2,
+   "duration": 259,
+   "album_id": 14,
+   "track_no": 6,
+   "audio_file": "https://audio-ssl.itunes.apple.com/itunes-assets/AudioPreview221/v4/11/4f/6a/114f6ad0-165c-1e3c-8fbd-df4707d7ae26/mzaf_12480083080052535279.plus.aac.p.m4a",
+   "youtube_id": "KKQl-pIRQMY",
+   "yt_views": 87602144,
+   "genre_id": 7
+  },
+  {
+   "id": 18,
+   "name": "BAD HABITS",
+   "artist_id": 2,
+   "duration": 231,
+   "album_id": 15,
+   "track_no": 4,
+   "audio_file": "https://audio-ssl.itunes.apple.com/itunes-assets/AudioPreview211/v4/25/33/48/253348ea-6ce1-888c-cce7-458809b4eb1d/mzaf_12920733111591747364.plus.aac.p.m4a",
+   "youtube_id": "IYovRG4nOZU",
+   "yt_views": 38217,
+   "genre_id": 7
+  },
+  {
+   "id": 19,
+   "name": "ANTI-HERO",
+   "artist_id": 3,
+   "duration": 201,
+   "album_id": 16,
+   "track_no": 3,
+   "audio_file": "https://audio-ssl.itunes.apple.com/itunes-assets/AudioPreview221/v4/26/d0/d4/26d0d467-254d-1f63-2422-067463b5a362/mzaf_3728111332541259783.plus.aac.p.m4a",
+   "youtube_id": "XqN2qFvY64U",
+   "yt_views": 50306654,
+   "genre_id": 7
+  },
+  {
+   "id": 20,
+   "name": "BLANK SPACE",
+   "artist_id": 3,
+   "duration": 232,
+   "album_id": 17,
+   "track_no": 2,
+   "audio_file": "https://audio-ssl.itunes.apple.com/itunes-assets/AudioPreview221/v4/97/b4/f6/97b4f65f-f334-771c-a4f5-5e7b9b42634f/mzaf_17056874752218225925.plus.aac.p.m4a",
+   "youtube_id": "UmZeuJ6Cklo",
+   "yt_views": 3090,
+   "genre_id": 7
+  },
+  {
+   "id": 21,
+   "name": "CRUEL SUMMER",
+   "artist_id": 3,
+   "duration": 178,
+   "album_id": 18,
+   "track_no": 2,
+   "audio_file": "https://audio-ssl.itunes.apple.com/itunes-assets/AudioPreview221/v4/44/af/81/44af8168-9609-1b85-5048-ada08dceacf3/mzaf_1341699644335558812.plus.aac.p.m4a",
+   "youtube_id": "ic8j13piAhQ",
+   "yt_views": 306991857,
+   "genre_id": 7
+  },
+  {
+   "id": 22,
+   "name": "LOVE STORY",
+   "artist_id": 3,
+   "duration": 235,
+   "album_id": 19,
+   "track_no": 3,
+   "audio_file": "https://audio-ssl.itunes.apple.com/itunes-assets/AudioPreview211/v4/44/8a/a4/448aa432-42ae-8075-fe00-5f2deffe9896/mzaf_13232029737890307916.plus.aac.p.m4a",
+   "youtube_id": "8xg3vE8Ie_E",
+   "yt_views": 832668575,
+   "genre_id": 7
+  },
+  {
+   "id": 23,
+   "name": "BLINDING LIGHTS",
+   "artist_id": 4,
+   "duration": 200,
+   "album_id": 20,
+   "track_no": 9,
+   "audio_file": "https://audio-ssl.itunes.apple.com/itunes-assets/AudioPreview211/v4/19/d6/60/19d660ff-e3a9-8377-15a3-ce4b28e89cac/mzaf_18422426156481158187.plus.aac.p.m4a",
+   "youtube_id": "fHI8X4OXluQ",
+   "yt_views": 881279721,
+   "genre_id": 9
+  },
+  {
+   "id": 24,
+   "name": "STARBOY",
+   "artist_id": 4,
+   "duration": 230,
+   "album_id": 97,
+   "track_no": 6,
+   "audio_file": "https://audio-ssl.itunes.apple.com/itunes-assets/AudioPreview211/v4/8a/41/15/8a41159d-39ea-c272-f68d-70ee068ff576/mzaf_12805400252257971934.plus.aac.p.m4a",
+   "youtube_id": "Rif-RTvmmss",
+   "yt_views": 94128315,
+   "genre_id": 9
+  },
+  {
+   "id": 25,
+   "name": "SAVE YOUR TEARS",
+   "artist_id": 4,
+   "duration": 216,
+   "album_id": 98,
+   "track_no": 1,
+   "audio_file": "https://audio-ssl.itunes.apple.com/itunes-assets/AudioPreview211/v4/78/99/ae/7899aee3-3d13-af49-56ab-4d0bc86a8620/mzaf_12088474082104502705.plus.aac.p.m4a",
+   "youtube_id": "u6lihZAcy4s",
+   "yt_views": 126219117,
+   "genre_id": 9
+  },
+  {
+   "id": 26,
+   "name": "DIE FOR YOU",
+   "artist_id": 4,
+   "duration": 260,
+   "album_id": 97,
+   "track_no": 12,
+   "audio_file": "https://audio-ssl.itunes.apple.com/itunes-assets/AudioPreview221/v4/04/49/a8/0449a8eb-8527-5c9d-946c-0c353eea3b6c/mzaf_4088813702762519863.plus.aac.p.m4a",
+   "youtube_id": "2AH5l-vrY9Q",
+   "yt_views": 27181763,
+   "genre_id": 9
+  },
+  {
+   "id": 27,
+   "name": "LAST NITE",
+   "artist_id": 5,
+   "duration": 193,
+   "album_id": 23,
+   "track_no": 7,
+   "audio_file": "https://audio-ssl.itunes.apple.com/itunes-assets/AudioPreview211/v4/69/c7/30/69c73043-f9dd-0c63-23cd-bfab274520ee/mzaf_5834786258891852942.plus.aac.p.m4a",
+   "youtube_id": "TOypSnKFHrE",
+   "yt_views": 141752465,
+   "genre_id": 1
+  },
+  {
+   "id": 28,
+   "name": "SOMEDAY",
+   "artist_id": 5,
+   "duration": 183,
+   "album_id": 23,
+   "track_no": 5,
+   "audio_file": "https://audio-ssl.itunes.apple.com/itunes-assets/AudioPreview211/v4/9a/d6/c6/9ad6c624-bbf7-94d3-de3f-260540df9e57/mzaf_18158070610569064058.plus.aac.p.m4a",
+   "youtube_id": "knU9gRUWCno",
+   "yt_views": 105574939,
+   "genre_id": 1
+  },
+  {
+   "id": 29,
+   "name": "THE ADULTS ARE TALKING",
+   "artist_id": 5,
+   "duration": 309,
+   "album_id": 24,
+   "track_no": 1,
+   "audio_file": "https://audio-ssl.itunes.apple.com/itunes-assets/AudioPreview221/v4/a7/16/58/a71658f6-5a7b-4283-582a-43d8a4ee823c/mzaf_8156273841444436305.plus.aac.p.m4a",
+   "youtube_id": "o4qsjmLxhow",
+   "yt_views": 80807785,
+   "genre_id": 1
+  },
+  {
+   "id": 30,
+   "name": "BIRDS OF A FEATHER",
+   "artist_id": 6,
+   "duration": 210,
+   "album_id": 25,
+   "track_no": 4,
+   "audio_file": "https://audio-ssl.itunes.apple.com/itunes-assets/AudioPreview211/v4/34/31/d3/3431d34e-847f-5d66-df83-0bce688d997e/mzaf_18106743962423782018.plus.aac.p.m4a",
+   "youtube_id": "V9PVRfjEBTI",
+   "yt_views": 968710657,
+   "genre_id": 1
+  },
+  {
+   "id": 31,
+   "name": "LUNCH",
+   "artist_id": 6,
+   "duration": 180,
+   "album_id": 25,
+   "track_no": 2,
+   "audio_file": "https://audio-ssl.itunes.apple.com/itunes-assets/AudioPreview211/v4/9d/3e/43/9d3e43aa-682a-7979-8547-d339956c409b/mzaf_710286407585135494.plus.aac.p.m4a",
+   "youtube_id": "jsptjaAef7Q",
+   "yt_views": 11554413,
+   "genre_id": 1
+  },
+  {
+   "id": 32,
+   "name": "OCEAN EYES",
+   "artist_id": 6,
+   "duration": 200,
+   "album_id": 96,
+   "track_no": 3,
+   "audio_file": "https://audio-ssl.itunes.apple.com/itunes-assets/AudioPreview211/v4/8c/ad/cf/8cadcfe9-cd23-1118-661b-9672d590708c/mzaf_11533113803515788197.plus.aac.p.m4a",
+   "youtube_id": "d--DyK0wtYo",
+   "yt_views": 2971304,
+   "genre_id": 1
+  },
+  {
+   "id": 33,
+   "name": "JAI HO",
+   "artist_id": 7,
+   "duration": 319,
+   "album_id": 27,
+   "track_no": 13,
+   "audio_file": "https://audio-ssl.itunes.apple.com/itunes-assets/AudioPreview125/v4/c1/c7/8d/c1c78de1-aa35-2257-ac5f-958f3bc33235/mzaf_18006147976813345196.plus.aac.p.m4a",
+   "youtube_id": "xwwAVRyNmgQ",
+   "yt_views": 156336663,
+   "genre_id": 2
+  },
+  {
+   "id": 34,
+   "name": "CHAIYYA CHAIYYA",
+   "artist_id": 7,
+   "duration": 407,
+   "youtube_id": "7VU-0ZSACsM",
+   "yt_views": 1135523,
+   "album_id": 28,
+   "track_no": 1,
+   "audio_file": "https://audio-ssl.itunes.apple.com/itunes-assets/AudioPreview211/v4/81/6c/e7/816ce721-3a37-0e57-3aa7-c3e180c4b38c/mzaf_10595670915474775723.plus.aac.p.m4a",
+   "genre_id": 2
+  },
+  {
+   "id": 35,
+   "name": "DIL SE RE",
+   "artist_id": 7,
+   "duration": 406,
+   "album_id": 28,
+   "track_no": 3,
+   "audio_file": "https://audio-ssl.itunes.apple.com/itunes-assets/AudioPreview221/v4/ea/65/7f/ea657f6b-03f3-1d67-5706-dff03e6444cd/mzaf_11102831130293522139.plus.aac.p.m4a",
+   "youtube_id": "4dY7aUhLGnE",
+   "yt_views": 1483515,
+   "genre_id": 2
+  },
+  {
+   "id": 36,
+   "name": "SOFTLY",
+   "artist_id": 8,
+   "duration": 155,
+   "album_id": 29,
+   "track_no": 7,
+   "audio_file": "https://audio-ssl.itunes.apple.com/itunes-assets/AudioPreview211/v4/5f/6f/01/5f6f0130-6567-22d4-bc1a-5ccb359c3fac/mzaf_5497113703334703756.plus.aac.p.m4a",
+   "youtube_id": "cWMxCE2HTag",
+   "yt_views": 503280719,
+   "genre_id": 4
+  },
+  {
+   "id": 37,
+   "name": "TAUBA TAUBA",
+   "artist_id": 8,
+   "duration": 207,
+   "album_id": 30,
+   "track_no": 1,
+   "audio_file": "https://audio-ssl.itunes.apple.com/itunes-assets/AudioPreview221/v4/34/8d/63/348d6342-2c35-bf31-8131-2c8b3cfe3c09/mzaf_15374551219149804677.plus.aac.p.m4a",
+   "youtube_id": "LK7-_dgAVQE",
+   "yt_views": 605863126,
+   "genre_id": 2
+  },
+  {
+   "id": 38,
+   "name": "WINNING SPEECH",
+   "artist_id": 8,
+   "duration": 227,
+   "album_id": 31,
+   "track_no": 1,
+   "audio_file": "https://audio-ssl.itunes.apple.com/itunes-assets/AudioPreview221/v4/e3/ae/b6/e3aeb64f-cadd-5830-c39f-6af51cd91670/mzaf_6001527501800958065.plus.aac.p.m4a",
+   "youtube_id": "vsWxs1tuwDk",
+   "yt_views": 296683010,
+   "genre_id": 7
+  },
+  {
+   "id": 39,
+   "name": "STRONGER",
+   "artist_id": 9,
+   "duration": 312,
+   "album_id": 32,
+   "track_no": 3,
+   "audio_file": "https://audio-ssl.itunes.apple.com/itunes-assets/AudioPreview221/v4/9e/cc/69/9ecc6918-a8dc-354f-909f-ccc20a0a7a33/mzaf_7863921970418240507.plus.aac.p.m4a",
+   "youtube_id": "3mwiO5st-us",
+   "yt_views": 31711082,
+   "genre_id": 3
+  },
+  {
+   "id": 40,
+   "name": "HEARTLESS",
+   "artist_id": 9,
+   "duration": 211,
+   "album_id": 33,
+   "track_no": 3,
+   "audio_file": "https://audio-ssl.itunes.apple.com/itunes-assets/AudioPreview211/v4/c3/2e/bb/c32ebbd5-9ed4-659e-161f-41e79ce1a0ad/mzaf_17099620641848520890.plus.aac.p.m4a",
+   "youtube_id": "xheuZhFEuDA",
+   "yt_views": 2643384,
+   "genre_id": 3
+  },
+  {
+   "id": 41,
+   "name": "FLASHING LIGHTS",
+   "artist_id": 9,
+   "duration": 237,
+   "album_id": 32,
+   "track_no": 9,
+   "audio_file": "https://audio-ssl.itunes.apple.com/itunes-assets/AudioPreview221/v4/4c/be/8e/4cbe8e05-1130-8697-6775-8e52408e857a/mzaf_10845907730040426322.plus.aac.p.m4a",
+   "youtube_id": "ZAz3rnLGthg",
+   "yt_views": 149220645,
+   "genre_id": 3
+  },
+  {
+   "id": 42,
+   "name": "BADTAMEEZ DIL",
+   "artist_id": 10,
+   "duration": 253,
+   "album_id": 12,
+   "track_no": 1,
+   "audio_file": "https://audio-ssl.itunes.apple.com/itunes-assets/AudioPreview211/v4/88/e2/af/88e2af36-3b58-3f34-32c3-d94d3086c8d5/mzaf_15476348080733865142.plus.aac.p.m4a",
+   "youtube_id": "II2EO3Nw4m0",
+   "yt_views": 558534131,
+   "genre_id": 2
+  },
+  {
+   "id": 43,
+   "name": "KABIRA",
+   "artist_id": 10,
+   "duration": 270,
+   "album_id": 12,
+   "track_no": 8,
+   "audio_file": "https://audio-ssl.itunes.apple.com/itunes-assets/AudioPreview211/v4/21/58/5a/21585ab6-e922-7ecf-c5a7-485034d15ccd/mzaf_14190128101415650266.plus.aac.p.m4a",
+   "youtube_id": "jHNNMj5bNQw",
+   "yt_views": 628485093,
+   "genre_id": 2
+  },
+  {
+   "id": 44,
+   "name": "TERE VASTE",
+   "artist_id": 34,
+   "duration": 189,
+   "youtube_id": "JHqoWfVz7wc",
+   "yt_views": 408937,
+   "album_id": 90,
+   "track_no": 1,
+   "audio_file": "https://audio-ssl.itunes.apple.com/itunes-assets/AudioPreview221/v4/a6/b1/db/a6b1db3b-7353-f705-acd5-ca1d19f5fbba/mzaf_1179784728000321890.plus.aac.p.m4a",
+   "genre_id": 2
+  },
+  {
+   "id": 45,
+   "name": "TERI ORE",
+   "artist_id": 11,
+   "duration": 340,
+   "album_id": 34,
+   "track_no": 4,
+   "audio_file": "https://audio-ssl.itunes.apple.com/itunes-assets/AudioPreview211/v4/72/1e/13/721e13a2-7ea0-1dfb-7d9c-c5bbcf1f4df4/mzaf_14014711574677331364.plus.aac.p.m4a",
+   "youtube_id": "CWfCp96-yck",
+   "yt_views": 212794340,
+   "genre_id": 2
+  },
+  {
+   "id": 46,
+   "name": "SUN RAHA HAI",
+   "artist_id": 11,
+   "duration": 315,
+   "youtube_id": "hm0Gca2q0eE",
+   "yt_views": 10799975,
+   "album_id": 1,
+   "audio_file": "https://audio-ssl.itunes.apple.com/itunes-assets/AudioPreview125/v4/7c/78/d0/7c78d0b8-157d-2d4b-0091-ef2f69041902/mzaf_9739293621051840553.plus.aac.p.m4a",
+   "genre_id": 2
+  },
+  {
+   "id": 47,
+   "name": "BORN TO SHINE",
+   "artist_id": 12,
+   "duration": 213,
+   "album_id": 35,
+   "track_no": 16,
+   "audio_file": "https://audio-ssl.itunes.apple.com/itunes-assets/AudioPreview221/v4/38/12/41/38124195-4bd9-1fc7-fe40-f793ee38d163/mzaf_14837378210736189248.plus.aac.p.m4a",
+   "youtube_id": "dCmp56tSSmA",
+   "yt_views": 548977620,
+   "genre_id": 4
+  },
+  {
+   "id": 48,
+   "name": "LOVER",
+   "artist_id": 12,
+   "duration": 190,
+   "album_id": 36,
+   "track_no": 6,
+   "audio_file": "https://audio-ssl.itunes.apple.com/itunes-assets/AudioPreview211/v4/38/d5/7a/38d57a99-39fc-e901-7c45-fa6260ec83c1/mzaf_8083696285926392389.plus.aac.p.m4a",
+   "youtube_id": "aoIhamvZKdQ",
+   "yt_views": 596563,
+   "genre_id": 4
+  },
+  {
+   "id": 49,
+   "name": "G.O.A.T.",
+   "artist_id": 12,
+   "duration": 224,
+   "album_id": 35,
+   "track_no": 2,
+   "audio_file": "https://audio-ssl.itunes.apple.com/itunes-assets/AudioPreview221/v4/ba/5c/57/ba5c5769-536b-1884-dfbf-5930cab13332/mzaf_7745269360294572986.plus.aac.p.m4a",
+   "youtube_id": "cl0a3i2wFcc",
+   "yt_views": 380799065,
+   "genre_id": 4
+  },
+  {
+   "id": 50,
+   "name": "EXCUSES",
+   "artist_id": 13,
+   "duration": 176,
+   "album_id": 37,
+   "track_no": 1,
+   "audio_file": "https://audio-ssl.itunes.apple.com/itunes-assets/AudioPreview221/v4/e8/84/c8/e884c82f-7136-54d8-6754-6b45c6968f29/mzaf_11726474689882106813.plus.aac.p.m4a",
+   "youtube_id": "38Hc9vK5OF4",
+   "yt_views": 387002,
+   "genre_id": 8
+  },
+  {
+   "id": 51,
+   "name": "BROWN MUNDE",
+   "artist_id": 13,
+   "duration": 254,
+   "album_id": 38,
+   "track_no": 1,
+   "audio_file": "https://audio-ssl.itunes.apple.com/itunes-assets/AudioPreview211/v4/97/74/69/977469be-a9d5-35a7-80ad-ebe12a799ccc/mzaf_804867738726203367.plus.aac.p.m4a",
+   "youtube_id": "VNs_cCtdbPc",
+   "yt_views": 786641711,
+   "genre_id": 3
+  },
+  {
+   "id": 52,
+   "name": "WITH YOU",
+   "artist_id": 13,
+   "duration": 155,
+   "album_id": 39,
+   "track_no": 1,
+   "audio_file": "https://audio-ssl.itunes.apple.com/itunes-assets/AudioPreview211/v4/ff/82/5a/ff825a62-0478-4166-34a7-fe1b4aa1aad9/mzaf_13829495794614683801.plus.aac.p.m4a",
+   "youtube_id": "fe9udc210tM",
+   "yt_views": 9276419,
+   "genre_id": 8
+  },
+  {
+   "id": 53,
+   "name": "CHALEYA",
+   "artist_id": 14,
+   "duration": 200,
+   "album_id": 40,
+   "track_no": 2,
+   "audio_file": "https://audio-ssl.itunes.apple.com/itunes-assets/AudioPreview211/v4/76/05/d9/7605d905-f631-517d-df7f-e162affcd414/mzaf_9976541859961700749.plus.aac.p.m4a",
+   "youtube_id": "VAdGW7QDJiU",
+   "yt_views": 670286738,
+   "genre_id": 2
+  },
+  {
+   "id": 54,
+   "name": "ARABIC KUTHU",
+   "artist_id": 14,
+   "duration": 280,
+   "album_id": 41,
+   "track_no": 1,
+   "audio_file": "https://audio-ssl.itunes.apple.com/itunes-assets/AudioPreview211/v4/58/ac/9a/58ac9a48-9e3e-15c9-5085-3a13a6187992/mzaf_12322264242631159198.plus.aac.p.m4a",
+   "youtube_id": "8FAUEv_E_xQ",
+   "yt_views": 547842327,
+   "genre_id": 10
+  },
+  {
+   "id": 55,
+   "name": "HUKUM",
+   "artist_id": 14,
+   "duration": 208,
+   "album_id": 42,
+   "track_no": 1,
+   "audio_file": "https://audio-ssl.itunes.apple.com/itunes-assets/AudioPreview126/v4/cd/19/24/cd19248b-e233-adf8-2732-8fa16e6846df/mzaf_6787405242037054655.plus.aac.p.m4a",
+   "youtube_id": "1F3hm6MfR1k",
+   "yt_views": 212854094,
+   "genre_id": 10
+  },
+  {
+   "id": 56,
+   "name": "PEHLI NAZAR MEIN",
+   "artist_id": 15,
+   "duration": 313,
+   "album_id": 43,
+   "track_no": 7,
+   "audio_file": "https://audio-ssl.itunes.apple.com/itunes-assets/AudioPreview211/v4/0d/db/cf/0ddbcf31-22d7-088e-c71f-1dd88a3dd8a2/mzaf_16563349538675654632.plus.aac.p.m4a",
+   "youtube_id": "BadBAMnPX0I",
+   "yt_views": 228421869,
+   "genre_id": 2
+  },
+  {
+   "id": 57,
+   "name": "TERE LIYE",
+   "artist_id": 15,
+   "duration": 280,
+   "album_id": 44,
+   "track_no": 13,
+   "audio_file": "https://audio-ssl.itunes.apple.com/itunes-assets/AudioPreview221/v4/db/b4/a1/dbb4a1a6-d51b-2816-a2cc-7015f92fd2c4/mzaf_747489561941178244.plus.aac.p.m4a",
+   "youtube_id": "rs5gAjNytAo",
+   "yt_views": 74458879,
+   "genre_id": 2
+  },
+  {
+   "id": 58,
+   "name": "JEENE LAGA HOON",
+   "artist_id": 15,
+   "duration": 237,
+   "album_id": 45,
+   "track_no": 2,
+   "audio_file": "https://audio-ssl.itunes.apple.com/itunes-assets/AudioPreview211/v4/6c/42/27/6c42274a-832c-9c1b-b955-5328aa0e91b6/mzaf_14885254077776408990.plus.aac.p.m4a",
+   "youtube_id": "pkzOBl1p7y4",
+   "yt_views": 45289649,
+   "genre_id": 2
+  },
+  {
+   "id": 59,
+   "name": "LEVITATING",
+   "artist_id": 16,
+   "duration": 204,
+   "album_id": 105,
+   "track_no": 5,
+   "audio_file": "https://audio-ssl.itunes.apple.com/itunes-assets/AudioPreview211/v4/59/dc/4d/59dc4dda-93ff-8f1c-c536-f005f6ea6af5/mzaf_3066686759813252385.plus.aac.p.m4a",
+   "youtube_id": "TUVcZfQe-Kw",
+   "yt_views": 1166874564,
+   "genre_id": 7
+  },
+  {
+   "id": 60,
+   "name": "NEW RULES",
+   "artist_id": 16,
+   "duration": 213,
+   "album_id": 99,
+   "track_no": 1,
+   "audio_file": "https://audio-ssl.itunes.apple.com/itunes-assets/AudioPreview125/v4/9a/95/18/9a951818-7eed-c60a-b38e-df58a3d2f252/mzaf_2545984454267239146.plus.aac.p.m4a",
+   "youtube_id": "k2qgadSvNyU",
+   "yt_views": 3335660436,
+   "genre_id": 7
+  },
+  {
+   "id": 61,
+   "name": "HOUDINI",
+   "artist_id": 16,
+   "duration": 186,
+   "album_id": 48,
+   "track_no": 1,
+   "audio_file": "https://audio-ssl.itunes.apple.com/itunes-assets/AudioPreview221/v4/2c/da/b5/2cdab5c6-04a8-5231-c697-00101e876479/mzaf_5586859405346659517.plus.aac.p.m4a",
+   "youtube_id": "suAR1PYFNYA",
+   "yt_views": 266784313,
+   "genre_id": 7
+  },
+  {
+   "id": 62,
+   "name": "YELLOW",
+   "artist_id": 17,
+   "duration": 269,
+   "album_id": 49,
+   "track_no": 5,
+   "audio_file": "https://audio-ssl.itunes.apple.com/itunes-assets/AudioPreview221/v4/66/f3/1a/66f31a76-a6ed-cb4c-f353-23310a7ae9a8/mzaf_10593596652344378873.plus.aac.p.m4a",
+   "youtube_id": "yKNxeF4KMsY",
+   "yt_views": 1377302997,
+   "genre_id": 1
+  },
+  {
+   "id": 63,
+   "name": "VIVA LA VIDA",
+   "artist_id": 17,
+   "duration": 241,
+   "album_id": 50,
+   "track_no": 7,
+   "audio_file": "https://audio-ssl.itunes.apple.com/itunes-assets/AudioPreview211/v4/b0/19/60/b0196060-7786-24c0-8c56-8f628fe89f52/mzaf_12479456646715449366.plus.aac.p.m4a",
+   "youtube_id": "dvgZkm1xWPE",
+   "yt_views": 1080955231,
+   "genre_id": 1
+  },
+  {
+   "id": 64,
+   "name": "THE SCIENTIST",
+   "artist_id": 17,
+   "duration": 309,
+   "album_id": 51,
+   "track_no": 4,
+   "audio_file": "https://audio-ssl.itunes.apple.com/itunes-assets/AudioPreview221/v4/ae/a6/27/aea62715-e6ae-9562-ba81-1f969a2ee2fa/mzaf_9054259057357054559.plus.aac.p.m4a",
+   "youtube_id": "RB-RcX5DS5A",
+   "yt_views": 1374051749,
+   "genre_id": 1
+  },
+  {
+   "id": 65,
+   "name": "FIX YOU",
+   "artist_id": 17,
+   "duration": 295,
+   "album_id": 52,
+   "track_no": 4,
+   "audio_file": "https://audio-ssl.itunes.apple.com/itunes-assets/AudioPreview221/v4/e5/42/e3/e542e340-a45c-695e-e0b8-6155e222ebc0/mzaf_14955746616030397665.plus.aac.p.m4a",
+   "youtube_id": "k4V3Mo61fJM",
+   "yt_views": 743421592,
+   "genre_id": 1
+  },
+  {
+   "id": 66,
+   "name": "GOD'S PLAN",
+   "artist_id": 18,
+   "duration": 199,
+   "album_id": 53,
+   "track_no": 5,
+   "audio_file": "https://audio-ssl.itunes.apple.com/itunes-assets/AudioPreview211/v4/c6/4a/be/c64abe74-adb4-cff5-005d-0fab3d72a806/mzaf_10276154697254415719.plus.aac.p.m4a",
+   "youtube_id": "m1a_GqJf02M",
+   "yt_views": 156043425,
+   "genre_id": 3
+  },
+  {
+   "id": 67,
+   "name": "ONE DANCE",
+   "artist_id": 18,
+   "duration": 174,
+   "album_id": 54,
+   "track_no": 12,
+   "audio_file": "https://audio-ssl.itunes.apple.com/itunes-assets/AudioPreview221/v4/cb/ee/e3/cbeee354-21e5-2c44-daeb-bcd95e26fe6a/mzaf_5204581280747289469.plus.aac.p.m4a",
+   "youtube_id": "ki0Ocze98U8",
+   "yt_views": 429514281,
+   "genre_id": 3
+  },
+  {
+   "id": 68,
+   "name": "HOTLINE BLING",
+   "artist_id": 18,
+   "duration": 267,
+   "album_id": 54,
+   "track_no": 20,
+   "audio_file": "https://audio-ssl.itunes.apple.com/itunes-assets/AudioPreview221/v4/73/56/5c/73565c27-16d4-1f8a-ec12-77616e3ca05d/mzaf_9178247693050174633.plus.aac.p.m4a",
+   "youtube_id": "zt6aRKpf9T4",
+   "yt_views": 3183261,
+   "genre_id": 3
+  },
+  {
+   "id": 69,
+   "name": "CIRCLES",
+   "artist_id": 19,
+   "duration": 215,
+   "album_id": 55,
+   "track_no": 6,
+   "audio_file": "https://audio-ssl.itunes.apple.com/itunes-assets/AudioPreview221/v4/e5/ed/85/e5ed85cc-3cc0-4b6a-84b9-a11340e28989/mzaf_9565620202920523797.plus.aac.p.m4a",
+   "youtube_id": "wXhTHyIgQ_U",
+   "yt_views": 820594297,
+   "genre_id": 3
+  },
+  {
+   "id": 70,
+   "name": "SUNFLOWER",
+   "artist_id": 19,
+   "duration": 158,
+   "album_id": 55,
+   "track_no": 7,
+   "audio_file": "https://audio-ssl.itunes.apple.com/itunes-assets/AudioPreview211/v4/58/ba/4f/58ba4fa4-763e-e634-0731-84e2d1550862/mzaf_11449959189824247872.plus.aac.p.m4a",
+   "youtube_id": "ApXoWvfEYVU",
+   "yt_views": 3164269582,
+   "genre_id": 3
+  },
+  {
+   "id": 71,
+   "name": "ROCKSTAR",
+   "artist_id": 19,
+   "duration": 218,
+   "album_id": 57,
+   "track_no": 6,
+   "audio_file": "https://audio-ssl.itunes.apple.com/itunes-assets/AudioPreview211/v4/22/37/94/223794d5-e415-e646-a1c6-a52f178f9c82/mzaf_4256851832513251175.plus.aac.p.m4a",
+   "youtube_id": "UceaB4D0jpo",
+   "yt_views": 1353627595,
+   "genre_id": 3
+  },
+  {
+   "id": 72,
+   "name": "DRIVERS LICENSE",
+   "artist_id": 20,
+   "duration": 242,
+   "album_id": 58,
+   "track_no": 3,
+   "audio_file": "https://audio-ssl.itunes.apple.com/itunes-assets/AudioPreview221/v4/36/62/61/366261be-0996-d73d-de6f-03417867c800/mzaf_8201528327761821135.plus.aac.p.m4a",
+   "youtube_id": "tNJhkrpLGT8",
+   "yt_views": 38934688,
+   "genre_id": 7
+  },
+  {
+   "id": 73,
+   "name": "GOOD 4 U",
+   "artist_id": 20,
+   "duration": 178,
+   "album_id": 58,
+   "track_no": 6,
+   "audio_file": "https://audio-ssl.itunes.apple.com/itunes-assets/AudioPreview211/v4/a4/eb/3a/a4eb3aeb-eb1f-c382-0aec-ff4eafc34e9e/mzaf_238907262667616343.plus.aac.p.m4a",
+   "youtube_id": "o6Tf-xcVB_o",
+   "yt_views": 28876157,
+   "genre_id": 7
+  },
+  {
+   "id": 74,
+   "name": "VAMPIRE",
+   "artist_id": 20,
+   "duration": 220,
+   "album_id": 59,
+   "track_no": 3,
+   "audio_file": "https://audio-ssl.itunes.apple.com/itunes-assets/AudioPreview211/v4/70/2f/a6/702fa6b5-946c-7a8e-2dba-03de25c732d3/mzaf_12764345117177639836.plus.aac.p.m4a",
+   "youtube_id": "RXdABv5O4qc",
+   "yt_views": 2505081,
+   "genre_id": 7
+  },
+  {
+   "id": 75,
+   "name": "UPTOWN FUNK",
+   "artist_id": 21,
+   "duration": 270,
+   "youtube_id": "OPf0YbXqDm0",
+   "yt_views": 5914440957,
+   "album_id": 104,
+   "track_no": 4,
+   "audio_file": "https://audio-ssl.itunes.apple.com/itunes-assets/AudioPreview221/v4/b9/96/2c/b9962c79-3662-235c-e55d-6c4b41457499/mzaf_18075623088273148288.plus.aac.p.m4a",
+   "genre_id": 7
+  },
+  {
+   "id": 76,
+   "name": "LOCKED OUT OF HEAVEN",
+   "artist_id": 21,
+   "duration": 233,
+   "album_id": 60,
+   "track_no": 2,
+   "audio_file": "https://audio-ssl.itunes.apple.com/itunes-assets/AudioPreview221/v4/d5/05/04/d5050434-1278-6b8e-9cd8-6261ea319fd1/mzaf_9746689865251353718.plus.aac.p.m4a",
+   "youtube_id": "e-fA-gBCkj0",
+   "yt_views": 1306654013,
+   "genre_id": 7
+  },
+  {
+   "id": 77,
+   "name": "DIE WITH A SMILE",
+   "artist_id": 21,
+   "duration": 252,
+   "album_id": 61,
+   "track_no": 1,
+   "audio_file": "https://audio-ssl.itunes.apple.com/itunes-assets/AudioPreview211/v4/07/6a/99/076a99ed-b946-431b-6f1f-54fa187ca5bd/mzaf_8102882277995122875.plus.aac.p.m4a",
+   "youtube_id": "kPa7bsKwL-c",
+   "yt_views": 1871600007,
+   "genre_id": 7
+  },
+  {
+   "id": 78,
+   "name": "BELIEVER",
+   "artist_id": 22,
+   "duration": 204,
+   "album_id": 62,
+   "track_no": 4,
+   "audio_file": "https://audio-ssl.itunes.apple.com/itunes-assets/AudioPreview221/v4/c0/3f/36/c03f367a-b66b-fd0a-a54c-30f8250c4410/mzaf_12768434238801682952.plus.aac.p.m4a",
+   "youtube_id": "W0DM5lcj6mw",
+   "yt_views": 725431125,
+   "genre_id": 1
+  },
+  {
+   "id": 79,
+   "name": "THUNDER",
+   "artist_id": 22,
+   "duration": 187,
+   "album_id": 62,
+   "track_no": 10,
+   "audio_file": "https://audio-ssl.itunes.apple.com/itunes-assets/AudioPreview221/v4/78/7d/8b/787d8b89-7b57-d3bc-1f9d-6378fad1b4f5/mzaf_5131352572683029126.plus.aac.p.m4a",
+   "youtube_id": "4AqjqOqNrjw",
+   "yt_views": 76457600,
+   "genre_id": 1
+  },
+  {
+   "id": 80,
+   "name": "DEMONS",
+   "artist_id": 22,
+   "duration": 178,
+   "album_id": 63,
+   "track_no": 4,
+   "audio_file": "https://audio-ssl.itunes.apple.com/itunes-assets/AudioPreview221/v4/fc/d4/e8/fcd4e814-39f4-19e8-f421-c2d269698025/mzaf_1039703479531920971.plus.aac.p.m4a",
+   "youtube_id": "pvrkfb1C4tE",
+   "yt_views": 118471831,
+   "genre_id": 1
+  },
+  {
+   "id": 81,
+   "name": "DO I WANNA KNOW?",
+   "artist_id": 23,
+   "duration": 272,
+   "album_id": 64,
+   "track_no": 1,
+   "audio_file": "https://audio-ssl.itunes.apple.com/itunes-assets/AudioPreview221/v4/89/ae/42/89ae4206-048a-7eae-3eaf-c3abd02914fb/mzaf_15551176804491638370.plus.aac.p.m4a",
+   "youtube_id": "bpOSxM0rNPM",
+   "yt_views": 1908558438,
+   "genre_id": 1
+  },
+  {
+   "id": 82,
+   "name": "505",
+   "artist_id": 23,
+   "duration": 254,
+   "album_id": 65,
+   "track_no": 12,
+   "audio_file": "https://audio-ssl.itunes.apple.com/itunes-assets/AudioPreview221/v4/d1/0d/ab/d10dabc8-cceb-e718-401f-01516b009460/mzaf_13845311225859403599.plus.aac.p.m4a",
+   "youtube_id": "MrmPDUvKyLs",
+   "yt_views": 37739499,
+   "genre_id": 1
+  },
+  {
+   "id": 83,
+   "name": "R U MINE?",
+   "artist_id": 23,
+   "duration": 202,
+   "album_id": 64,
+   "track_no": 2,
+   "audio_file": "https://audio-ssl.itunes.apple.com/itunes-assets/AudioPreview221/v4/a8/e8/49/a8e8497f-6245-746b-3724-56ac533edc14/mzaf_9378693874011671563.plus.aac.p.m4a",
+   "youtube_id": "voH0S0e01vs",
+   "yt_views": 6781719,
+   "genre_id": 1
+  },
+  {
+   "id": 84,
+   "name": "ESPRESSO",
+   "artist_id": 24,
+   "duration": 175,
+   "album_id": 67,
+   "track_no": 3,
+   "audio_file": "https://audio-ssl.itunes.apple.com/itunes-assets/AudioPreview211/v4/e9/4d/02/e94d0230-11ee-ef94-d2cf-a5d547bd73f4/mzaf_554140808559155562.plus.aac.p.m4a",
+   "youtube_id": "eVli-tstM5E",
+   "yt_views": 688539147,
+   "genre_id": 7
+  },
+  {
+   "id": 85,
+   "name": "PLEASE PLEASE PLEASE",
+   "artist_id": 24,
+   "duration": 186,
+   "album_id": 67,
+   "track_no": 2,
+   "audio_file": "https://audio-ssl.itunes.apple.com/itunes-assets/AudioPreview211/v4/97/06/58/97065890-7970-725a-1595-5045d4b110b1/mzaf_7668784443609724903.plus.aac.p.m4a",
+   "youtube_id": "v_HQJDHF5rc",
+   "yt_views": 4114010,
+   "genre_id": 7
+  },
+  {
+   "id": 86,
+   "name": "HUMBLE.",
+   "artist_id": 25,
+   "duration": 177,
+   "album_id": 68,
+   "track_no": 8,
+   "audio_file": "https://audio-ssl.itunes.apple.com/itunes-assets/AudioPreview221/v4/1f/2e/37/1f2e37be-bdd0-d770-6ea4-091011a6aade/mzaf_2360827885900940865.plus.aac.p.m4a",
+   "youtube_id": "tvTRZJ-4EyI",
+   "yt_views": 1123796584,
+   "genre_id": 3
+  },
+  {
+   "id": 87,
+   "name": "NOT LIKE US",
+   "artist_id": 25,
+   "duration": 274,
+   "album_id": 69,
+   "track_no": 1,
+   "audio_file": "https://audio-ssl.itunes.apple.com/itunes-assets/AudioPreview211/v4/2d/e0/e8/2de0e874-cd0b-e9a9-e876-76be13a86662/mzaf_12385336780649591409.plus.aac.p.m4a",
+   "youtube_id": "H58vbez_m4E",
+   "yt_views": 508261062,
+   "genre_id": 3
+  },
+  {
+   "id": 88,
+   "name": "MONEY TREES",
+   "artist_id": 25,
+   "duration": 387,
+   "album_id": 70,
+   "track_no": 5,
+   "audio_file": "https://audio-ssl.itunes.apple.com/itunes-assets/AudioPreview221/v4/c6/34/c3/c634c385-9239-9de1-cc50-9382e4dc158d/mzaf_2549698932550737440.plus.aac.p.m4a",
+   "youtube_id": "Iy-dJwHVX84",
+   "yt_views": 458976572,
+   "genre_id": 3
+  },
+  {
+   "id": 89,
+   "name": "GENDA PHOOL",
+   "artist_id": 26,
+   "duration": 171,
+   "album_id": 71,
+   "track_no": 1,
+   "audio_file": "https://audio-ssl.itunes.apple.com/itunes-assets/AudioPreview211/v4/e8/07/f6/e807f695-524d-fe64-8214-0377dde7a952/mzaf_12171306243399456334.plus.aac.p.m4a",
+   "youtube_id": "SD4Z8dlZPd8",
+   "yt_views": 1084108813,
+   "genre_id": 4
+  },
+  {
+   "id": 90,
+   "name": "DJ WALE BABU",
+   "artist_id": 26,
+   "duration": 169,
+   "album_id": 106,
+   "track_no": 1,
+   "audio_file": "https://audio-ssl.itunes.apple.com/itunes-assets/AudioPreview211/v4/44/38/49/443849bf-1ed7-416a-5384-0df793a9bb0f/mzaf_4915995768338408886.plus.aac.p.m4a",
+   "youtube_id": "OulN7vTDq1I",
+   "yt_views": 618952659,
+   "genre_id": 4
+  },
+  {
+   "id": 91,
+   "name": "SRIVALLI",
+   "artist_id": 27,
+   "duration": 221,
+   "album_id": 73,
+   "track_no": 2,
+   "audio_file": "https://audio-ssl.itunes.apple.com/itunes-assets/AudioPreview211/v4/9b/4a/e3/9b4ae3a2-43ee-dd7b-0474-3b7e914513cf/mzaf_10743675123561433132.plus.aac.p.m4a",
+   "youtube_id": "5IEbR79kBPY",
+   "yt_views": 171099295,
+   "genre_id": 10
+  },
+  {
+   "id": 92,
+   "name": "INKEM INKEM",
+   "artist_id": 27,
+   "duration": 267,
+   "youtube_id": "LPeZOE8ZIHI",
+   "yt_views": 169842673,
+   "album_id": 92,
+   "track_no": 1,
+   "audio_file": "https://audio-ssl.itunes.apple.com/itunes-assets/AudioPreview221/v4/6d/5a/f1/6d5af141-475c-7404-495c-0ef55283457c/mzaf_3028662401385709025.plus.aac.p.m4a",
+   "genre_id": 10
+  },
+  {
+   "id": 93,
+   "name": "SICKO MODE",
+   "artist_id": 28,
+   "duration": 313,
+   "album_id": 74,
+   "track_no": 3,
+   "audio_file": "https://audio-ssl.itunes.apple.com/itunes-assets/AudioPreview211/v4/d3/91/a1/d391a141-256f-726f-9da1-8aa4e42b3236/mzaf_17761183103753218003.plus.aac.p.m4a",
+   "youtube_id": "d-JBBNg8YKs",
+   "yt_views": 319770345,
+   "genre_id": 3
+  },
+  {
+   "id": 94,
+   "name": "GOOSEBUMPS",
+   "artist_id": 28,
+   "duration": 244,
+   "album_id": 75,
+   "track_no": 9,
+   "audio_file": "https://audio-ssl.itunes.apple.com/itunes-assets/AudioPreview211/v4/f0/60/39/f060399b-690f-2e55-7013-5530cd616d95/mzaf_6001308391779304655.plus.aac.p.m4a",
+   "youtube_id": "Dst9gZkq1a8",
+   "yt_views": 1160292669,
+   "genre_id": 3
+  },
+  {
+   "id": 95,
+   "name": "AS IT WAS",
+   "artist_id": 29,
+   "duration": 167,
+   "album_id": 76,
+   "track_no": 4,
+   "audio_file": "https://audio-ssl.itunes.apple.com/itunes-assets/AudioPreview221/v4/67/10/16/67101606-3869-ca44-6c03-e13d6322cb51/mzaf_1135399237022217274.plus.aac.p.m4a",
+   "youtube_id": "H5v3kku4y6Q",
+   "yt_views": 1008039609,
+   "genre_id": 7
+  },
+  {
+   "id": 96,
+   "name": "WATERMELON SUGAR",
+   "artist_id": 29,
+   "duration": 174,
+   "album_id": 77,
+   "track_no": 2,
+   "audio_file": "https://audio-ssl.itunes.apple.com/itunes-assets/AudioPreview211/v4/25/54/81/255481c0-1ef2-c1bc-f3b3-ea2b1419c1f1/mzaf_5289557126888202047.plus.aac.p.m4a",
+   "youtube_id": "dZwffaluIgg",
+   "yt_views": 7119029,
+   "genre_id": 7
+  },
+  {
+   "id": 97,
+   "name": "PEACHES",
+   "artist_id": 30,
+   "duration": 198,
+   "album_id": 102,
+   "track_no": 12,
+   "audio_file": "https://audio-ssl.itunes.apple.com/itunes-assets/AudioPreview221/v4/9d/30/82/9d3082c1-8b05-45a1-9015-3f4248c0aea6/mzaf_17567414281301581433.plus.aac.p.m4a",
+   "youtube_id": "tQ0yjYUFKAE",
+   "yt_views": 890723194,
+   "genre_id": 7
+  },
+  {
+   "id": 98,
+   "name": "LOVE YOURSELF",
+   "artist_id": 30,
+   "duration": 234,
+   "album_id": 79,
+   "track_no": 5,
+   "audio_file": "https://audio-ssl.itunes.apple.com/itunes-assets/AudioPreview211/v4/01/be/0b/01be0b26-ef2b-cfd9-510b-4be06a505dfa/mzaf_13398995414907758170.plus.aac.p.m4a",
+   "youtube_id": "eu6bAOVuxss",
+   "yt_views": 3829005,
+   "genre_id": 7
+  },
+  {
+   "id": 99,
+   "name": "Titi Me Pregunto",
+   "artist_id": 31,
+   "duration": 243,
+   "youtube_id": "qBUKfQRbzuk",
+   "yt_views": 23814707,
+   "album_id": 107,
+   "audio_file": "https://audio-ssl.itunes.apple.com/itunes-assets/AudioPreview221/v4/b3/cd/a2/b3cda27f-382a-ed21-b6b9-2d6d1d4c5bbe/mzaf_15368178672903748165.plus.aac.p.m4a",
+   "genre_id": 6
+  },
+  {
+   "id": 100,
+   "name": "DAKITI",
+   "artist_id": 31,
+   "duration": 203,
+   "youtube_id": "TmKh7lAwnBI",
+   "yt_views": 1802624544,
+   "album_id": 108,
+   "audio_file": "https://audio-ssl.itunes.apple.com/itunes-assets/AudioPreview211/v4/23/26/dd/2326dd0b-f117-306c-8454-be8934ffb402/mzaf_18297346266039659444.plus.aac.p.m4a",
+   "genre_id": 6
+  },
+  {
+   "id": 101,
+   "name": "DYNAMITE",
+   "artist_id": 32,
+   "duration": 199,
+   "album_id": 80,
+   "track_no": 8,
+   "audio_file": "https://audio-ssl.itunes.apple.com/itunes-assets/AudioPreview221/v4/a3/a0/a6/a3a0a6b5-4715-b872-1aff-21e42634d9cd/mzaf_7224423421767640589.plus.aac.p.m4a",
+   "youtube_id": "gdZLi9oWNZg",
+   "yt_views": 2147801830,
+   "genre_id": 5
+  },
+  {
+   "id": 102,
+   "name": "BUTTER",
+   "artist_id": 32,
+   "duration": 165,
+   "album_id": 81,
+   "track_no": 18,
+   "audio_file": "https://audio-ssl.itunes.apple.com/itunes-assets/AudioPreview211/v4/80/c8/46/80c84615-efb7-b538-d818-226cf7803358/mzaf_11498582023380901573.plus.aac.p.m4a",
+   "youtube_id": "WMweEpGlu_U",
+   "yt_views": 1113400401,
+   "genre_id": 5
+  },
+  {
+   "id": 103,
+   "name": "HELLO",
+   "artist_id": 33,
+   "duration": 296,
+   "album_id": 82,
+   "track_no": 1,
+   "audio_file": "https://audio-ssl.itunes.apple.com/itunes-assets/AudioPreview211/v4/10/7e/9d/107e9dc0-c13b-eace-2486-84a3c694b075/mzaf_6267923862748965591.plus.aac.p.m4a",
+   "youtube_id": "T1tl66trXTQ",
+   "yt_views": 2604064,
+   "genre_id": 7
+  },
+  {
+   "id": 104,
+   "name": "SKYFALL",
+   "artist_id": 33,
+   "duration": 286,
+   "album_id": 83,
+   "track_no": 1,
+   "audio_file": "https://audio-ssl.itunes.apple.com/itunes-assets/AudioPreview211/v4/6c/48/0e/6c480edc-89f5-a9cf-b309-63c5237efe92/mzaf_3142604484249449871.plus.aac.p.m4a",
+   "youtube_id": "DeumyOzKqgI",
+   "yt_views": 835419550,
+   "genre_id": 7
+  },
+  {
+   "id": 105,
+   "name": "EASY ON ME",
+   "artist_id": 33,
+   "duration": 225,
+   "album_id": 84,
+   "track_no": 2,
+   "audio_file": "https://audio-ssl.itunes.apple.com/itunes-assets/AudioPreview221/v4/4c/08/30/4c08305e-0556-30a1-d1ba-2f916b56d62c/mzaf_10419822985277809788.plus.aac.p.m4a",
+   "youtube_id": "lQMHoAs6PdY",
+   "yt_views": 17401898,
+   "genre_id": 7
+  },
+  {
+   "id": 106,
+   "name": "AAJ KI RAAT",
+   "artist_id": 34,
+   "duration": 229,
+   "album_id": 85,
+   "track_no": 1,
+   "audio_file": "https://audio-ssl.itunes.apple.com/itunes-assets/AudioPreview221/v4/71/53/54/71535490-31fe-a429-8113-4dbded06dd4d/mzaf_12311178644671562356.plus.aac.p.m4a",
+   "youtube_id": "hxMNYkLN7tI",
+   "yt_views": 1061155448,
+   "genre_id": 2
+  },
+  {
+   "id": 107,
+   "name": "APNA BANA LE",
+   "artist_id": 34,
+   "duration": 262,
+   "album_id": 100,
+   "track_no": 3,
+   "audio_file": "https://audio-ssl.itunes.apple.com/itunes-assets/AudioPreview221/v4/33/09/55/33095570-8b7c-a110-3b6a-a844e0a86b62/mzaf_7583588672882945125.plus.aac.p.m4a",
+   "youtube_id": "u2NAuswnTKs",
+   "yt_views": 127258218,
+   "genre_id": 2
+  },
+  {
+   "id": 108,
+   "name": "DARD-E-DISCO",
+   "artist_id": 35,
+   "duration": 269,
+   "album_id": 87,
+   "track_no": 2,
+   "audio_file": "https://audio-ssl.itunes.apple.com/itunes-assets/AudioPreview211/v4/c9/32/ec/c932ec79-17ad-237f-9a65-e50dbfa278fe/mzaf_6194138917818143375.plus.aac.p.m4a",
+   "youtube_id": "khlR5jM2ZrI",
+   "yt_views": 42889969,
+   "genre_id": 2
+  },
+  {
+   "id": 109,
+   "name": "Besharam Rang",
+   "artist_id": 35,
+   "duration": 258,
+   "album_id": 95,
+   "track_no": 1,
+   "audio_file": "https://audio-ssl.itunes.apple.com/itunes-assets/AudioPreview221/v4/75/0d/54/750d54bf-b68f-789a-cdf6-6648dc0eb3f3/mzaf_716562167943146152.plus.aac.p.m4a",
+   "genre_id": 2
+  }
+ ],
+ "genres": [
+  {
+   "id": 1,
+   "name": "Alternative"
+  },
+  {
+   "id": 2,
+   "name": "Bollywood"
+  },
+  {
+   "id": 3,
+   "name": "Hip-Hop/Rap"
+  },
+  {
+   "id": 4,
+   "name": "Indian Pop"
+  },
+  {
+   "id": 5,
+   "name": "K-Pop"
+  },
+  {
+   "id": 6,
+   "name": "Latin"
+  },
+  {
+   "id": 7,
+   "name": "Pop"
+  },
+  {
+   "id": 8,
+   "name": "Punjabi"
+  },
+  {
+   "id": 9,
+   "name": "R&B/Soul"
+  },
+  {
+   "id": 10,
+   "name": "South Indian"
+  }
+ ]
+}

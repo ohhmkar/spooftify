@@ -1,0 +1,20 @@
+@import "tailwindcss";
+
+@theme inline {
+  --color-base: #000;
+  --color-panel: #121212;
+  --color-raised: #1f1f1f;
+  --color-muted: #b3b3b3;
+  --color-accent: #1ed760;
+  --font-sans: var(--font-figtree);
+}
+
+body {
+  background: var(--color-base);
+  color: #fff;
+  color-scheme: dark;
+}
+
+select option {
+  background: var(--color-raised);
+}
