@@ -17,7 +17,7 @@ Using `brew services` instead? Add `replication: { replSetName: rs0 }` to its `m
 
 Every seeded user logs in with the password `spooftify123` (for example `omkar@gmail.com`). New accounts: `/signup`.
 
-`npm run media` (backend) backfills artist pictures and YouTube ids / view counts; `node build-seed-data.js` rebuilds `seed-data.json` from Deezer, iTunes and Wikipedia.
+`npm run media` (backend) backfills artist pictures and YouTube ids / view counts; `node add-to-catalog.js` adds the artists listed in `artists-to-add.txt` to `seed-data.json` (Deezer, iTunes and Wikipedia; resumable, never changes existing rows apart from filling in `bpm`).
 
 `MONGODB_URI` / `PORT` (backend) and `NEXT_PUBLIC_API_URL` (frontend) override the defaults.
 

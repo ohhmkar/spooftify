@@ -63,7 +63,7 @@ export const views = {
       join("Artist", "artist_id", "_id", "a"),
       join("Album", "album_id", "_id", "al"),
       join("Genre", "genre_id", "_id", "g"),
-      { $project: { _id: 0, song_id: "$_id", song_name: 1, duration: 1, audio_file: 1, album_id: 1, genre_id: 1, genre_name: { $first: "$g.genre_name" }, release_year: { $first: "$al.release_year" }, track_no: 1, album_name: { $first: "$al.album_name" }, album_cover: { $first: "$al.cover" }, plays: { $ifNull: ["$plays", 0] }, yt_views: 1, youtube_id: 1, artist_id: 1, artist_name: { $first: "$a.artist_name" }, country: { $first: "$a.country" } } },
+      { $project: { _id: 0, song_id: "$_id", song_name: 1, duration: 1, audio_file: 1, album_id: 1, genre_id: 1, genre_name: { $first: "$g.genre_name" }, release_year: { $first: "$al.release_year" }, track_no: 1, album_name: { $first: "$al.album_name" }, album_cover: { $first: "$al.cover" }, plays: { $ifNull: ["$plays", 0] }, yt_views: 1, youtube_id: 1, bpm: 1, artist_id: 1, artist_name: { $first: "$a.artist_name" }, country: { $first: "$a.country" } } },
       { $sort: { song_id: 1 } },
     ],
   },

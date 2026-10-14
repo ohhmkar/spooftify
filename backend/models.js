@@ -99,6 +99,7 @@ const songSchema = new Schema(
     plays: { type: Number, default: 0, min: 0 }, // extra vs SQL: kept up to date by the after_listen_insert trigger
     yt_views: { type: Number, min: 0 }, // extra vs SQL: YouTube viewCount, fetched when youtube_id is first looked up
     canvas_id: Schema.Types.ObjectId, // extra vs SQL: looping "Canvas" video, a GridFS file (fs.files._id) — too big for BinData
+    bpm: { type: Number, min: 0 }, // extra vs SQL: tempo from Deezer (missing when Deezer does not know it)
   },
   opts("Songs"),
 );
