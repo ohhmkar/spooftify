@@ -62,11 +62,12 @@ api.get("/search", async (req, res) => {
   const q = { $regex: esc(String(req.query.q ?? "")), $options: "i" };
   const SORTS = { plays: { plays: -1 }, name: { song_name: 1 }, duration: { duration: -1 }, year: { release_year: -1 } };
   const genre = req.query.genre ? { genre_id: +req.query.genre } : {};
+  const n = Math.min(Math.max(+req.query.limit || 0, 0), 500); // ?limit=N raises every cap (the page's "Show more"); default 100 songs, 12 of the rest
   const [songs, artists, albums, playlists] = await Promise.all([
-    db().collection("Song_Details").find({ $or: [{ song_name: q }, { artist_name: q }, { album_name: q }], ...genre }).sort(SORTS[req.query.sort] ?? { song_id: 1 }).limit(100).toArray(),
-    db().collection("Artist_Summary").find({ artist_name: q }).limit(12).toArray(),
-    db().collection("Album_Details").find({ $or: [{ album_name: q }, { artist_name: q }] }).limit(12).toArray(),
-    db().collection("Playlist_Summary").find({ playlist_name: q, is_public: true }).limit(12).toArray(),
+    db().collection("Song_Details").find({ $or: [{ song_name: q }, { artist_name: q }, { album_name: q }], ...genre }).sort(SORTS[req.query.sort] ?? { song_id: 1 }).limit(n || 100).toArray(),
+    db().collection("Artist_Summary").find({ artist_name: q }).limit(n || 12).toArray(),
+    db().collection("Album_Details").find({ $or: [{ album_name: q }, { artist_name: q }] }).limit(n || 12).toArray(),
+    db().collection("Playlist_Summary").find({ playlist_name: q, is_public: true }).limit(n || 12).toArray(),
   ]);
   res.json({ songs, artists, albums, playlists });
 });
@@ -207,6 +208,18 @@ api.delete("/playlists/:id/collaborators/:uid", needUser, tx(async (req, res) =>
   const p = await tables.Playlist.findById(req.params.id);
   if (!p || (p.user_id !== req.user && +req.params.uid !== req.user)) return res.status(403).json({ error: "Not allowed" }); // owner removes anyone, a collaborator can leave
   await tables.Collaborators.deleteOne({ playlist_id: p._id, user_id: +req.params.uid });
+  res.json({ ok: true });
+}));
+// DROP a playlist as ONE transaction: Contains and Collaborators are ON DELETE RESTRICT, so they go first (each song is logged to Removed_Songs
+// by after_contains_delete), then the follows pointing at it, then the playlist. Any failure rolls the whole thing back, nothing half deleted.
+api.delete("/playlists/:id", needUser, tx(async (req, res) => {
+  const p = await tables.Playlist.findById(req.params.id);
+  if (!p) return res.status(404).json({ error: "Not found" });
+  if (p.user_id !== req.user) return res.status(403).json({ error: "Only the owner can delete a playlist" });
+  for (const c of await tables.Contains.find({ playlist_id: p._id }, "_id")) await tables.Contains.findOneAndDelete({ _id: c._id }); // sequential: one session
+  await tables.Collaborators.deleteMany({ playlist_id: p._id });
+  await tables.Follows.deleteMany({ kind: "playlist", target_id: p._id });
+  await tables.Playlist.findOneAndDelete({ _id: p._id });
   res.json({ ok: true });
 }));
 
@@ -414,9 +427,20 @@ api.delete("/:table/:id", tx(async (req, res) => {
   doc ? res.json(doc) : res.status(404).json({ error: "Not found" });
 }));
 
+// what a UNIQUE / PRIMARY KEY violation means for the person who clicked, picked by the columns of the index that fired
+const DUPES = [
+  [["playlist_id", "song_id"], "That song is already in this playlist"], [["user_id", "song_id"], "Already in your Liked Songs"],
+  [["user_id", "kind", "target_id"], "You already follow that"], [["playlist_id", "user_id"], "Already a collaborator on this playlist"],
+  [["email"], "That email is already registered"], [["phone"], "That phone number is already registered"], [["genre_name"], "That genre already exists"],
+];
+const friendly = (err) => {
+  if (err.code === 11000) return DUPES.find(([cols]) => cols.every((c) => c in (err.keyPattern ?? {})))?.[1] ?? `Duplicate key: ${JSON.stringify(err.keyValue)}`;
+  if (err.name === "ValidationError")
+    return Object.values(err.errors).map((e) => e.message.replace(/Path `(\w+)`/g, "$1").replace(/ \(`.*`, length \d+\) is longer than the maximum allowed length \((\d+)\)\./, " must be $1 characters or fewer").replace(/^check_\w+: /, "")).join("; ");
+  return err.message === "playlist is full" ? "This playlist is full (50 songs max)" : err.message;
+};
 app.use((err, req, res, next) => {
-  const msg = err.code === 11000 ? `Duplicate key: ${JSON.stringify(err.keyValue)}` : err.message;
-  res.status(400).json({ error: msg });
+  res.status(400).json({ error: friendly(err) });
 });
 
 // Vercel imports the app; locally we listen

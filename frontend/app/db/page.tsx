@@ -173,7 +173,7 @@ function Transactions({ meta }: { meta: Meta }) {
       </div>
       {err && <p className="rounded bg-red-500/20 p-3 text-sm text-red-300">{err}</p>}
       {res && (
-        <div className="rounded-lg border border-white/10 bg-black/60 p-4 font-mono text-xs leading-relaxed">
+        <div ref={(el) => el?.scrollIntoView({ behavior: "smooth", block: "nearest" })} className="rounded-lg border border-white/10 bg-black/60 p-4 font-mono text-xs leading-relaxed">
           {res.log.map((l, i) => (
             <div key={i} className={/^(START|COMMIT|ROLLBACK$)/.test(l.sql) ? "font-bold" : ""}>
               <span className="text-muted">mongo&gt; </span>{l.sql};
@@ -206,6 +206,7 @@ function Grid({ kind, name, def }: { kind: "table" | "view"; name: string; def?:
   const [filter, setFilter] = useState("");
   const [draft, setDraft] = useState<{ id?: unknown; json: string } | null>(null);
   const [err, setErr] = useState("");
+  const [shown, setShown] = useState(200); // the page is not asked to draw 2000+ rows at once
   const base = kind === "view" ? `/views/${name}` : `/${name}`;
 
   const load = useCallback(() => {
@@ -233,12 +234,12 @@ function Grid({ kind, name, def }: { kind: "table" | "view"; name: string; def?:
       <div className="mb-3 flex flex-wrap items-center gap-2">
         <input
           defaultValue={filter}
-          onKeyDown={(e) => e.key === "Enter" && setFilter(e.currentTarget.value)}
+          onKeyDown={(e) => { if (e.key === "Enter") { setFilter(e.currentTarget.value); setShown(200); } }}
           placeholder="WHERE  e.g. artist_id=1&country=IN  (Enter)"
           aria-label="Filter"
           className="w-80 rounded bg-white/10 px-3 py-2 font-mono text-sm"
         />
-        <span className="text-sm text-muted">{rows.length} rows</span>
+        <span className="text-sm text-muted">{rows.length} rows{rows.length > shown && `, showing ${shown}`}</span>
         {kind === "table" && (
           <button onClick={() => setDraft({ json: template() })} className="ml-auto rounded-full bg-accent px-4 py-2 text-sm font-bold text-black">
             + Insert row
@@ -253,7 +254,7 @@ function Grid({ kind, name, def }: { kind: "table" | "view"; name: string; def?:
       )}
       {err && <p className="mb-3 rounded bg-red-500/20 p-3 text-sm text-red-300">{err}</p>}
       {draft && (
-        <div className="mb-3 rounded bg-raised p-3">
+        <div ref={(el) => el?.scrollIntoView({ block: "nearest" })} className="mb-3 rounded bg-raised p-3">
           <p className="mb-2 text-sm font-bold">{draft.id === undefined ? `INSERT INTO ${name}` : `UPDATE ${name} WHERE _id = ${draft.id}`}</p>
           <textarea value={draft.json} onChange={(e) => setDraft({ ...draft, json: e.target.value })} rows={8} aria-label="Row JSON"
             className="w-full rounded bg-black/40 p-2 font-mono text-xs" />
@@ -268,15 +269,15 @@ function Grid({ kind, name, def }: { kind: "table" | "view"; name: string; def?:
           <thead className="bg-raised text-muted">
             <tr>
               {cols.map((c) => <th key={c} className="px-3 py-2 font-mono font-normal whitespace-nowrap">{c}</th>)}
-              {kind === "table" && <th />}
+              {kind === "table" && <th className="sticky right-0 bg-raised" />}
             </tr>
           </thead>
           <tbody>
-            {rows.map((r, i) => (
+            {rows.slice(0, shown).map((r, i) => (
               <tr key={String(r._id ?? i)} className="border-t border-white/5 hover:bg-white/5">
                 {cols.map((c) => <td key={c} className="max-w-64 truncate px-3 py-1.5 font-mono text-xs">{fmt(r[c])}</td>)}
                 {kind === "table" && (
-                  <td className="px-3 whitespace-nowrap">
+                  <td className="sticky right-0 bg-panel px-3 whitespace-nowrap shadow-[-8px_0_8px_-8px_#000]">
                     <button className="mr-3 text-xs text-muted hover:text-white" onClick={() => {
                       const { _id, ...rest } = r;
                       setDraft({ id: _id, json: JSON.stringify(rest, null, 2) });
@@ -291,6 +292,9 @@ function Grid({ kind, name, def }: { kind: "table" | "view"; name: string; def?:
           </tbody>
         </table>
       </div>
+      {rows.length > shown && (
+        <button onClick={() => setShown(shown + 500)} className="mt-3 rounded-full bg-raised px-5 py-2 text-sm font-bold hover:bg-white/15">Show {Math.min(500, rows.length - shown)} more rows</button>
+      )}
     </div>
   );
 }

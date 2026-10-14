@@ -27,7 +27,7 @@ export default async function PlaylistPage({ params }: PageProps<"/playlist/[id]
     <>
       <Hero kind={p.is_public ? "Public Playlist" : "Private Playlist"} title={p.playlist_name} seed={p.playlist_name} image={p.cover}
         meta={<><Link href={`/user/${p.user_id}`} className="font-bold hover:underline">{p.owner}</Link>{collaborators.length > 0 && <> with {collaborators.map((c) => c.user_name).join(", ")}</>} • {followers.length} followers • {p.song_count} songs, {p.total_length}</>} />
-      {own && <PlaylistActions p={p} tracks={tracks} collaborators={collaborators} />}
+      {own && <PlaylistActions p={p} collaborators={collaborators} />}
       {canEdit && !own && <p className="px-6 py-4 text-sm text-muted">You are a collaborator: you can add, remove and reorder songs here.</p>}
       <div className="p-4">
         <div className="mb-4 flex items-center gap-4 pl-2">

@@ -1,7 +1,7 @@
 "use client";
 import { createContext, useContext, useEffect, useRef, useState } from "react";
 import Link from "next/link";
-import { api, send, mmss, thumb, type Song } from "@/lib/api";
+import { api, send, mmss, art, type Song } from "@/lib/api";
 import { Cover } from "./ui";
 import { LikeButton } from "./Likes";
 import { Canvas } from "./Canvas";
@@ -12,6 +12,8 @@ type YTPlayer = {
   loadVideoById(id: string): void; playVideo(): void; pauseVideo(): void; seekTo(s: number, allowSeekAhead: boolean): void;
   getCurrentTime(): number; getDuration(): number; setVolume(v: number): void;
 };
+// the 30 s iTunes preview stands in when YouTube cannot give us the song (no API key, daily quota used up, not embeddable)
+const previewUrl = (s: Song) => (s.audio_file && /^https?:\/\//.test(s.audio_file) && !s.audio_file.includes("youtube.com") ? s.audio_file : undefined);
 declare global {
   interface Window {
     YT?: { Player: new (el: HTMLElement, o: object) => YTPlayer };
@@ -31,12 +33,14 @@ type Repeat = "off" | "all" | "one";
 type Panel = "queue" | "lyrics" | null;
 type Ctx = {
   current?: Song; queue: Song[]; idx: number; playing: boolean; error: string;
-  time: number; duration: number; volume: number; shuffle: boolean; repeat: Repeat; panel: Panel; sheet: boolean;
+  time: number; duration: number; volume: number; shuffle: boolean; repeat: Repeat; panel: Panel; sheet: boolean; preview: boolean;
   play: (queue: Song[], index: number) => void;
   toggle: () => void;
   skip: (by: number) => void;
   seek: (s: number) => void;
   setVolume: (v: number) => void;
+  toggleMute: () => void;
+  getAudio: () => HTMLAudioElement | null; // the element that plays 30 s previews, so the visualizer can analyse it
   toggleShuffle: () => void;
   cycleRepeat: () => void;
   addToQueue: (s: Song) => void;
@@ -61,21 +65,27 @@ export function PlayerProvider({ children }: { children: React.ReactNode }) {
   const [repeat, setRepeat] = useState<Repeat>("off");
   const [panel, setPanel] = useState<Panel>(null);
   const [sheet, setSheet] = useState(false); // phones: the Now playing card is a sheet opened from the player bar
+  const [previewId, setPreviewId] = useState<number>(); // song that plays as the 30 s preview instead of its YouTube video
   const player = useRef<YTPlayer | null>(null);
+  const audio = useRef<HTMLAudioElement | null>(null);
+  const previewing = useRef(false); // same as `preview`, readable from the YT / audio callbacks
+  const lastVolume = useRef(100);
   const current = queue[idx];
 
   // the YT callbacks are created once, so they read the latest state through this ref
-  const live = useRef({ queue, idx, shuffle, repeat, time });
+  const live = useRef({ queue, idx, shuffle, repeat, time, volume });
   const listen = (song: Song) => void send("POST", `/listen/${song.song_id}`).catch(() => {});
+  const seekTo = (t: number) => (previewing.current && audio.current ? void (audio.current.currentTime = t) : player.current?.seekTo(t, true));
+  const resume = () => (previewing.current && audio.current ? void audio.current.play().catch(() => {}) : player.current?.playVideo());
 
   const step = (by: number, auto = false) => {
     const { queue, idx, shuffle, repeat, time } = live.current;
     if (auto && repeat === "one") {
-      player.current?.seekTo(0, true);
-      player.current?.playVideo();
+      seekTo(0);
+      resume();
       return listen(queue[idx]);
     }
-    if (by < 0) return time > 3 || idx === 0 ? player.current?.seekTo(0, true) : setIdx(idx - 1);
+    if (by < 0) return time > 3 || idx === 0 ? seekTo(0) : setIdx(idx - 1);
     if (shuffle && queue.length > 1) {
       let n = idx;
       while (n === idx) n = Math.floor(Math.random() * queue.length);
@@ -87,13 +97,35 @@ export function PlayerProvider({ children }: { children: React.ReactNode }) {
   };
   const stepRef = useRef(step);
   useEffect(() => {
-    live.current = { queue, idx, shuffle, repeat, time };
+    live.current = { queue, idx, shuffle, repeat, time, volume };
     stepRef.current = step;
   });
 
   useEffect(() => {
     if (!current) return;
     let stale = false;
+    audio.current?.pause(); // leaving a preview behind
+    previewing.current = false;
+    const fallback = (why: string) => {
+      const url = previewUrl(current);
+      if (!url) return setError(why);
+      player.current?.pauseVideo();
+      if (!audio.current) {
+        const a = new Audio();
+        a.crossOrigin = "anonymous"; // iTunes sends CORS headers; needed so an AnalyserNode may read it
+        a.onplay = () => previewing.current && setPlaying(true);
+        a.onpause = () => previewing.current && setPlaying(false);
+        a.onended = () => previewing.current && stepRef.current(1, true);
+        audio.current = a;
+      }
+      previewing.current = true;
+      setPreviewId(current.song_id);
+      setError("");
+      listen(current);
+      audio.current.src = url;
+      audio.current.volume = live.current.volume / 100;
+      audio.current.play().catch(() => setError("Press play to start the preview"));
+    };
     Promise.all([api<{ youtube_id: string }>(`/play/${current.song_id}`), loadYT()])
       .then(([{ youtube_id }]) => {
         if (stale) return;
@@ -108,15 +140,17 @@ export function PlayerProvider({ children }: { children: React.ReactNode }) {
           height: "100%",
           playerVars: { autoplay: 1, playsinline: 1 },
           events: {
+            onReady: (e: { target: YTPlayer }) => e.target.setVolume(live.current.volume),
             // 0 ended, 1 playing, 2 paused
             onStateChange: (e: { data: number }) => {
+              if (previewing.current) return; // the video is only parked while a preview plays
               if (e.data === 0) stepRef.current(1, true);
               if (e.data === 1 || e.data === 2) setPlaying(e.data === 1);
             },
           },
         });
       })
-      .catch((e) => !stale && setError(e.message));
+      .catch((e) => !stale && fallback(e.message));
     return () => {
       stale = true;
     };
@@ -127,7 +161,10 @@ export function PlayerProvider({ children }: { children: React.ReactNode }) {
     if (!current) return;
     const t = setInterval(() => {
       const p = player.current;
-      if (p?.getCurrentTime) {
+      if (previewing.current && audio.current) {
+        setTime(audio.current.currentTime);
+        setDuration(audio.current.duration || 30);
+      } else if (p?.getCurrentTime) {
         setTime(p.getCurrentTime());
         setDuration(p.getDuration() || current.duration);
       }
@@ -135,21 +172,34 @@ export function PlayerProvider({ children }: { children: React.ReactNode }) {
     return () => clearInterval(t);
   }, [current]);
 
+  const toggle = () => {
+    if (previewing.current && audio.current) return void (audio.current.paused ? audio.current.play().catch(() => {}) : audio.current.pause());
+    return playing ? player.current?.pauseVideo() : player.current?.playVideo();
+  };
   const ctx: Ctx = {
-    current, queue, idx, playing, error, time, duration, volume, shuffle, repeat, panel, sheet,
+    current, queue, idx, playing, error, time, duration, volume, shuffle, repeat, panel, sheet, preview: previewId !== undefined && previewId === current?.song_id,
     play: (q, i) => {
-      setQueue(q);
+      // pressing play on the song that is already loaded pauses / resumes it instead of reloading it; keep its object so the load effect stays put
+      const same = current && q[i]?.song_id === current.song_id;
+      setQueue(same ? q.map((s, j) => (j === i ? current : s)) : q);
       setIdx(i);
+      if (same) toggle();
     },
-    toggle: () => (playing ? player.current?.pauseVideo() : player.current?.playVideo()),
+    toggle,
     skip: (by) => step(by),
     seek: (s) => {
-      player.current?.seekTo(s, true);
+      seekTo(s);
       setTime(s);
     },
     setVolume: (v) => {
       setVol(v);
       player.current?.setVolume(v);
+      if (audio.current) audio.current.volume = v / 100;
+    },
+    getAudio: () => audio.current,
+    toggleMute: () => {
+      if (volume) lastVolume.current = volume; // un-mute returns to where it was, not always 100
+      ctx.setVolume(volume ? 0 : lastVolume.current || 100);
     },
     toggleShuffle: () => setShuffle((s) => !s),
     cycleRepeat: () => setRepeat((r) => (r === "off" ? "all" : r === "all" ? "one" : "off")),
@@ -164,6 +214,24 @@ export function PlayerProvider({ children }: { children: React.ReactNode }) {
     setPanel,
     setSheet,
   };
+
+  // Space = play / pause, unless a field or button has focus (Space already means something there)
+  const toggleRef = useRef(toggle);
+  useEffect(() => {
+    toggleRef.current = toggle;
+  });
+  const hasSong = !!current;
+  useEffect(() => {
+    if (!hasSong) return;
+    const key = (e: KeyboardEvent) => {
+      const t = e.target as HTMLElement;
+      if (e.code !== "Space" || e.repeat || t.closest("input, textarea, select, button, a, summary, [contenteditable], [role=dialog]")) return;
+      e.preventDefault();
+      toggleRef.current();
+    };
+    addEventListener("keydown", key);
+    return () => removeEventListener("keydown", key);
+  }, [hasSong]);
   return <PlayerCtx.Provider value={ctx}>{children}</PlayerCtx.Provider>;
 }
 
@@ -208,7 +276,7 @@ function Lyrics({ song }: { song: Song }) {
 
 // YouTube terms: the player must stay visible (>= 200x200), so it lives here instead of being hidden
 export function NowPlaying() {
-  const { current, error, queue, idx, panel, setPanel, jump, removeFromQueue, sheet, setSheet } = usePlayer();
+  const { current, error, preview, queue, idx, panel, setPanel, jump, removeFromQueue, sheet, setSheet } = usePlayer();
   const tab = (p: Exclude<Panel, null>, label: string) => (
     <button onClick={() => setPanel(panel === p ? null : p)} className={`rounded-full px-3 py-1 text-sm font-bold ${panel === p ? "bg-white text-black" : "bg-raised hover:bg-white/15"}`}>
       {label}
@@ -220,7 +288,16 @@ export function NowPlaying() {
         <p className="font-bold">Now playing</p>
         <button aria-label="Close" onClick={() => setSheet(false)} className="px-2 text-muted hover:text-white lg:hidden">✕</button>
       </div>
-      <div id="yt-slot" className="aspect-square w-full shrink-0 overflow-hidden rounded-lg bg-black" />
+      <div className="relative shrink-0">
+        <div id="yt-slot" className="aspect-square w-full overflow-hidden rounded-lg bg-black" />
+        {/* no video while the 30 s preview plays: show the cover and say why */}
+        {preview && current && (
+          <div className="absolute inset-0 flex flex-col overflow-hidden rounded-lg bg-black">
+            <Cover name={current.song_name} src={art(current)} className="w-full !rounded-none" />
+            <p className="absolute inset-x-0 bottom-0 bg-black/70 p-2 text-center text-xs">No full video for this song, playing the 30-second preview</p>
+          </div>
+        )}
+      </div>
       {current && <Canvas key={current.song_id} songId={current.song_id} />}
       {error && <p className="rounded bg-red-500/20 p-2 text-sm text-red-300">{error}</p>}
       <div>
@@ -234,7 +311,7 @@ export function NowPlaying() {
           {queue.map((s, i) => (
             <li key={`${s.song_id}-${i}`} className={`group flex items-center gap-2 rounded p-1 hover:bg-white/[.07] ${i === idx ? "text-accent" : ""}`}>
               <button onClick={() => jump(i)} className="flex min-w-0 flex-1 items-center gap-2 text-left">
-                <Cover name={s.song_name} src={thumb(s.youtube_id)} className="w-8 shrink-0" />
+                <Cover name={s.song_name} src={art(s)} className="w-8 shrink-0" />
                 <span className="min-w-0"><span className="block truncate">{s.song_name}</span><span className="block truncate text-xs text-muted">{s.artist_name}</span></span>
               </button>
               {i !== idx && <button aria-label={`Remove ${s.song_name} from queue`} onClick={() => removeFromQueue(i)} className="px-1 text-muted opacity-0 group-hover:opacity-100 hover:text-white">✕</button>}
@@ -258,10 +335,14 @@ export function PlayerBar() {
     <footer className="grid h-20 shrink-0 grid-cols-[1fr_2fr_1fr] items-center gap-4 px-4 max-md:grid-cols-[1fr_auto] max-md:gap-2">
       <div className="flex min-w-0 items-center gap-3">
         <button aria-label="Open now playing" onClick={() => p.setSheet(!p.sheet)} className="flex min-w-0 items-center gap-3 text-left lg:pointer-events-none">
-          <Cover name={current.song_name} src={thumb(current.youtube_id)} className="w-12 shrink-0 max-sm:hidden" />
+          <Cover name={current.song_name} src={art(current)} className="w-12 shrink-0 max-sm:hidden" />
           <span className="min-w-0">
             <span className="block truncate text-sm font-medium">{current.song_name}</span>
-            <span className="block truncate text-xs text-muted">{current.artist_name}</span>
+            <span className="block truncate text-xs text-muted">
+              {p.preview && <span title="YouTube is unavailable for this song" className="mr-1.5 rounded bg-white/15 px-1 text-[10px] font-bold text-white">30s PREVIEW</span>}
+              {current.artist_name}
+            </span>
+            {p.error && <span role="alert" className="block truncate text-xs text-red-300" title={p.error}>{p.error}</span>}
           </span>
         </button>
         <LikeButton id={current.song_id} />
@@ -269,7 +350,7 @@ export function PlayerBar() {
           <svg viewBox="0 0 16 16" className={icon} fill="currentColor"><path d="M1 9h2v6H1zm4-5h2v11H5zm4 3h2v8H9zm4-6h2v14h-2z" /></svg>
         </button>
         {/* ponytail: the overlay covers the YT iframe while open; the song keeps playing underneath */}
-        {viz && <Visualizer song={current} time={time} playing={playing} toggle={toggle} onClose={() => setViz(false)} />}
+        {viz && <Visualizer song={current} time={time} playing={playing} toggle={toggle} previewing={p.preview} getAudio={p.getAudio} onClose={() => setViz(false)} />}
       </div>
       <div className="flex flex-col items-center gap-1">
         <div className="flex items-center gap-3 max-md:gap-1">
@@ -301,7 +382,7 @@ export function PlayerBar() {
         <button aria-label="Queue" aria-pressed={p.panel === "queue"} onClick={() => p.setPanel(p.panel === "queue" ? null : "queue")} className={btn(p.panel === "queue")}>
           <svg viewBox="0 0 16 16" className={icon} fill="currentColor"><path d="M1 3h10v1.5H1zm0 4h10v1.5H1zm0 4h6v1.5H1zm11-1 3 2-3 2z" /></svg>
         </button>
-        <button aria-label="Mute" onClick={() => setVolume(volume ? 0 : 100)} className={btn()}>
+        <button aria-label={volume ? "Mute" : "Unmute"} onClick={p.toggleMute} className={btn()}>
           <svg viewBox="0 0 16 16" className={icon} fill="currentColor"><path d="M2 6h3l4-3v10l-4-3H2z" />{volume > 0 && <path d="M11 5.5a3.5 3.5 0 0 1 0 5" stroke="currentColor" fill="none" strokeWidth="1.3" />}</svg>
         </button>
         <input type="range" aria-label="Volume" min={0} max={100} value={volume} onChange={(e) => setVolume(+e.target.value)} className="h-1 w-24 accent-accent" />

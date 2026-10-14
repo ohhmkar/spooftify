@@ -1,11 +1,14 @@
 import type { Metadata } from "next";
 import { Figtree } from "next/font/google";
+import { Suspense } from "react";
 import Link from "next/link";
 import { Sidebar } from "@/components/Sidebar";
 import { PlayerProvider, NowPlaying, PlayerBar } from "@/components/Player";
 import { LikesProvider } from "@/components/Likes";
 import { LogoutButton } from "@/components/Auth";
 import { MobileNav } from "@/components/MobileNav";
+import { ToastProvider } from "@/components/Toast";
+import { SearchBox } from "@/components/SearchBox";
 import { getMe } from "@/lib/server";
 import "./globals.css";
 
@@ -21,6 +24,7 @@ export default async function RootLayout({ children }: LayoutProps<"/">) {
   return (
     <html lang="en" className={`${figtree.variable} antialiased`}>
       <body className="flex h-dvh flex-col font-sans">
+        <ToastProvider>
         <LikesProvider key={me?.user_id ?? 0} loggedIn={!!me}>
         <PlayerProvider>
         <nav className="flex h-16 shrink-0 items-center gap-2 px-4">
@@ -32,12 +36,7 @@ export default async function RootLayout({ children }: LayoutProps<"/">) {
           <Link href="/" aria-label="Home" className="grid size-12 shrink-0 place-items-center rounded-full bg-raised hover:scale-105 max-md:hidden">
             <svg viewBox="0 0 24 24" className="size-6" fill="currentColor" aria-hidden><path d="M12 3 2 11h3v10h6v-6h2v6h6V11h3z" /></svg>
           </Link>
-          <form action="/search" className="flex h-12 w-full min-w-0 max-w-md items-center gap-3 rounded-full bg-raised px-4 focus-within:ring-2 focus-within:ring-white">
-            <svg viewBox="0 0 24 24" className="size-6 shrink-0 text-muted" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden>
-              <circle cx="11" cy="11" r="7" /><path d="m20 20-4-4" />
-            </svg>
-            <input name="q" type="search" placeholder="What do you want to play?" aria-label="Search" className="w-full bg-transparent outline-none placeholder:text-muted" />
-          </form>
+          <Suspense fallback={<div className="h-12 w-full max-w-md rounded-full bg-raised" />}><SearchBox /></Suspense>
           <div className="ml-auto flex items-center gap-2 max-md:hidden">
           <Link href="/stats" className="shrink-0 rounded-full px-4 py-3 font-bold text-muted hover:scale-105 hover:text-white">
             Stats
@@ -67,6 +66,7 @@ export default async function RootLayout({ children }: LayoutProps<"/">) {
         <MobileNav userId={me?.user_id} />
         </PlayerProvider>
         </LikesProvider>
+        </ToastProvider>
       </body>
     </html>
   );

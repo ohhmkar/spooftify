@@ -1,12 +1,29 @@
 "use client";
-// WMP-style visualizations. The YouTube iframe is cross-origin, so its audio can't be analysed:
-// by default visuals are beat-synced (song BPM + YT current time + a synthetic spectrum);
-// "preview" mode plays the 30s iTunes preview through an AnalyserNode for a real FFT.
+// WMP-style visualizations. Where the real audio comes from (an AnalyserNode gives the FFT and waveform):
+//  - "shared": the song already plays as the 30 s preview in the player, so that same audio element is tapped (no permission needed)
+//  - "capture": "Sync to audio" shares this tab's sound (getDisplayMedia, Chrome / Edge), which carries the full YouTube song
+//  - "own": "Visualizer preview" plays the preview itself, pausing the full song
+// the YouTube iframe is cross-origin, so without one of those the visuals are beat-synced (BPM + playback time + a synthetic spectrum).
 import { useEffect, useRef, useState } from "react";
 import { thumb, type Song } from "@/lib/api";
 import { hue } from "./ui";
 
 type VizSong = Song & { audio_file?: string; bpm?: number };
+type Real = "" | "own" | "capture" | "shared";
+
+// an <audio> element can be wrapped by createMediaElementSource only once and then plays only through that graph, so the wrapper
+// lives as long as the element and stays wired to the speakers; analysers are attached and removed as the overlay opens and closes
+type Tap = { ctx: AudioContext; src: MediaElementAudioSourceNode };
+function tap(el: HTMLAudioElement & { __tap?: Tap }) { // kept on the element itself, so it also survives a hot reload of this module
+  if (!el.__tap) {
+    const ctx = new AudioContext(), src = ctx.createMediaElementSource(el);
+    src.connect(ctx.destination);
+    el.__tap = { ctx, src };
+  }
+  void el.__tap.ctx.resume();
+  return el.__tap;
+}
+const analyser = (ctx: AudioContext) => { const an = ctx.createAnalyser(); an.fftSize = 1024; an.smoothingTimeConstant = 0.75; return an; };
 const MODES = { bars: "Bars", battery: "Battery", alchemy: "Alchemy", scope: "Scope" } as const;
 type Mode = keyof typeof MODES;
 const N = 64, W = 256;
@@ -33,17 +50,59 @@ function coverHues(img: HTMLImageElement) {
   return [at(0), top[1] ? at(1) : at(0) + 50, top[2] ? at(2) : at(0) + 180];
 }
 
-export function Visualizer({ song, time, playing, toggle, onClose }: { song: VizSong; time: number; playing: boolean; toggle: () => void; onClose: () => void }) {
+export function Visualizer({ song, time, playing, toggle, previewing, getAudio, onClose }: { song: VizSong; time: number; playing: boolean; toggle: () => void; previewing: boolean; getAudio: () => HTMLAudioElement | null; onClose: () => void }) {
   const [mode, setMode] = useState<Mode>(() => { const m = localStorage.getItem("viz-mode"); return m && m in MODES ? (m as Mode) : "bars"; });
   const [previewOf, setPreviewOf] = useState<number | null>(null); // keyed by song, so a song change turns preview off
   const [err, setErr] = useState("");
+  const [capture, setCapture] = useState(false); // tab audio is being analysed
   const preview = previewOf === song.song_id;
+  const real: Real = previewing ? "shared" : capture ? "capture" : preview ? "own" : "";
   const hasPreview = !!song.audio_file && !/youtube\.com/.test(song.audio_file); // seed falls back to a watch URL
   const bpm = song.bpm || 120; // ponytail: no BPM yet -> 120
   const canvas = useRef<HTMLCanvasElement>(null), audio = useRef<HTMLAudioElement>(null), root = useRef<HTMLDivElement>(null), close = useRef<HTMLButtonElement>(null);
-  const graph = useRef<{ ctx: AudioContext; an: AnalyserNode } | null>(null);
-  const live = useRef({ song, bpm, playing, toggle, onClose, mode, preview, resume: false, pal: [0, 60, 180], anchor: { t: time, at: 0 } });
-  useEffect(() => { Object.assign(live.current, { song, bpm, playing, toggle, onClose, mode, preview }); });
+  const graph = useRef<{ ctx: AudioContext; an: AnalyserNode } | null>(null); // "own": the overlay's private preview element
+  const cap = useRef<{ ctx: AudioContext; an: AnalyserNode; track: MediaStreamTrack } | null>(null);
+  const sh = useRef<AnalyserNode | null>(null);
+  const live = useRef({ song, bpm, playing, toggle, onClose, mode, preview, real, getAudio, shared: null as HTMLAudioElement | null, resume: false, pal: [0, 60, 180], anchor: { t: time, at: 0 } });
+  useEffect(() => { Object.assign(live.current, { song, bpm, playing, toggle, onClose, mode, preview, real, getAudio, shared: previewing ? getAudio() : null }); });
+
+  // the song plays as a preview in the player: analyse that very element
+  useEffect(() => {
+    const el = previewing ? live.current.getAudio() : null;
+    if (!el) return;
+    const t = tap(el), an = analyser(t.ctx);
+    t.src.connect(an);
+    sh.current = an;
+    return () => { t.src.disconnect(an); sh.current = null; };
+  }, [previewing, song.song_id]);
+
+  const stopCapture = () => {
+    cap.current?.track.stop();
+    void cap.current?.ctx.close();
+    cap.current = null;
+    setCapture(false);
+  };
+  // "Sync to audio": the browser asks which tab to share; with "also share tab audio" the whole song (YouTube included) reaches the analyser
+  const syncLive = async () => {
+    setErr("");
+    if (capture) return stopCapture();
+    try {
+      const stream = await navigator.mediaDevices.getDisplayMedia({ video: true, audio: true, preferCurrentTab: true, selfBrowserSurface: "include", systemAudio: "include" } as DisplayMediaStreamOptions);
+      const track = stream.getAudioTracks()[0];
+      if (!track) {
+        stream.getTracks().forEach((t) => t.stop());
+        return setErr("No audio was shared. Choose this tab and tick “Also share tab audio”.");
+      }
+      stream.getVideoTracks().forEach((t) => t.stop()); // only the sound is wanted
+      const ctx = new AudioContext(), an = analyser(ctx);
+      ctx.createMediaStreamSource(new MediaStream([track])).connect(an); // not to the speakers: the tab already plays the song
+      track.onended = stopCapture; // "Stop sharing" in the browser bar
+      cap.current = { ctx, an, track };
+      setCapture(true);
+    } catch (e) {
+      setErr((e as Error).name === "NotAllowedError" ? "Sharing was cancelled, so the visuals stay beat-synced." : (e as Error).message);
+    }
+  };
   // YT time is polled every 500ms; extrapolate between polls for smooth beats (frozen while paused)
   useEffect(() => { live.current.anchor = { t: time, at: performance.now() }; }, [time, playing]);
 
@@ -66,8 +125,7 @@ export function Visualizer({ song, time, playing, toggle, onClose }: { song: Viz
       return;
     }
     if (!graph.current) {
-      const ctx = new AudioContext(), an = ctx.createAnalyser();
-      an.fftSize = 1024; an.smoothingTimeConstant = 0.75;
+      const ctx = new AudioContext(), an = analyser(ctx);
       ctx.createMediaElementSource(a).connect(an); an.connect(ctx.destination);
       graph.current = { ctx, an };
     }
@@ -86,6 +144,8 @@ export function Visualizer({ song, time, playing, toggle, onClose }: { song: Viz
       a?.pause();
       if (L.preview && L.resume) L.toggle();
       void g.current?.ctx.close();
+      cap.current?.track.stop();
+      void cap.current?.ctx.close();
       if (document.fullscreenElement) void document.exitFullscreen();
     };
   }, []);
@@ -94,14 +154,21 @@ export function Visualizer({ song, time, playing, toggle, onClose }: { song: Viz
   const fullscreen = () => (document.fullscreenElement ? document.exitFullscreen() : root.current?.requestFullscreen())?.catch(() => {});
   useEffect(() => {
     const key = (e: KeyboardEvent) => {
+      if (e.code === "Space" && !(e.target as HTMLElement).closest("input, textarea, select")) { // pause / play, not "press the focused button"
+        e.preventDefault();
+        if (e.type === "keydown" && !e.repeat) live.current.toggle();
+        return;
+      }
+      if (e.type === "keyup") return;
       if (e.key === "Escape" && !document.fullscreenElement) live.current.onClose();
       const m = Object.keys(MODES)[+e.key - 1] as Mode | undefined;
       if (m) pick(m);
     };
     const prev = document.activeElement as HTMLElement | null;
     addEventListener("keydown", key);
+    addEventListener("keyup", key); // a focused button fires its click on Space keyup, so swallow that too
     close.current?.focus(); // after capturing prev, so closing returns focus to the opener
-    return () => { removeEventListener("keydown", key); prev?.focus(); };
+    return () => { removeEventListener("keydown", key); removeEventListener("keyup", key); prev?.focus(); };
   }, []);
 
   // the render loop: only exists while the overlay is mounted, and stops while the tab is hidden
@@ -118,9 +185,11 @@ export function Visualizer({ song, time, playing, toggle, onClose }: { song: Viz
       raf = requestAnimationFrame(frame);
       if (calm && now - lastDraw < 250) return; // reduced motion: a few calm frames a second
       lastDraw = now;
-      const L = live.current, a = audio.current!, an = L.preview ? graph.current?.an : undefined;
-      const on = an ? !a.paused : L.playing;
-      const t = an ? a.currentTime : L.anchor.t + (on && L.anchor.at ? (now - L.anchor.at) / 1000 : 0);
+      const L = live.current, a = audio.current!;
+      const an = L.real === "own" ? graph.current?.an : L.real === "shared" ? sh.current ?? undefined : L.real === "capture" ? cap.current?.an : undefined;
+      const el = L.real === "own" ? a : L.real === "shared" ? L.shared : null; // the element whose clock drives the visuals; a tab capture has none
+      const on = an && el ? !el.paused : L.playing;
+      const t = an && el ? el.currentTime : L.anchor.t + (on && L.anchor.at ? (now - L.anchor.at) / 1000 : 0);
       const dt = Math.min(Math.max(t - lastT, 0), 0.1);
       lastT = t;
       let hit = false;
@@ -231,6 +300,7 @@ export function Visualizer({ song, time, playing, toggle, onClose }: { song: Viz
     return () => { cancelAnimationFrame(raf); removeEventListener("resize", size); document.removeEventListener("visibilitychange", vis); };
   }, []);
 
+  const canCapture = !!navigator.mediaDevices?.getDisplayMedia;
   const chip = (on: boolean) => `rounded-full px-3 py-1 text-sm font-bold ${on ? "bg-white text-black" : "hover:bg-white/15"}`;
   return (
     <div ref={root} role="dialog" aria-modal aria-label="Visualizer" className="fixed inset-0 z-50 bg-black text-white">
@@ -242,7 +312,12 @@ export function Visualizer({ song, time, playing, toggle, onClose }: { song: Viz
             <button key={k} aria-pressed={mode === k} title={`${MODES[k]} (${i + 1})`} onClick={() => pick(k)} className={chip(mode === k)}>{MODES[k]}</button>
           ))}
         </div>
-        <button aria-pressed={preview} disabled={!hasPreview} title={hasPreview ? "Analyse the real audio of the 30-second preview" : "No preview for this track"} onClick={togglePreview} className={`${chip(preview)} bg-black/60 disabled:opacity-40`}>
+        {!previewing && canCapture && (
+          <button aria-pressed={capture} title="Share this tab's audio so the visuals follow the real song (Chrome / Edge)" onClick={syncLive} className={`${chip(capture)} bg-black/60`}>
+            {capture ? "Synced to audio" : "Sync to audio"}
+          </button>
+        )}
+        <button aria-pressed={preview} disabled={!hasPreview || previewing} title={previewing ? "This song already plays as the 30-second preview" : hasPreview ? "Play the 30-second preview here and analyse its real audio, the full song pauses" : "No preview for this track"} onClick={togglePreview} className={`${chip(preview)} bg-black/60 disabled:opacity-40`}>
           Visualizer preview
         </button>
         <button aria-label="Toggle full screen" onClick={fullscreen} className={`${chip(false)} bg-black/60`}>⛶</button>
@@ -253,7 +328,7 @@ export function Visualizer({ song, time, playing, toggle, onClose }: { song: Viz
       <div className="pointer-events-none absolute bottom-6 left-6 max-w-[80vw] text-white/70">
         <p className="truncate text-2xl font-bold">{song.song_name}</p>
         <p className="truncate text-sm">{song.artist_name}</p>
-        <p className="mt-1 text-xs text-white/40">{preview ? "Real audio · 30-second preview" : `Beat-synced · ${bpm} BPM`}</p>
+        <p className="mt-1 text-xs text-white/40">{real === "capture" ? "Real audio · live from this tab" : real ? "Real audio · 30-second preview" : `Beat-synced · ${bpm} BPM${canCapture ? " · press Sync to audio for the real signal" : ""}`}</p>
       </div>
     </div>
   );

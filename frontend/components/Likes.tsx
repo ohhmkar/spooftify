@@ -2,12 +2,15 @@
 import { createContext, useContext, useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { api, send } from "@/lib/api";
+import { useToast } from "./Toast";
 
 // liked song ids of the logged-in user, shared by every heart on the page
-const LikesCtx = createContext<{ liked: Set<number>; toggle: (id: number) => void }>({ liked: new Set(), toggle: () => {} });
+const LikesCtx = createContext<{ liked: Set<number>; toggle: (id: number) => void; loggedIn: boolean }>({ liked: new Set(), toggle: () => {}, loggedIn: false });
+export const useLoggedIn = () => useContext(LikesCtx).loggedIn;
 
 export function LikesProvider({ loggedIn, children }: { loggedIn: boolean; children: React.ReactNode }) {
   const router = useRouter();
+  const toast = useToast();
   const [liked, setLiked] = useState<Set<number>>(new Set());
   useEffect(() => {
     if (loggedIn) api<number[]>("/me/likes").then((ids) => setLiked(new Set(ids))).catch(() => {});
@@ -16,15 +19,17 @@ export function LikesProvider({ loggedIn, children }: { loggedIn: boolean; child
   const toggle = (id: number) => {
     if (!loggedIn) return router.push("/login");
     const on = !liked.has(id);
-    setLiked((s) => {
-      const n = new Set(s);
-      if (on) n.add(id);
-      else n.delete(id);
-      return n;
-    }); // optimistic
-    send(on ? "PUT" : "DELETE", `/like/${id}`).then(() => router.refresh()).catch((e) => alert(e.message));
+    const set = (to: boolean) =>
+      setLiked((s) => {
+        const n = new Set(s);
+        if (to) n.add(id);
+        else n.delete(id);
+        return n;
+      });
+    set(on); // optimistic, put back if the server says no
+    send(on ? "PUT" : "DELETE", `/like/${id}`).then(() => router.refresh()).catch((e) => { set(!on); toast(e.message, true); });
   };
-  return <LikesCtx.Provider value={{ liked, toggle }}>{children}</LikesCtx.Provider>;
+  return <LikesCtx.Provider value={{ liked, toggle, loggedIn }}>{children}</LikesCtx.Provider>;
 }
 
 export function LikeButton({ id, className = "" }: { id: number; className?: string }) {

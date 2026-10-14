@@ -1,32 +1,49 @@
 "use client";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { send, mmss, thumb, compact, type Song, type Playlist } from "@/lib/api";
+import { send, mmss, art, compact, type Song, type Playlist } from "@/lib/api";
 import { usePlayer } from "./Player";
 import { LikeButton } from "./Likes";
 import { Cover } from "./ui";
+import { useToast } from "./Toast";
+import { useLoggedIn } from "./Likes";
 
 // editPlaylist: the playlist these rows belong to when the viewer may edit it (owner or collaborator): enables Remove and the move buttons
 export function TrackList({ songs, playlists, editPlaylist }: { songs: Song[]; playlists: Playlist[]; editPlaylist?: number }) {
   const router = useRouter();
-  const { current, play, addToQueue, playNext } = usePlayer();
-  const run = (p: Promise<unknown>) => p.then(() => router.refresh()).catch((e) => alert(e.message));
+  const { current, playing, play, addToQueue, playNext } = usePlayer();
+  const toast = useToast();
+  const loggedIn = useLoggedIn();
+  const run = (p: Promise<unknown>, done?: string) => p.then(() => { router.refresh(); if (done) toast(done); }).catch((e) => toast(e.message, true));
+  const addTo = (s: Song, id: string) => run(send("POST", `/playlists/${id}/songs`, { song_id: s.song_id }), `Added “${s.song_name}” to ${playlists.find((p) => String(p._id) === id)?.playlist_name}`);
+  const next = (s: Song) => (playNext(s), toast(`Playing “${s.song_name}” next`));
+  const queue = (s: Song) => (addToQueue(s), toast(`Added “${s.song_name}” to the queue`));
+  // "+ Add to…" picker: only for logged-in users, and says so when there is nothing to pick yet
+  const addSelect = (s: Song, cls: string) =>
+    loggedIn && (
+      <select aria-label={`Add ${s.song_name} to playlist`} className={cls} value="" onChange={(e) => { closeMenu(e.target); addTo(s, e.target.value); }}>
+        <option value="" disabled>{playlists.length ? "+ Add to…" : "No playlists yet"}</option>
+        {playlists.map((p) => <option key={p._id} value={p._id}>{p.playlist_name}{p.shared ? " (shared)" : ""}</option>)}
+      </select>
+    );
+  const touch = () => matchMedia("(hover: none)").matches; // phones have no hover, so a tap on the row has to play it
+  const closeMenu = (el: HTMLElement) => el.closest("details")?.removeAttribute("open"); // the ⋯ menu on small screens
   const move = (i: number, by: number) => {
     const ids = songs.map((s) => s.song_id);
     [ids[i], ids[i + by]] = [ids[i + by], ids[i]];
     run(send("PUT", `/playlists/${editPlaylist}/order`, { song_ids: ids }));
   };
-  const small = "rounded px-2 py-1 text-xs text-muted hover:bg-white/10 hover:text-white";
+  const small = "whitespace-nowrap rounded px-2 py-1 text-xs text-muted hover:bg-white/10 hover:text-white";
 
   if (!songs.length) return <p className="px-6 py-8 text-muted">No songs here yet.</p>;
   return (
     <table className="w-full text-sm">
       <thead className="border-b border-white/10 text-left text-muted">
         <tr>
-          <th className="w-12 py-2 text-center font-normal">#</th>
-          <th className="font-normal">Title</th>
-          <th className="font-normal max-lg:hidden">Album</th>
-          <th className="w-40 text-right font-normal max-md:hidden">Plays · YouTube</th>
+          <th className="w-12 min-w-12 py-2 text-center font-normal">#</th>
+          <th className="w-[42%] font-normal max-md:w-auto">Title</th>
+          <th className="w-[22%] font-normal max-lg:hidden">Album</th>
+          <th title="Spooftify plays · YouTube views" className="w-40 whitespace-nowrap text-right font-normal max-md:hidden">Plays · Views</th>
           <th className="w-10" />
           <th className="w-16 text-right font-normal">⏱</th>
           <th className="w-10 xl:hidden" />
@@ -34,16 +51,24 @@ export function TrackList({ songs, playlists, editPlaylist }: { songs: Song[]; p
         </tr>
       </thead>
       <tbody>
-        {songs.map((s, i) => (
-          <tr key={s._id ?? s.song_id} className="group hover:bg-white/[.07]" onDoubleClick={() => play(songs, i)}>
+        {songs.map((s, i) => {
+          const now = current?.song_id === s.song_id;
+          return (
+          <tr key={s._id ?? s.song_id} className="group hover:bg-white/[.07]" onDoubleClick={() => play(songs, i)}
+            onClick={(e) => touch() && !(e.target as HTMLElement).closest("a, button, select, summary, details") && play(songs, i)}>
             <td className="rounded-l-md py-2 text-center text-muted">
-              <span className="group-hover:hidden">{i + 1}</span>
-              <button aria-label={`Play ${s.song_name}`} onClick={() => play(songs, i)} className="hidden w-full text-white group-hover:block">▶</button>
+              <span className={`group-hover:hidden group-focus-within:hidden ${now ? "text-accent" : ""}`}>{now && playing ? "♪" : i + 1}</span>
+              {/* sr-only until hover / keyboard focus, so Tab can reach it */}
+              <button aria-label={`${now && playing ? "Pause" : "Play"} ${s.song_name}`} onClick={() => play(songs, i)} className="sr-only w-full text-white group-hover:not-sr-only group-focus-within:not-sr-only">{now && playing ? "❚❚" : "▶"}</button>
             </td>
-            <td className="flex items-center gap-3 py-1">
-              <Cover name={s.song_name} src={thumb(s.youtube_id)} className="w-10 shrink-0" />
+            <td className="flex min-w-0 items-center gap-3 py-1">
+              {/* clicking the cover plays too; the number cell holds the keyboard-reachable button */}
+              <button tabIndex={-1} aria-hidden onClick={() => play(songs, i)} className="group/cover relative shrink-0">
+                <Cover name={s.song_name} src={art(s)} className="w-10" />
+                <span className="absolute inset-0 hidden place-items-center rounded-md bg-black/50 text-white group-hover/cover:grid">{now && playing ? "❚❚" : "▶"}</span>
+              </button>
               <div className="min-w-0">
-                <p className={`font-medium ${current?.song_id === s.song_id ? "text-accent" : "text-white"}`}>{s.song_name}</p>
+                <p className={`line-clamp-1 font-medium ${now ? "text-accent" : "text-white"}`}>{s.song_name}</p>
                 <Link href={`/artist/${s.artist_id}`} className="text-muted hover:text-white hover:underline">{s.artist_name}</Link>
               </div>
             </td>
@@ -60,43 +85,31 @@ export function TrackList({ songs, playlists, editPlaylist }: { songs: Song[]; p
             <td className="w-10 text-center xl:hidden">
               <details className="relative">
                 <summary aria-label={`More options for ${s.song_name}`} className="cursor-pointer list-none px-2 py-1 text-muted hover:text-white">⋯</summary>
-                <div className="absolute right-0 z-20 mt-1 flex w-44 flex-col gap-1 rounded-lg bg-raised p-2 text-left shadow-xl shadow-black/60">
-                  <button className={small} onClick={() => playNext(s)}>Play next</button>
-                  <button className={small} onClick={() => addToQueue(s)}>Add to queue</button>
-                  <select aria-label={`Add ${s.song_name} to playlist`} className="rounded bg-white/10 px-2 py-1 text-xs" value="" onChange={(e) => run(send("POST", `/playlists/${e.target.value}/songs`, { song_id: s.song_id }))}>
-                    <option value="" disabled>+ Add to…</option>
-                    {playlists.map((p) => <option key={p._id} value={p._id}>{p.playlist_name}</option>)}
-                  </select>
-                  {editPlaylist && <button className={small} onClick={() => run(send("DELETE", `/playlists/${editPlaylist}/songs/${s.song_id}`))}>Remove</button>}
+                <div className="absolute right-0 z-20 mt-1 flex w-44 flex-col gap-1 rounded-lg bg-raised p-2 text-left shadow-xl shadow-black/60" onClick={(e) => (e.target as HTMLElement).tagName === "BUTTON" && closeMenu(e.target as HTMLElement)}>
+                  <button className={small} onClick={() => next(s)}>Play next</button>
+                  <button className={small} onClick={() => queue(s)}>Add to queue</button>
+                  {addSelect(s, "rounded bg-white/10 px-2 py-1 text-xs")}
+                  {editPlaylist && <button className={small} onClick={() => run(send("DELETE", `/playlists/${editPlaylist}/songs/${s.song_id}`), "Removed from playlist")}>Remove</button>}
                 </div>
               </details>
             </td>
             <td className="rounded-r-md pr-3 text-right max-xl:hidden">
               <div className="flex items-center justify-end gap-1 opacity-0 transition group-hover:opacity-100 focus-within:opacity-100">
-                <button className={small} onClick={() => playNext(s)}>Play next</button>
-                <button className={small} onClick={() => addToQueue(s)}>Queue</button>
-                <select
-                  aria-label={`Add ${s.song_name} to playlist`}
-                  className="max-w-28 rounded bg-white/10 px-2 py-1 text-xs"
-                  value=""
-                  onChange={(e) => run(send("POST", `/playlists/${e.target.value}/songs`, { song_id: s.song_id }))}
-                >
-                  <option value="" disabled>+ Add to…</option>
-                  {playlists.map((p) => (
-                    <option key={p._id} value={p._id}>{p.playlist_name}{p.shared ? " (shared)" : ""}</option>
-                  ))}
-                </select>
+                <button className={small} onClick={() => next(s)}>Play next</button>
+                <button className={small} onClick={() => queue(s)}>Queue</button>
+                {addSelect(s, "max-w-28 rounded bg-white/10 px-2 py-1 text-xs")}
                 {editPlaylist && (
                   <>
                     <button aria-label="Move up" disabled={i === 0} className={`${small} disabled:opacity-30`} onClick={() => move(i, -1)}>↑</button>
                     <button aria-label="Move down" disabled={i === songs.length - 1} className={`${small} disabled:opacity-30`} onClick={() => move(i, 1)}>↓</button>
                   </>
                 )}
-                {editPlaylist && <button className={small} onClick={() => run(send("DELETE", `/playlists/${editPlaylist}/songs/${s.song_id}`))}>Remove</button>}
+                {editPlaylist && <button className={small} onClick={() => run(send("DELETE", `/playlists/${editPlaylist}/songs/${s.song_id}`), "Removed from playlist")}>Remove</button>}
               </div>
             </td>
           </tr>
-        ))}
+          );
+        })}
       </tbody>
     </table>
   );

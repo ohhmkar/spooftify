@@ -4,7 +4,7 @@ export const API = typeof window === "undefined" ? (process.env.NEXT_PUBLIC_API_
 export type Me = { user_id: number; user_name: string; email: string };
 
 export type Row = Record<string, unknown>;
-export type Song = { song_id: number; song_name: string; duration: number; artist_id: number; artist_name: string; album_id?: number; album_name?: string; album_cover?: string; track_no?: number; genre_id?: number; genre_name?: string; release_year?: number; plays?: number; yt_views?: number; youtube_id?: string; _id?: string };
+export type Song = { song_id: number; song_name: string; duration: number; artist_id: number; artist_name: string; album_id?: number; album_name?: string; album_cover?: string; track_no?: number; genre_id?: number; genre_name?: string; release_year?: number; plays?: number; yt_views?: number; youtube_id?: string; audio_file?: string; bpm?: number; _id?: string };
 export type ArtistSummary = { artist_id: number; artist_name: string; country: string; image?: string; bio?: string; bio_url?: string; fans?: number; plays?: number; song_count: number; total_length: string };
 export type PlaylistSummary = {
   playlist_id: number; playlist_name: string; owner: string; song_count: number; total_length: string; user_id: number; is_public: boolean; cover?: string;
@@ -16,8 +16,8 @@ export type Follow = { kind: "artist" | "user" | "playlist"; target_id: number }
 
 export async function api<T = Row[]>(path: string, init?: RequestInit & { body?: BodyInit | null }): Promise<T> {
   const res = await fetch(API + path, { cache: "no-store", headers: { "Content-Type": "application/json" }, ...init });
-  const data = await res.json();
-  if (!res.ok) throw new Error(data.error ?? res.statusText);
+  const data = await res.json().catch(() => ({})); // a 413 / 502 from the host is not JSON
+  if (!res.ok) throw new Error(data.error ?? (res.statusText || `Request failed (${res.status})`));
   return data;
 }
 
@@ -31,4 +31,6 @@ export const mmss = (s: number) => `${Math.floor(s / 60)}:${String(s % 60).padSt
 
 // YouTube serves a 16:9 thumbnail for any video id; no storage needed
 export const thumb = (youtubeId?: string) => (youtubeId ? `https://i.ytimg.com/vi/${youtubeId}/mqdefault.jpg` : undefined);
+// cover art for a song: its album cover (always square), else the YouTube thumbnail once the video id is known
+export const art = (s: { album_cover?: string; youtube_id?: string }) => s.album_cover ?? thumb(s.youtube_id);
 export const compact = (n: number) => new Intl.NumberFormat("en", { notation: "compact" }).format(n);
