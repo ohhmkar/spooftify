@@ -42,6 +42,11 @@ const userSchema = new Schema(
     email: { type: String, required: true, unique: true, maxlength: 50, match: [/@/, "check_email: email must contain @"] },
     phone: { ...int, unique: true },
     password_hash: { type: String, required: true, maxlength: 255 },
+    // extra vs SQL: profile picture stored IN the document as BinData (fine under the 16 MB doc limit).
+    // select: false = never loaded by find()/findById(), so the bytes never leak into JSON responses
+    photo: { type: Buffer, select: false },
+    photo_type: { type: String, match: /^image\// },
+    photo_at: Date, // cache buster for the photo URL
   },
   opts("User"),
 );
@@ -88,6 +93,7 @@ const songSchema = new Schema(
     youtube_id: { type: String, maxlength: 20 }, // extra vs SQL: cached by GET /api/play/:id
     plays: { type: Number, default: 0, min: 0 }, // extra vs SQL: kept up to date by the after_listen_insert trigger
     yt_views: { type: Number, min: 0 }, // extra vs SQL: YouTube viewCount, fetched when youtube_id is first looked up
+    canvas_id: Schema.Types.ObjectId, // extra vs SQL: looping "Canvas" video, a GridFS file (fs.files._id) — too big for BinData
   },
   opts("Songs"),
 );
@@ -99,6 +105,8 @@ const playlistSchema = new Schema(
     is_public: { type: Boolean, required: true, default: true },
     user_id: { ...int, ref: "User" },
     image: { type: String, maxlength: 255 }, // extra vs SQL: custom cover URL (default cover = first song's thumbnail)
+    cover: { type: Buffer, select: false }, // extra vs SQL: uploaded cover as BinData; image then points at /api/playlists/:id/cover
+    cover_type: { type: String, match: /^image\// },
   },
   opts("Playlist"),
 );
@@ -221,6 +229,19 @@ songSchema.pre("findOneAndDelete", async function () {
   await Promise.all([Liked.deleteMany({ song_id }), Listen.deleteMany({ song_id })]);
 });
 
+// after_song_delete: its Canvas goes too. GridFS = fs.files (metadata) + fs.chunks (255 KB pieces); bucket.delete removes both.
+// post (not pre) so a song delete that fails (RESTRICT, ...) keeps its video. GridFS deletes are not transactional:
+// ponytail: inside a transaction this runs before COMMIT, so an aborted commit would keep the song but lose its video (canvas_id then 404s)
+export const gridfs = () => new mongoose.mongo.GridFSBucket(mongoose.connection.db);
+songSchema.post("findOneAndDelete", async function (doc) {
+  if (doc?.canvas_id) await gridfs().delete(doc.canvas_id).catch(() => {}); // already gone = fine
+});
+
+// a cover URL typed by hand replaces the uploaded one, so drop the stored bytes
+playlistSchema.pre("save", function () {
+  if (this.isModified("image") && !this.image?.startsWith("/api/")) this.set({ cover: undefined, cover_type: undefined });
+});
+
 // registered after the triggers so before_song_delete clears Contains first
 restrict(userSchema, "Playlist", "user_id");
 restrict(artistSchema, "Songs", "artist_id");
@@ -255,4 +276,5 @@ export const triggers = [
   ["before_follow_insert", "BEFORE INSERT ON Follows", "SIGNAL if target_id is missing in the table kind names, or a user follows themselves"],
   ["before_collab_insert", "BEFORE INSERT ON Collaborators", "SIGNAL if the user owns the playlist"],
   ["after_listen_insert", "AFTER INSERT ON Listens", "UPDATE Songs SET plays = plays + 1 WHERE song_id = NEW.song_id"],
+  ["after_song_delete", "AFTER DELETE ON Songs", "delete its Canvas video from GridFS (fs.files + fs.chunks)"],
 ].map(([name, event, action]) => ({ name, event, action }));

@@ -1,6 +1,7 @@
 "use client";
 import { useRouter } from "next/navigation";
 import { send, type PlaylistSummary, type Song } from "@/lib/api";
+import { UploadButton } from "./Upload";
 
 export function CreatePlaylist({ count, userId }: { count: number; userId: number }) {
   const router = useRouter();
@@ -54,9 +55,10 @@ export function PlaylistActions({ p, tracks, collaborators }: { p: PlaylistSumma
           update({ image: new FormData(e.currentTarget).get("image") || null });
         }}
       >
-        <input name="image" type="url" defaultValue={p.cover?.includes("ytimg") ? "" : (p.cover ?? "")} placeholder="Cover image URL (blank = first song)" aria-label="Cover image URL" className="w-64 rounded bg-white/10 px-3 py-2 text-sm" />
+        <input name="image" type="url" defaultValue={p.cover?.startsWith("http") && !p.cover.includes("ytimg") ? p.cover : ""} placeholder="Cover image URL (blank = first song)" aria-label="Cover image URL" className="w-64 rounded bg-white/10 px-3 py-2 text-sm" />
         <button className="rounded-full bg-white/10 px-4 text-sm font-bold hover:bg-white/20">Set cover</button>
       </form>
+      <UploadButton path={`/playlists/${p.playlist_id}/cover`} accept="image/*" label="Upload cover" />
       <label className="flex items-center gap-2 text-sm text-muted">
         <input type="checkbox" checked={p.is_public} onChange={(e) => update({ is_public: e.target.checked })} className="accent-accent" />
         Public

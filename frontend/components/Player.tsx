@@ -4,6 +4,7 @@ import Link from "next/link";
 import { api, send, mmss, thumb, type Song } from "@/lib/api";
 import { Cover } from "./ui";
 import { LikeButton } from "./Likes";
+import { Canvas } from "./Canvas";
 
 // Minimal slice of the YouTube IFrame API we use
 type YTPlayer = {
@@ -219,6 +220,7 @@ export function NowPlaying() {
         <button aria-label="Close" onClick={() => setSheet(false)} className="px-2 text-muted hover:text-white lg:hidden">✕</button>
       </div>
       <div id="yt-slot" className="aspect-square w-full shrink-0 overflow-hidden rounded-lg bg-black" />
+      {current && <Canvas key={current.song_id} songId={current.song_id} />}
       {error && <p className="rounded bg-red-500/20 p-2 text-sm text-red-300">{error}</p>}
       <div>
         <p className="text-xl font-bold">{current?.song_name}</p>
