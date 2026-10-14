@@ -5,18 +5,23 @@ const { Schema, model } = mongoose;
 const opts = (collection) => ({ collection, versionKey: false });
 const int = { type: Number, required: true, validate: Number.isInteger };
 
-// INT PRIMARY KEY: explicit id like the SQL inserts; if omitted we take MAX(id)+1
-// ponytail: MAX+1 races under concurrent inserts, use a counters collection if that ever matters
+// INT PRIMARY KEY AUTO_INCREMENT: explicit id like the SQL inserts; if omitted, Counters.seq = GREATEST(seq + 1, MAX(id) + 1).
+// The $inc on one Counters row is the serialization point: two transactions taking an id write-conflict and one retries.
+// MAX(id) keeps it right after seed.js / DB console inserts with explicit ids (they never touch the counter).
+const Counter = model("Counters", new Schema({ _id: String, seq: Number }, opts("Counters")));
 function intPk(schema) {
   schema.pre("validate", async function () {
     if (this.isNew && this._id == null) {
-      const last = await this.constructor.findOne({}, "_id").sort({ _id: -1 });
-      this._id = (last?._id ?? 0) + 1;
+      const last = (await this.constructor.findOne({}, "_id").sort({ _id: -1 }))?._id ?? 0;
+      const seq = [{ $set: { seq: { $max: [{ $add: [{ $ifNull: ["$seq", 0] }, 1] }, last + 1] } } }];
+      this._id = (await Counter.findOneAndUpdate({ _id: this.constructor.modelName }, seq, { upsert: true, returnDocument: "after", updatePipeline: true })).seq;
     }
   });
 }
 
 // FOREIGN KEY (field) REFERENCES target — insert/update side
+// ponytail: under snapshot isolation this read and a concurrent parent DELETE don't write-conflict, so an orphan can slip in;
+// only Contains -> Playlist is closed (before_contains_insert writes the Playlist row). Ceiling: write the parent row here too.
 function fk(schema, field, target) {
   schema.pre("save", async function () {
     if (this.isModified(field) && this[field] != null && !(await model(target).exists({ _id: this[field] })))
@@ -99,6 +104,7 @@ const playlistSchema = new Schema(
     is_public: { type: Boolean, required: true, default: true },
     user_id: { ...int, ref: "User" },
     image: { type: String, maxlength: 255 }, // extra vs SQL: custom cover URL (default cover = first song's thumbnail)
+    rev: { type: Number, default: 0 }, // extra vs SQL: bumped by before_contains_insert, the row lock SELECT ... FOR UPDATE would take
   },
   opts("Playlist"),
 );
@@ -184,9 +190,13 @@ songSchema.pre("findOneAndDelete", async function () {
 });
 
 // before_contains_insert: stop adding songs once a playlist has 50
+// Snapshot isolation alone lets two inserts both count 49 (write skew), so first write the parent Playlist row:
+// concurrent inserts into one playlist then write-conflict, one aborts and the driver retries it against the new count.
+// The same write makes a concurrent DELETE of the playlist conflict too (restrict check vs this FK insert).
 containsSchema.pre("save", async function () {
-  if (this.isNew && (await Contains.countDocuments({ playlist_id: this.playlist_id })) >= 50)
-    throw new Error("playlist is full");
+  if (!this.isNew) return;
+  await Playlist.updateOne({ _id: this.playlist_id }, { $inc: { rev: 1 } });
+  if ((await Contains.countDocuments({ playlist_id: this.playlist_id })) >= 50) throw new Error("playlist is full");
 });
 
 // before_contains_insert (2nd): a new song goes to the end of the playlist
@@ -218,7 +228,8 @@ listenSchema.post("save", async function () {
 // before_song_delete (2nd): likes and play history of a taken down song go with it (ON DELETE CASCADE)
 songSchema.pre("findOneAndDelete", async function () {
   const song_id = this.getFilter()._id;
-  await Promise.all([Liked.deleteMany({ song_id }), Listen.deleteMany({ song_id })]);
+  await Liked.deleteMany({ song_id }); // sequential: a transaction's session runs one operation at a time
+  await Listen.deleteMany({ song_id });
 });
 
 // registered after the triggers so before_song_delete clears Contains first
