@@ -5,3 +5,4 @@ node_modules
 backend/data
 .DS_Store
 *.tsbuildinfo
+backend/.add-to-catalog-state.json

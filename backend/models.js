@@ -88,6 +88,7 @@ const songSchema = new Schema(
     youtube_id: { type: String, maxlength: 20 }, // extra vs SQL: cached by GET /api/play/:id
     plays: { type: Number, default: 0, min: 0 }, // extra vs SQL: kept up to date by the after_listen_insert trigger
     yt_views: { type: Number, min: 0 }, // extra vs SQL: YouTube viewCount, fetched when youtube_id is first looked up
+    bpm: { type: Number, min: 0 }, // extra vs SQL: tempo from Deezer (missing when Deezer does not know it)
   },
   opts("Songs"),
 );

@@ -23,6 +23,9 @@ const users = [
   [10, "ananya_m", "ananya.m@gmail.com"], [11, "vivaan_r", "Vivaan.R@gmail.com"], [12, "ishita_j", "ishita.j@spit.ac.in"],
   [13, "kabir_d", "Kabir.D@gmail.com"], [14, "meera_n", "meera.n@hotmail.com"], [15, "arjun_t", "Arjun.T@gmail.com"],
 ];
+// 25 more listeners for the bigger catalog (ids 16..40), each owning one of the genre playlists below
+const moreUsers = "riya_s aditya_v sneha_r karan_m pooja_d nikhil_b tanvi_k yash_p neha_a sid_c kavya_l rahul_n priya_t aman_g zoya_h dev_j isha_w manav_o sara_q varun_e anika_f harsh_u myra_i om_y tara_z".split(" ");
+users.push(...moreUsers.map((n, i) => [16 + i, n, `${n.replace("_", ".")}@Gmail.com`]));
 
 // ---------- Playlists: [id, name, is_public, user_id, "SONG, SONG, ..."] (songs matched by name) ----------
 const playlists = [
@@ -47,6 +50,10 @@ const playlists = [
   [19, "K-POP & LATIN", true, 13, "DYNAMITE, BUTTER, DAKITI, TITI ME PREGUNTO"],
   [20, "ROMANTIC BOLLYWOOD", true, 14, "TUM HI HO, PEHLI NAZAR MEIN, TERE LIYE, SUN RAHA HAI, APNA BANA LE, JEENE LAGA HOON, TERI ORE, AGAR TUM SAATH HO"],
 ];
+// one public playlist per genre (25 most viewed / most followed songs), owned by the extra users. Song ids here, not names
+const fansOf = new Map(data.artists.map((a) => [a.id, a.fans ?? 0]));
+const ranked = [...data.songs].sort((a, b) => (b.yt_views ?? 0) - (a.yt_views ?? 0) || fansOf.get(b.artist_id) - fansOf.get(a.artist_id) || a.id - b.id);
+data.genres.forEach((g, i) => playlists.push([21 + i, `${g.name.toUpperCase()} ESSENTIALS`, true, 16 + i, ranked.filter((s) => s.genre_id === g.id).slice(0, 25).map((s) => s.id)]));
 // shared playlists: [playlist_id, collaborator user_id]
 const collaborators = [[15, 7], [15, 8], [1, 2], [4, 4], [9, 5], [18, 13], [10, 3]];
 // songs taken out of a playlist later: [playlist_id, song]. after_contains_delete logs each one to Removed_Songs
@@ -57,13 +64,15 @@ await Artist.create(data.artists.map((a) => ({ _id: a.id, artist_name: a.name, c
 await User.create(users.map(([_id, user_name, email]) => ({ _id, user_name, email, phone: 9_000_000_000 + _id, password_hash })));
 await Genre.create(data.genres.map((g) => ({ _id: g.id, genre_name: g.name })));
 await Album.create(data.albums.map((a) => ({ _id: a.id, album_name: a.name, artist_id: a.artist_id, release_year: a.year, cover: a.cover })));
-for (const s of data.songs)
-  await Songs.create({
-    _id: s.id, song_name: s.name, duration: s.duration, artist_id: s.artist_id, album_id: s.album_id, genre_id: s.genre_id, track_no: s.track_no,
-    audio_file: s.audio_file ?? `https://www.youtube.com/watch?v=${s.youtube_id}`, youtube_id: s.youtube_id, yt_views: s.yt_views,
-  });
+// one create() call with an array: saves run in parallel but still one by one through the triggers
+await Songs.create(data.songs.map((s) => ({
+  _id: s.id, song_name: s.name, duration: s.duration, artist_id: s.artist_id, album_id: s.album_id, genre_id: s.genre_id, track_no: s.track_no,
+  audio_file: s.audio_file ?? `https://www.youtube.com/watch?v=${s.youtube_id}`, youtube_id: s.youtube_id, yt_views: s.yt_views, bpm: s.bpm,
+})));
 
-const songId = new Map((await Songs.find({}, "song_name")).map((s) => [s.song_name, s._id]));
+// names repeat across artists now ("PERFECT"): the playlists above mean the first (original) one
+const songId = new Map();
+for (const s of await Songs.find({}, "song_name").sort({ _id: 1 })) if (!songId.has(s.song_name)) songId.set(s.song_name, s._id);
 const idOf = (name) => {
   if (!songId.has(name)) throw new Error(`Unknown song in seed: ${name}`);
   return songId.get(name);
@@ -71,7 +80,7 @@ const idOf = (name) => {
 const inPlaylist = new Map(); // playlist_id -> [song_id]
 for (const [_id, playlist_name, is_public, user_id, list] of playlists) {
   await Playlist.create({ _id, playlist_name, is_public, user_id });
-  inPlaylist.set(_id, list.split(", ").map(idOf));
+  inPlaylist.set(_id, Array.isArray(list) ? list : list.split(", ").map(idOf));
   for (const song_id of inPlaylist.get(_id)) await Contains.create({ playlist_id: _id, song_id });
 }
 for (const [playlist_id, user_id] of collaborators) await Collaborator.create({ playlist_id, user_id });
@@ -84,17 +93,19 @@ let state = 20260924;
 const rand = () => ((state = (state * 1664525 + 1013904223) >>> 0) / 2 ** 32);
 const pick = (arr) => arr[Math.floor(rand() * arr.length)];
 const sample = (arr, n) => [...arr].sort(() => rand() - 0.5).slice(0, n);
-const allSongs = [...songId.values()];
+const allSongs = data.songs.map((s) => s.id);
 const popular = data.songs.filter((s) => s.yt_views).sort((a, b) => b.yt_views - a.yt_views).slice(0, 30).map((s) => s.id);
 const artistOf = new Map(data.songs.map((s) => [s.id, s.artist_id]));
 
 for (const [uid] of users) {
   const own = playlists.filter((p) => p[3] === uid).flatMap((p) => inPlaylist.get(p[0]));
   const taste = own.length ? own : sample(allSongs, 8);
-  for (let i = 0; i < 40; i++) {
+  const listens = [];
+  for (let i = 0; i < 60; i++) {
     const song_id = rand() < 0.6 ? pick(taste) : rand() < 0.6 ? pick(popular) : pick(allSongs);
-    await Listen.create({ user_id: uid, song_id, played_at: new Date(Date.now() - rand() * 45 * 864e5) });
+    listens.push({ user_id: uid, song_id, played_at: new Date(Date.now() - rand() * 45 * 864e5) });
   }
+  await Listen.create(listens); // after_listen_insert still runs per row ($inc is atomic, so parallel is fine)
   for (const song_id of sample([...new Set(taste)], 6 + Math.floor(rand() * 6))) await Liked.create({ user_id: uid, song_id });
   for (const artist_id of new Set(sample(taste, 5).map((id) => artistOf.get(id)))) await Follow.create({ user_id: uid, kind: "artist", target_id: artist_id });
   for (const p of sample(playlists.filter((p) => p[2] && p[3] !== uid), 2)) await Follow.create({ user_id: uid, kind: "playlist", target_id: p[0] });
