@@ -6,7 +6,8 @@ export const views = {
   // from the SQL: public user view [hides phone numbers and password_hashes]
   User_Public: {
     on: "User",
-    pipeline: [{ $project: { _id: 0, user_id: "$_id", user_name: 1, email: 1 } }],
+    // photo: a URL, never the BinData itself
+    pipeline: [{ $project: { _id: 0, user_id: "$_id", user_name: 1, email: 1, photo: { $cond: ["$photo_type", { $concat: ["/api/users/", { $toString: "$_id" }, "/photo?v=", { $toString: { $toLong: "$photo_at" } }] }, "$$REMOVE"] } } }],
   },
 
   // from the SQL: sorts songs into length buckets
@@ -62,7 +63,7 @@ export const views = {
       join("Artist", "artist_id", "_id", "a"),
       join("Album", "album_id", "_id", "al"),
       join("Genre", "genre_id", "_id", "g"),
-      { $project: { _id: 0, song_id: "$_id", song_name: 1, duration: 1, audio_file: 1, album_id: 1, genre_id: 1, genre_name: { $first: "$g.genre_name" }, release_year: { $first: "$al.release_year" }, track_no: 1, album_name: { $first: "$al.album_name" }, album_cover: { $first: "$al.cover" }, plays: { $ifNull: ["$plays", 0] }, yt_views: 1, youtube_id: 1, artist_id: 1, artist_name: { $first: "$a.artist_name" }, country: { $first: "$a.country" } } },
+      { $project: { _id: 0, song_id: "$_id", song_name: 1, duration: 1, audio_file: 1, album_id: 1, genre_id: 1, genre_name: { $first: "$g.genre_name" }, release_year: { $first: "$al.release_year" }, track_no: 1, album_name: { $first: "$al.album_name" }, album_cover: { $first: "$al.cover" }, plays: { $ifNull: ["$plays", 0] }, yt_views: 1, youtube_id: 1, bpm: 1, artist_id: 1, artist_name: { $first: "$a.artist_name" }, country: { $first: "$a.country" } } },
       { $sort: { song_id: 1 } },
     ],
   },
@@ -92,6 +93,16 @@ export const views = {
       join("Album", "s.album_id", "_id", "al"),
       { $project: { playlist_id: 1, album_name: { $first: "$al.album_name" }, song_id: 1, song_name: "$s.song_name", duration: "$s.duration", plays: { $ifNull: ["$s.plays", 0] }, yt_views: "$s.yt_views", youtube_id: "$s.youtube_id", album_id: "$s.album_id", position: 1, artist_id: "$s.artist_id", artist_name: { $first: "$a.artist_name" } } },
       { $sort: { playlist_id: 1, position: 1, _id: 1 } },
+    ],
+  },
+  // GridFS metadata: one fs.files row per Canvas video, its fs.chunks counted (not loaded) and the song that links to it
+  GridFS_Files: {
+    on: "fs.files",
+    pipeline: [
+      { $lookup: { from: "fs.chunks", localField: "_id", foreignField: "files_id", pipeline: [{ $project: { _id: 1 } }], as: "c" } },
+      join("Songs", "_id", "canvas_id", "s"),
+      { $project: { file_id: "$_id", _id: 0, filename: 1, contentType: "$metadata.contentType", length: 1, chunkSize: 1, chunks: { $size: "$c" }, song_id: { $first: "$s._id" }, song_name: { $first: "$s.song_name" }, uploadDate: 1 } },
+      { $sort: { uploadDate: -1 } },
     ],
   },
 };

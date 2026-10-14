@@ -4,6 +4,8 @@ import Link from "next/link";
 import { api, send, mmss, thumb, type Song } from "@/lib/api";
 import { Cover } from "./ui";
 import { LikeButton } from "./Likes";
+import { Canvas } from "./Canvas";
+import { Visualizer } from "./Visualizer";
 
 // Minimal slice of the YouTube IFrame API we use
 type YTPlayer = {
@@ -219,6 +221,7 @@ export function NowPlaying() {
         <button aria-label="Close" onClick={() => setSheet(false)} className="px-2 text-muted hover:text-white lg:hidden">✕</button>
       </div>
       <div id="yt-slot" className="aspect-square w-full shrink-0 overflow-hidden rounded-lg bg-black" />
+      {current && <Canvas key={current.song_id} songId={current.song_id} />}
       {error && <p className="rounded bg-red-500/20 p-2 text-sm text-red-300">{error}</p>}
       <div>
         <p className="text-xl font-bold">{current?.song_name}</p>
@@ -247,6 +250,7 @@ const icon = "size-4";
 export function PlayerBar() {
   const p = usePlayer();
   const { current, playing, toggle, skip, time, duration, seek, volume, setVolume, shuffle, repeat } = p;
+  const [viz, setViz] = useState(false);
   if (!current) return null;
   const btn = (on = false) => `grid size-8 place-items-center ${on ? "text-accent" : "text-muted hover:text-white"}`;
   const total = duration || current.duration;
@@ -261,6 +265,11 @@ export function PlayerBar() {
           </span>
         </button>
         <LikeButton id={current.song_id} />
+        <button aria-label="Open visualizer" title="Visualizer" onClick={() => setViz(true)} className={btn(viz)}>
+          <svg viewBox="0 0 16 16" className={icon} fill="currentColor"><path d="M1 9h2v6H1zm4-5h2v11H5zm4 3h2v8H9zm4-6h2v14h-2z" /></svg>
+        </button>
+        {/* ponytail: the overlay covers the YT iframe while open; the song keeps playing underneath */}
+        {viz && <Visualizer song={current} time={time} playing={playing} toggle={toggle} onClose={() => setViz(false)} />}
       </div>
       <div className="flex flex-col items-center gap-1">
         <div className="flex items-center gap-3 max-md:gap-1">

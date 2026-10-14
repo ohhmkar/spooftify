@@ -3,8 +3,9 @@ import type { PlaylistSummary, Follow } from "@/lib/api";
 import { api, getMe } from "@/lib/server";
 import { Hero, Card, Shelf } from "@/components/ui";
 import { FollowButton } from "@/components/Auth";
+import { UploadButton } from "@/components/Upload";
 
-type PublicUser = { user_id: number; user_name: string };
+type PublicUser = { user_id: number; user_name: string; photo?: string };
 
 export default async function UserPage({ params }: PageProps<"/user/[id]">) {
   const { id } = await params;
@@ -21,9 +22,10 @@ export default async function UserPage({ params }: PageProps<"/user/[id]">) {
   const shown = playlists.filter((p) => p.is_public || own);
   return (
     <>
-      <Hero kind="Profile" title={user.user_name} seed={user.user_name} round
+      <Hero kind="Profile" title={user.user_name} seed={user.user_name} image={user.photo} round
         meta={<>{shown.length} playlists • {followers.length} followers • {following.length} following</>} />
       <div className="p-4">
+        {own && <div className="mb-4 pl-2"><UploadButton path="/me/photo" accept="image/*" label={user.photo ? "Change photo" : "Upload photo"} /></div>}
         {!own && <div className="mb-4 pl-2"><FollowButton kind="user" id={user.user_id} loggedIn={!!me} following={mine.some((f) => f.kind === "user" && f.target_id === user.user_id)} /></div>}
         <Shelf title={own ? "Your playlists" : "Public playlists"}>
           {shown.map((p) => <Card key={p.playlist_id} href={`/playlist/${p.playlist_id}`} title={p.playlist_name} image={p.cover} subtitle={`${p.song_count} songs${p.is_public ? "" : " • Private"}`} />)}

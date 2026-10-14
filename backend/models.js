@@ -5,18 +5,23 @@ const { Schema, model } = mongoose;
 const opts = (collection) => ({ collection, versionKey: false });
 const int = { type: Number, required: true, validate: Number.isInteger };
 
-// INT PRIMARY KEY: explicit id like the SQL inserts; if omitted we take MAX(id)+1
-// ponytail: MAX+1 races under concurrent inserts, use a counters collection if that ever matters
+// INT PRIMARY KEY AUTO_INCREMENT: explicit id like the SQL inserts; if omitted, Counters.seq = GREATEST(seq + 1, MAX(id) + 1).
+// The $inc on one Counters row is the serialization point: two transactions taking an id write-conflict and one retries.
+// MAX(id) keeps it right after seed.js / DB console inserts with explicit ids (they never touch the counter).
+const Counter = model("Counters", new Schema({ _id: String, seq: Number }, opts("Counters")));
 function intPk(schema) {
   schema.pre("validate", async function () {
     if (this.isNew && this._id == null) {
-      const last = await this.constructor.findOne({}, "_id").sort({ _id: -1 });
-      this._id = (last?._id ?? 0) + 1;
+      const last = (await this.constructor.findOne({}, "_id").sort({ _id: -1 }))?._id ?? 0;
+      const seq = [{ $set: { seq: { $max: [{ $add: [{ $ifNull: ["$seq", 0] }, 1] }, last + 1] } } }];
+      this._id = (await Counter.findOneAndUpdate({ _id: this.constructor.modelName }, seq, { upsert: true, returnDocument: "after", updatePipeline: true })).seq;
     }
   });
 }
 
 // FOREIGN KEY (field) REFERENCES target — insert/update side
+// ponytail: under snapshot isolation this read and a concurrent parent DELETE don't write-conflict, so an orphan can slip in;
+// only Contains -> Playlist is closed (before_contains_insert writes the Playlist row). Ceiling: write the parent row here too.
 function fk(schema, field, target) {
   schema.pre("save", async function () {
     if (this.isModified(field) && this[field] != null && !(await model(target).exists({ _id: this[field] })))
@@ -42,6 +47,11 @@ const userSchema = new Schema(
     email: { type: String, required: true, unique: true, maxlength: 50, match: [/@/, "check_email: email must contain @"] },
     phone: { ...int, unique: true },
     password_hash: { type: String, required: true, maxlength: 255 },
+    // extra vs SQL: profile picture stored IN the document as BinData (fine under the 16 MB doc limit).
+    // select: false = never loaded by find()/findById(), so the bytes never leak into JSON responses
+    photo: { type: Buffer, select: false },
+    photo_type: { type: String, match: /^image\// },
+    photo_at: Date, // cache buster for the photo URL
   },
   opts("User"),
 );
@@ -88,6 +98,8 @@ const songSchema = new Schema(
     youtube_id: { type: String, maxlength: 20 }, // extra vs SQL: cached by GET /api/play/:id
     plays: { type: Number, default: 0, min: 0 }, // extra vs SQL: kept up to date by the after_listen_insert trigger
     yt_views: { type: Number, min: 0 }, // extra vs SQL: YouTube viewCount, fetched when youtube_id is first looked up
+    canvas_id: Schema.Types.ObjectId, // extra vs SQL: looping "Canvas" video, a GridFS file (fs.files._id) — too big for BinData
+    bpm: { type: Number, min: 0 }, // extra vs SQL: tempo from Deezer (missing when Deezer does not know it)
   },
   opts("Songs"),
 );
@@ -99,6 +111,9 @@ const playlistSchema = new Schema(
     is_public: { type: Boolean, required: true, default: true },
     user_id: { ...int, ref: "User" },
     image: { type: String, maxlength: 255 }, // extra vs SQL: custom cover URL (default cover = first song's thumbnail)
+    rev: { type: Number, default: 0 }, // extra vs SQL: bumped by before_contains_insert, the row lock SELECT ... FOR UPDATE would take
+    cover: { type: Buffer, select: false }, // extra vs SQL: uploaded cover as BinData; image then points at /api/playlists/:id/cover
+    cover_type: { type: String, match: /^image\// },
   },
   opts("Playlist"),
 );
@@ -184,9 +199,13 @@ songSchema.pre("findOneAndDelete", async function () {
 });
 
 // before_contains_insert: stop adding songs once a playlist has 50
+// Snapshot isolation alone lets two inserts both count 49 (write skew), so first write the parent Playlist row:
+// concurrent inserts into one playlist then write-conflict, one aborts and the driver retries it against the new count.
+// The same write makes a concurrent DELETE of the playlist conflict too (restrict check vs this FK insert).
 containsSchema.pre("save", async function () {
-  if (this.isNew && (await Contains.countDocuments({ playlist_id: this.playlist_id })) >= 50)
-    throw new Error("playlist is full");
+  if (!this.isNew) return;
+  await Playlist.updateOne({ _id: this.playlist_id }, { $inc: { rev: 1 } });
+  if ((await Contains.countDocuments({ playlist_id: this.playlist_id })) >= 50) throw new Error("playlist is full");
 });
 
 // before_contains_insert (2nd): a new song goes to the end of the playlist
@@ -218,7 +237,21 @@ listenSchema.post("save", async function () {
 // before_song_delete (2nd): likes and play history of a taken down song go with it (ON DELETE CASCADE)
 songSchema.pre("findOneAndDelete", async function () {
   const song_id = this.getFilter()._id;
-  await Promise.all([Liked.deleteMany({ song_id }), Listen.deleteMany({ song_id })]);
+  await Liked.deleteMany({ song_id }); // sequential: a transaction's session runs one operation at a time
+  await Listen.deleteMany({ song_id });
+});
+
+// after_song_delete: its Canvas goes too. GridFS = fs.files (metadata) + fs.chunks (255 KB pieces); bucket.delete removes both.
+// post (not pre) so a song delete that fails (RESTRICT, ...) keeps its video. GridFS deletes are not transactional:
+// ponytail: inside a transaction this runs before COMMIT, so an aborted commit would keep the song but lose its video (canvas_id then 404s)
+export const gridfs = () => new mongoose.mongo.GridFSBucket(mongoose.connection.db);
+songSchema.post("findOneAndDelete", async function (doc) {
+  if (doc?.canvas_id) await gridfs().delete(doc.canvas_id).catch(() => {}); // already gone = fine
+});
+
+// a cover URL typed by hand replaces the uploaded one, so drop the stored bytes
+playlistSchema.pre("save", function () {
+  if (this.isModified("image") && !this.image?.startsWith("/api/")) this.set({ cover: undefined, cover_type: undefined });
 });
 
 // registered after the triggers so before_song_delete clears Contains first
@@ -255,4 +288,5 @@ export const triggers = [
   ["before_follow_insert", "BEFORE INSERT ON Follows", "SIGNAL if target_id is missing in the table kind names, or a user follows themselves"],
   ["before_collab_insert", "BEFORE INSERT ON Collaborators", "SIGNAL if the user owns the playlist"],
   ["after_listen_insert", "AFTER INSERT ON Listens", "UPDATE Songs SET plays = plays + 1 WHERE song_id = NEW.song_id"],
+  ["after_song_delete", "AFTER DELETE ON Songs", "delete its Canvas video from GridFS (fs.files + fs.chunks)"],
 ].map(([name, event, action]) => ({ name, event, action }));

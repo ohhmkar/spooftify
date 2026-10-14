@@ -7,7 +7,7 @@ type Meta = {
   views: { name: string; on: string; pipeline: unknown[] }[];
   triggers: { name: string; event: string; action: string }[];
 };
-type Tab = { kind: "table" | "view"; name: string } | { kind: "triggers" };
+type Tab = { kind: "table" | "view"; name: string } | { kind: "triggers" } | { kind: "tx" };
 
 const TRIGGER_DEMOS = [
   ["before_song_insert", "Songs → insert", '{ "song_name": "  new song  ", "duration": 200, "audio_file": "NS.MP3", "artist_id": 1 }'],
@@ -47,11 +47,13 @@ export default function DbConsole() {
           <div className="flex flex-wrap items-center gap-2">
             <span className="w-16 text-xs text-muted uppercase">Triggers</span>
             <button className={btn(is("triggers"))} onClick={() => setTab({ kind: "triggers" })}>All {meta.triggers.length} triggers</button>
+            <button className={btn(is("tx"))} onClick={() => setTab({ kind: "tx" })}>Transactions (TCL)</button>
           </div>
         </div>
       )}
       {meta && tab.kind === "triggers" && <Triggers meta={meta} />}
-      {meta && tab.kind !== "triggers" && (
+      {meta && tab.kind === "tx" && <Transactions meta={meta} />}
+      {meta && (tab.kind === "table" || tab.kind === "view") && (
         <Grid key={tab.kind + tab.name} kind={tab.kind} name={tab.name} def={meta.views.find((v) => v.name === tab.name)} />
       )}
     </div>
@@ -71,6 +73,130 @@ function Triggers({ meta }: { meta: Meta }) {
           </div>
         );
       })}
+    </div>
+  );
+}
+
+// ---------- TCL: START TRANSACTION ... COMMIT / ROLLBACK through POST /api/tx ----------
+type Op = { op: "insert" | "update" | "delete" | "savepoint" | "rollback_to"; table?: string; id?: string | number; doc?: Row; name?: string };
+type TxResult = {
+  status: "COMMIT" | "ROLLBACK"; reason: string;
+  log: { sql: string; status: "ok" | "error" | "info"; msg?: string }[];
+  after: { sql: string; rows: number; row: Row | null; table: string; id: string | number; op: Op["op"] }[];
+};
+// "$N" = the _id inserted by step N (backend logs it as @stepN), so presets need no hard-coded ids; n keeps unique columns unique
+const song = (song_name: string): Op => ({ op: "insert", table: "Songs", doc: { song_name, duration: 200, audio_file: "TX.MP3", artist_id: 1 } });
+const TX_PRESETS: [string, (n: number) => Op[], number?][] = [
+  ["Add 2 songs to a playlist, then fail", () => [song("  tx song one "), song("tx song two"),
+    { op: "insert", table: "Contains", doc: { playlist_id: 1, song_id: "$1" } }, { op: "insert", table: "Contains", doc: { playlist_id: 1, song_id: "$2" } }], 4],
+  ["Create user + playlist atomically", (n) => [
+    { op: "insert", table: "User", doc: { user_name: `tx_${n}`, email: `TX_${n}@GMAIL.COM`, phone: 8000000000 + n, password_hash: "x" } },
+    { op: "insert", table: "Playlist", doc: { playlist_name: "ATOMIC MIX", is_public: true, user_id: "$1" } }]],
+  ["CHECK violation mid-way", () => [song("fine song"), { op: "insert", table: "Songs", doc: { song_name: "bad", duration: 0, audio_file: "B.MP3", artist_id: 1 } }]],
+  ["Delete a song (triggers cascade), then fail", () => [{ op: "delete", table: "Songs", id: 1 }], 1],
+  ["SAVEPOINT + ROLLBACK TO (emulated)", (n) => [
+    { op: "insert", table: "Genre", doc: { genre_name: `TCL KEPT ${n}` } }, { op: "savepoint", name: "a" },
+    { op: "insert", table: "Genre", doc: { genre_name: `TCL UNDONE ${n}` } }, { op: "rollback_to", name: "a" }]],
+];
+const opText = (o: Op) =>
+  o.op === "savepoint" ? `SAVEPOINT ${o.name}` : o.op === "rollback_to" ? `ROLLBACK TO SAVEPOINT ${o.name}`
+    : `${o.op.toUpperCase()} ${o.table}${o.id !== undefined ? ` WHERE _id = ${o.id}` : ""}${o.doc ? " " + JSON.stringify(o.doc) : ""}`;
+
+function Transactions({ meta }: { meta: Meta }) {
+  const [ops, setOps] = useState<Op[]>([]);
+  const [failAt, setFailAt] = useState("");
+  const [draft, setDraft] = useState({ op: "insert" as Op["op"], table: "Songs", id: "", json: "{}", name: "" });
+  const [res, setRes] = useState<TxResult>();
+  const [err, setErr] = useState("");
+  const marker = draft.op === "savepoint" || draft.op === "rollback_to";
+
+  const add = () => {
+    let doc: Row | undefined;
+    if (draft.op === "insert" || draft.op === "update") { try { doc = JSON.parse(draft.json); } catch { return setErr("Invalid JSON"); } }
+    const id = draft.id !== "" && !isNaN(+draft.id) ? +draft.id : draft.id;
+    setOps([...ops, marker ? { op: draft.op, name: draft.name || "sp1" } : { op: draft.op, table: draft.table, ...(draft.op !== "insert" && { id }), ...(doc && { doc }) }]);
+    setErr("");
+  };
+  const run = (list = ops, fail = failAt) =>
+    send("POST", "/tx", { ops: list, fail_at: fail === "" ? undefined : +fail }).then((r) => { setRes(r as TxResult); setErr(""); }).catch((e) => setErr(e.message));
+  // undo a COMMIT: DELETE the rows it inserted, newest first (children before parents, so RESTRICT is happy)
+  const undo = res?.status === "COMMIT" ? res.after.filter((a) => a.op === "insert" && a.rows).reverse().map((a): Op => ({ op: "delete", table: a.table, id: a.id })) : [];
+  const color = { ok: "text-accent", error: "text-red-400", info: "text-muted" };
+
+  return (
+    <div className="space-y-4">
+      <p className="text-sm text-muted">
+        Every statement runs inside one MongoDB transaction (<code>connection.transaction()</code>), through the models, so CHECKs, FKs and triggers fire and roll back with it.
+        MongoDB has no SAVEPOINT: <code>ROLLBACK TO</code> is emulated by aborting and replaying the statements before the savepoint.
+      </p>
+      <div className="flex flex-wrap items-center gap-2">
+        <span className="w-16 text-xs text-muted uppercase">Presets</span>
+        {TX_PRESETS.map(([label, make, fail]) => (
+          <button key={label} className="rounded-full bg-raised px-3 py-1 text-sm hover:bg-white/15"
+            onClick={() => { const list = make(Date.now() % 1e8); setOps(list); setFailAt(fail ? String(fail) : ""); run(list, fail ? String(fail) : ""); }}>{label}</button>
+        ))}
+      </div>
+      <div className="rounded-lg bg-raised p-4">
+        <p className="mb-2 text-sm font-bold">Statements</p>
+        {ops.length === 0 && <p className="text-xs text-muted">None yet: add one below or pick a preset.</p>}
+        <ol className="space-y-1">
+          {ops.map((o, i) => (
+            <li key={i} className="flex items-center gap-2 font-mono text-xs">
+              <span className="w-6 text-muted">{i + 1}.</span>
+              <span className="truncate">{opText(o)}</span>
+              <button className="ml-auto text-red-400 hover:text-red-300" onClick={() => setOps(ops.filter((_, j) => j !== i))}>Remove</button>
+            </li>
+          ))}
+        </ol>
+        <div className="mt-3 flex flex-wrap items-start gap-2 border-t border-white/10 pt-3">
+          <select value={draft.op} onChange={(e) => setDraft({ ...draft, op: e.target.value as Op["op"] })} aria-label="Statement" className="rounded bg-white/10 px-2 py-2 text-sm">
+            {["insert", "update", "delete", "savepoint", "rollback_to"].map((o) => <option key={o} value={o}>{o.toUpperCase().replace("_", " ")}</option>)}
+          </select>
+          {marker ? (
+            <input value={draft.name} onChange={(e) => setDraft({ ...draft, name: e.target.value })} placeholder="savepoint name" aria-label="Savepoint name" className="w-40 rounded bg-white/10 px-3 py-2 font-mono text-sm" />
+          ) : (
+            <>
+              <select value={draft.table} onChange={(e) => setDraft({ ...draft, table: e.target.value })} aria-label="Table" className="rounded bg-white/10 px-2 py-2 text-sm">
+                {meta.tables.map((t) => <option key={t}>{t}</option>)}
+              </select>
+              {draft.op !== "insert" && <input value={draft.id} onChange={(e) => setDraft({ ...draft, id: e.target.value })} placeholder="_id" aria-label="Row id" className="w-28 rounded bg-white/10 px-3 py-2 font-mono text-sm" />}
+              {draft.op !== "delete" && <textarea value={draft.json} onChange={(e) => setDraft({ ...draft, json: e.target.value })} rows={2} aria-label="Row JSON" className="min-w-64 flex-1 rounded bg-black/40 p-2 font-mono text-xs" />}
+            </>
+          )}
+          <button onClick={add} className="rounded-full bg-white/10 px-4 py-2 text-sm hover:bg-white/15">+ Add</button>
+        </div>
+        <div className="mt-3 flex flex-wrap items-center gap-2">
+          <input value={failAt} onChange={(e) => setFailAt(e.target.value)} placeholder="fail after step N (optional)" aria-label="Fail at step" className="w-56 rounded bg-white/10 px-3 py-2 font-mono text-sm" />
+          <button onClick={() => setOps([])} className="rounded-full bg-white/10 px-4 py-2 text-sm">Clear</button>
+          <button onClick={() => run()} disabled={!ops.length} className="ml-auto rounded-full bg-accent px-4 py-2 text-sm font-bold text-black disabled:opacity-40">Run transaction</button>
+        </div>
+      </div>
+      {err && <p className="rounded bg-red-500/20 p-3 text-sm text-red-300">{err}</p>}
+      {res && (
+        <div className="rounded-lg border border-white/10 bg-black/60 p-4 font-mono text-xs leading-relaxed">
+          {res.log.map((l, i) => (
+            <div key={i} className={/^(START|COMMIT|ROLLBACK$)/.test(l.sql) ? "font-bold" : ""}>
+              <span className="text-muted">mongo&gt; </span>{l.sql};
+              {l.msg && <div className={`pl-8 ${color[l.status]}`}>{l.status === "error" ? "ERROR: " : "-- "}{l.msg}</div>}
+            </div>
+          ))}
+          <p className={`mt-3 text-sm font-bold ${res.status === "COMMIT" ? "text-accent" : "text-red-400"}`}>{res.status}: {res.reason}</p>
+          {undo.length > 0 && (
+            <button onClick={() => { setOps(undo); setFailAt(""); run(undo, ""); }} className="mt-2 rounded-full bg-white/10 px-3 py-1 font-sans text-xs hover:bg-white/15">
+              Undo: DELETE the {undo.length} inserted row{undo.length === 1 ? "" : "s"} in a new transaction
+            </button>
+          )}
+          {res.after.length > 0 && (
+            <div className="mt-3 border-t border-white/10 pt-3">
+              <p className="mb-1 text-muted">-- after the transaction (outside it): are the rows there?</p>
+              {res.after.map((a) => (
+                <div key={a.sql}><span className="text-muted">mongo&gt; </span>{a.sql}; <span className={a.rows ? "text-accent" : "text-red-400"}>{a.rows} row{a.rows === 1 ? "" : "s"}</span>
+                  {a.row && <span className="text-muted"> {JSON.stringify(a.row)}</span>}</div>
+              ))}
+            </div>
+          )}
+        </div>
+      )}
     </div>
   );
 }
