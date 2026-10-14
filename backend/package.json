@@ -9,7 +9,8 @@
     "start": "node --env-file-if-exists=.env server.js",
     "media": "node --env-file-if-exists=.env fetch-media.js",
     "seed": "node --env-file-if-exists=.env seed.js",
-    "db": "mkdir -p data && mongod --dbpath ./data --bind_ip 127.0.0.1"
+    "db": "mkdir -p data && mongod --dbpath ./data --bind_ip 127.0.0.1 --replSet rs0",
+    "check": "node check-acid.js"
   },
   "keywords": [],
   "author": "",

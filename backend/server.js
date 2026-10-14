@@ -8,6 +8,7 @@ import { findVideo, viewCounts } from "./youtube.js";
 import { hashPassword, checkPassword, makeToken, readToken, cookieOptions } from "./auth.js";
 
 const PORT = process.env.PORT ?? 5050;
+mongoose.set("transactionAsyncLocalStorage", true); // every query inside connection.transaction(fn), triggers included, joins its session
 await mongoose.connect(process.env.MONGODB_URI ?? "mongodb://127.0.0.1:27017/spotify_miniproject");
 await createViews(mongoose.connection.db);
 
@@ -22,8 +23,33 @@ const esc = (s) => s.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
 const where = (q) =>
   Object.fromEntries(Object.entries(q).map(([k, v]) => [k, v === "true" ? true : v === "false" ? false : v !== "" && !isNaN(v) ? Number(v) : v]));
 
+// START TRANSACTION ... COMMIT around a write route: the handler and every trigger it fires commit or roll back together.
+// Snapshot reads + majority writes. A write conflict (TransientTransactionError) re-runs the handler; any other error is a ROLLBACK
+// and reaches the error handler. res.json is held back until COMMIT, so nobody sees a response for a rolled-back write.
+const TX = { readConcern: { level: "snapshot" }, writeConcern: { w: "majority" } };
+const tx = (handler) => {
+  const run = async (req, res, next) => {
+    let body;
+    res.json = (b) => ((body = b), res);
+    try {
+      await mongoose.connection.transaction(() => ((res.statusCode = 200), handler(req, res, next)), TX);
+    } catch (e) {
+      res.removeHeader("Set-Cookie"); // no session cookie for a rolled-back signup
+      throw e;
+    } finally {
+      delete res.json; // back to express's res.json
+    }
+    res.json(body);
+  };
+  run.tx = true; // listed in /meta
+  return run;
+};
+
 api.get("/meta", (req, res) =>
-  res.json({ tables: Object.keys(tables), views: Object.entries(views).map(([name, v]) => ({ name, ...v })), triggers }),
+  res.json({
+    tables: Object.keys(tables), views: Object.entries(views).map(([name, v]) => ({ name, ...v })), triggers,
+    transactions: { ...TX, routes: api.stack.filter((l) => l.route?.stack.some((s) => s.handle.tx)).map((l) => `${Object.keys(l.route.methods)[0].toUpperCase()} /api${l.route.path}`) },
+  }),
 );
 
 // ---------- VIEWS (read-only) ----------
@@ -76,13 +102,13 @@ api.use((req, res, next) => {
 const needUser = (req, res, next) => (req.user ? next() : res.status(401).json({ error: "Log in first" }));
 const session = (res, id) => res.cookie("spoot", makeToken(id), cookieOptions);
 
-api.post("/auth/signup", async (req, res) => {
+api.post("/auth/signup", tx(async (req, res) => {
   const { user_name, email, phone, password } = req.body;
   if (!password || password.length < 6) throw new Error("Password must be at least 6 characters");
   const u = await tables.User.create({ user_name, email, phone: Number(phone), password_hash: hashPassword(password) });
   session(res, u._id);
   res.status(201).json({ user_id: u._id, user_name: u.user_name });
-});
+}));
 api.post("/auth/login", async (req, res) => {
   const u = await tables.User.findOne({ email: String(req.body.email ?? "").toLowerCase() });
   if (!u || !checkPassword(String(req.body.password ?? ""), u.password_hash)) return res.status(401).json({ error: "Wrong email or password" });
@@ -101,36 +127,37 @@ const songsById = async (ids) => {
   const by = new Map(rows.map((r) => [r.song_id, r]));
   return ids.map((i) => by.get(i)).filter(Boolean);
 };
-const insertOnce = (promise) => promise.catch((e) => { if (e.code !== 11000) throw e; }); // already there = fine
+// INSERT IGNORE: already there = fine. Checked first, because a duplicate key error inside a transaction aborts it.
+const insertOnce = async (Model, row) => (await Model.exists(row)) || Model.create(row);
 
 api.get("/me/likes", needUser, async (req, res) => res.json((await tables.Liked_Songs.find({ user_id: req.user }).sort({ liked_at: -1 })).map((l) => l.song_id)));
 api.get("/me/liked", needUser, async (req, res) =>
   res.json(await songsById((await tables.Liked_Songs.find({ user_id: req.user }).sort({ liked_at: -1 })).map((l) => l.song_id))),
 );
-api.put("/like/:song", needUser, async (req, res) => {
-  await insertOnce(tables.Liked_Songs.create({ user_id: req.user, song_id: +req.params.song }));
+api.put("/like/:song", needUser, tx(async (req, res) => {
+  await insertOnce(tables.Liked_Songs, { user_id: req.user, song_id: +req.params.song });
   res.json({ liked: true });
-});
-api.delete("/like/:song", needUser, async (req, res) => {
+}));
+api.delete("/like/:song", needUser, tx(async (req, res) => {
   await tables.Liked_Songs.deleteOne({ user_id: req.user, song_id: +req.params.song });
   res.json({ liked: false });
-});
+}));
 
 api.get("/me/follows", needUser, async (req, res) => res.json(await tables.Follows.find({ user_id: req.user }, "kind target_id -_id").sort({ followed_at: -1 })));
-api.put("/follow/:kind/:id", needUser, async (req, res) => {
-  await insertOnce(tables.Follows.create({ user_id: req.user, kind: req.params.kind, target_id: +req.params.id }));
+api.put("/follow/:kind/:id", needUser, tx(async (req, res) => {
+  await insertOnce(tables.Follows, { user_id: req.user, kind: req.params.kind, target_id: +req.params.id });
   res.json({ following: true });
-});
-api.delete("/follow/:kind/:id", needUser, async (req, res) => {
+}));
+api.delete("/follow/:kind/:id", needUser, tx(async (req, res) => {
   await tables.Follows.deleteOne({ user_id: req.user, kind: req.params.kind, target_id: +req.params.id });
   res.json({ following: false });
-});
+}));
 
 // a stream: the after_listen_insert trigger bumps Songs.plays. Logged-out listeners count too (user_id stays empty).
-api.post("/listen/:song", async (req, res) => {
+api.post("/listen/:song", tx(async (req, res) => {
   await tables.Listens.create({ user_id: req.user ?? undefined, song_id: +req.params.song });
   res.status(201).json({ ok: true });
-});
+}));
 api.get("/me/recent", needUser, async (req, res) => {
   const last = await tables.Listens.aggregate([
     { $match: { user_id: req.user } },
@@ -155,33 +182,33 @@ api.get("/me/playlists", needUser, async (req, res) => {
   const rows = await tables.Playlist.find({ $or: [{ user_id: req.user }, { _id: { $in: shared } }] }).sort({ _id: 1 });
   res.json(rows.map((p) => ({ ...p.toObject(), shared: p.user_id !== req.user })));
 });
-api.post("/playlists/:id/songs", needUser, editable, async (req, res) => res.status(201).json(await tables.Contains.create({ playlist_id: req.playlist._id, song_id: +req.body.song_id })));
-api.delete("/playlists/:id/songs/:song", needUser, editable, async (req, res) => {
+api.post("/playlists/:id/songs", needUser, editable, tx(async (req, res) => res.status(201).json(await tables.Contains.create({ playlist_id: req.playlist._id, song_id: +req.body.song_id }))));
+api.delete("/playlists/:id/songs/:song", needUser, editable, tx(async (req, res) => {
   const row = await tables.Contains.findOneAndDelete({ playlist_id: req.playlist._id, song_id: +req.params.song }); // after_contains_delete logs it
   row ? res.json(row) : res.status(404).json({ error: "Not in this playlist" });
-});
-api.put("/playlists/:id/order", needUser, editable, async (req, res) => {
+}));
+api.put("/playlists/:id/order", needUser, editable, tx(async (req, res) => {
   await tables.Contains.bulkWrite(req.body.song_ids.map((song_id, position) => ({ updateOne: { filter: { playlist_id: req.playlist._id, song_id }, update: { $set: { position } } } })));
   res.json({ ok: true });
-});
+}));
 api.get("/playlists/:id/collaborators", async (req, res) => {
   const rows = await tables.Collaborators.find({ playlist_id: +req.params.id });
   res.json(await db().collection("User_Public").find({ user_id: { $in: rows.map((r) => r.user_id) } }).project({ _id: 0, user_id: 1, user_name: 1 }).toArray());
 });
-api.post("/playlists/:id/collaborators", needUser, async (req, res) => {
+api.post("/playlists/:id/collaborators", needUser, tx(async (req, res) => {
   const p = await tables.Playlist.findById(req.params.id);
   if (!p || p.user_id !== req.user) return res.status(403).json({ error: "Only the owner can add collaborators" });
   const u = await tables.User.findOne({ user_name: String(req.body.user_name ?? "").trim() });
   if (!u) return res.status(404).json({ error: `No user named ${req.body.user_name}` });
-  await insertOnce(tables.Collaborators.create({ playlist_id: p._id, user_id: u._id }));
+  await insertOnce(tables.Collaborators, { playlist_id: p._id, user_id: u._id });
   res.status(201).json({ user_id: u._id, user_name: u.user_name });
-});
-api.delete("/playlists/:id/collaborators/:uid", needUser, async (req, res) => {
+}));
+api.delete("/playlists/:id/collaborators/:uid", needUser, tx(async (req, res) => {
   const p = await tables.Playlist.findById(req.params.id);
   if (!p || (p.user_id !== req.user && +req.params.uid !== req.user)) return res.status(403).json({ error: "Not allowed" }); // owner removes anyone, a collaborator can leave
   await tables.Collaborators.deleteOne({ playlist_id: p._id, user_id: +req.params.uid });
   res.json({ ok: true });
-});
+}));
 
 // artist page numbers: listeners = distinct logged-in users who played them in the last 30 days
 api.get("/artists/:id/stats", async (req, res) => {
@@ -222,17 +249,17 @@ api.get("/:table/:id", async (req, res) => {
   const doc = await req.Model.findById(req.params.id);
   doc ? res.json(doc) : res.status(404).json({ error: "Not found" });
 });
-api.post("/:table", async (req, res) => res.status(201).json(await req.Model.create(req.body)));
-api.put("/:table/:id", async (req, res) => {
+api.post("/:table", tx(async (req, res) => res.status(201).json(await req.Model.create(req.body))));
+api.put("/:table/:id", tx(async (req, res) => {
   const doc = await req.Model.findById(req.params.id);
   if (!doc) return res.status(404).json({ error: "Not found" });
   const { _id, ...changes } = req.body;
   res.json(await doc.set(changes).save());
-});
-api.delete("/:table/:id", async (req, res) => {
+}));
+api.delete("/:table/:id", tx(async (req, res) => {
   const doc = await req.Model.findOneAndDelete({ _id: req.params.id });
   doc ? res.json(doc) : res.status(404).json({ error: "Not found" });
-});
+}));
 
 app.use((err, req, res, next) => {
   const msg = err.code === 11000 ? `Duplicate key: ${JSON.stringify(err.keyValue)}` : err.message;
