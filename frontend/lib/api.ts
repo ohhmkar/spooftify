@@ -21,6 +21,9 @@ export async function api<T = Row[]>(path: string, init?: RequestInit & { body?:
   return data;
 }
 
+// raw file upload: the file itself is the request body, its type the Content-Type
+export const upload = (path: string, file: File) => api<Row>(path, { method: "PUT", body: file, headers: { "Content-Type": file.type } });
+
 export const send = (method: string, path: string, body?: unknown) =>
   api<Row>(path, { method, body: body === undefined ? undefined : JSON.stringify(body) });
 
