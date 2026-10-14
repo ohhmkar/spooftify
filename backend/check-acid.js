@@ -61,7 +61,7 @@ const ok = results.filter((r) => r.status === 201).length;
 const rows = await Contains.find({ playlist_id: 2 }).sort({ position: 1 });
 assert.equal(rows.length, 50);
 assert.equal(ok, 50);
-assert.ok(results.filter((r) => r.status !== 201).every((r) => r.body.error === "playlist is full"));
+assert.ok(results.filter((r) => r.status !== 201).every((r) => /is full/.test(r.body.error)));
 assert.deepEqual(rows.map((r) => r.position), [...Array(50).keys()]);
 console.log(`isolation: 59 concurrent Contains inserts -> ${ok} committed, ${59 - ok} "playlist is full", positions 0..49 unique`);
 

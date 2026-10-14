@@ -37,3 +37,12 @@ The **DB Console** (`/db`) runs CRUD on every table, queries every view, and lis
 ## Features
 
 Playback (seek, volume, shuffle, repeat, queue, lyrics via LRCLIB), accounts, liked songs, follows (artists, users, playlists), playlist editing (rename, cover, reorder), albums, artist pages (bio, top tracks, listeners), and public stats (`/stats` and on every page).
+
+**Playback.** Full songs play through the YouTube IFrame API; the video id is looked up on first play and cached in `Songs.youtube_id`. That lookup costs 100 of the 10,000 daily YouTube quota units, so on a big catalog some songs will fail to resolve. When that happens (no `YOUTUBE_API_KEY`, quota used up, video not embeddable) the player falls back to the 30-second iTunes preview and says so (`30s PREVIEW`). Space plays / pauses, from anywhere except a text field.
+
+**Visualizer** (button next to the heart in the player bar): Bars, Battery, Alchemy and Scope. It follows the real audio when it can:
+- the song is playing as a 30 s preview: it analyses that very audio element, nothing to click;
+- full YouTube song: **Sync to audio** shares this tab's sound (Chrome / Edge; pick "This tab" and tick "Also share tab audio") and the whole song drives the visuals;
+- otherwise it is beat-synced from the song's BPM and playback time (a simulated spectrum).
+
+Search shows 100 songs / 12 of everything else per section; "Show all" / "Show more" raises it. Deleting a playlist is one transaction (`DELETE /api/playlists/:id`).

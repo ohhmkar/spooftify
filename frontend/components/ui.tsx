@@ -37,11 +37,14 @@ export function Card({ href, title, subtitle, image, round, action }: { href: st
   );
 }
 
-export function Shelf({ title, children }: { title: string; children: React.ReactNode }) {
+export function Shelf({ title, href, wrap = false, children }: { title: string; href?: string; wrap?: boolean; children: React.ReactNode }) {
   return (
     <section className="mb-8">
-      <h2 className="mb-2 px-3 text-2xl font-bold">{title}</h2>
-      <div className="-mx-1 flex overflow-x-auto pb-2 [scrollbar-width:thin]">{children}</div>
+      <div className="mb-2 flex items-baseline justify-between px-3">
+        <h2 className="text-2xl font-bold">{title}</h2>
+        {href && <Link href={href} className="text-sm font-bold text-muted hover:text-white hover:underline">Show all</Link>}
+      </div>
+      <div className={`-mx-1 flex pb-2 ${wrap ? "flex-wrap" : "overflow-x-auto [scrollbar-width:thin]"}`}>{children}</div>
     </section>
   );
 }
