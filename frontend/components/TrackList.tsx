@@ -46,7 +46,7 @@ export function TrackList({ songs, playlists, editPlaylist }: { songs: Song[]; p
           <th title="Spooftify plays · YouTube views" className="w-40 whitespace-nowrap text-right font-normal max-md:hidden">Plays · Views</th>
           <th className="w-10" />
           <th className="w-16 text-right font-normal">⏱</th>
-          <th className="w-10 xl:hidden" />
+          <th className="w-10" />
           <th className="w-72 max-xl:hidden" />
         </tr>
       </thead>
@@ -82,13 +82,15 @@ export function TrackList({ songs, playlists, editPlaylist }: { songs: Song[]; p
               <LikeButton id={s.song_id} />
             </td>
             <td className="text-right text-muted tabular-nums">{mmss(s.duration)}</td>
-            <td className="w-10 text-center xl:hidden">
+            <td className="w-10 text-center">
               <details className="relative">
                 <summary aria-label={`More options for ${s.song_name}`} className="cursor-pointer list-none px-2 py-1 text-muted hover:text-white">⋯</summary>
                 <div className="absolute right-0 z-20 mt-1 flex w-44 flex-col gap-1 rounded-lg bg-raised p-2 text-left shadow-xl shadow-black/60" onClick={(e) => (e.target as HTMLElement).tagName === "BUTTON" && closeMenu(e.target as HTMLElement)}>
                   <button className={small} onClick={() => next(s)}>Play next</button>
                   <button className={small} onClick={() => queue(s)}>Add to queue</button>
                   {addSelect(s, "rounded bg-white/10 px-2 py-1 text-xs")}
+                  <Link className={small} href={`/artist/${s.artist_id}`}>Go to artist</Link>
+                  {s.album_id && <Link className={small} href={`/album/${s.album_id}`}>Go to album</Link>}
                   {editPlaylist && <button className={small} onClick={() => run(send("DELETE", `/playlists/${editPlaylist}/songs/${s.song_id}`), "Removed from playlist")}>Remove</button>}
                 </div>
               </details>

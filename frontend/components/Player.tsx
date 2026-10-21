@@ -1,12 +1,14 @@
 "use client";
 import { createContext, useContext, useEffect, useRef, useState } from "react";
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 import { api, send, mmss, art, type Song } from "@/lib/api";
 import { Cover } from "./ui";
 import { LikeButton } from "./Likes";
 import { Canvas } from "./Canvas";
 import { Visualizer } from "./Visualizer";
 import { Resizer, setPane } from "./Resizer";
+import { useToast } from "./Toast";
 
 // Minimal slice of the YouTube IFrame API we use
 type YTPlayer = {
@@ -48,10 +50,13 @@ type Ctx = {
   addToQueue: (s: Song) => void;
   playNext: (s: Song) => void;
   removeFromQueue: (i: number) => void;
+  moveInQueue: (from: number, to: number) => void;
   jump: (i: number) => void;
   setPanel: (p: Panel) => void;
   setSheet: (open: boolean) => void;
 };
+const PREFS = "spoot-prefs"; // { volume, shuffle, repeat }
+const LAST = "spoot-last"; // { song, t }: what was loaded and how far in, restored paused on the next visit
 const PlayerCtx = createContext<Ctx | null>(null);
 export const usePlayer = () => useContext(PlayerCtx)!;
 
@@ -72,10 +77,13 @@ export function PlayerProvider({ children }: { children: React.ReactNode }) {
   const audio = useRef<HTMLAudioElement | null>(null);
   const previewing = useRef(false); // same as `preview`, readable from the YT / audio callbacks
   const lastVolume = useRef(100);
+  const cue = useRef<number | null>(null); // seconds to cue to on the first load after a restore (loaded paused)
+  const toast = useToast();
+  const path = usePathname();
   const current = queue[idx];
 
   // the YT callbacks are created once, so they read the latest state through this ref
-  const live = useRef({ queue, idx, shuffle, repeat, time, volume });
+  const live = useRef({ queue, idx, shuffle, repeat, time, volume, playing });
   const listen = (song: Song) => void send("POST", `/listen/${song.song_id}`).catch(() => {});
   const seekTo = (t: number) => (previewing.current && audio.current ? void (audio.current.currentTime = t) : player.current?.seekTo(t, true));
   const resume = () => (previewing.current && audio.current ? void audio.current.play().catch(() => {}) : player.current?.playVideo());
@@ -99,18 +107,43 @@ export function PlayerProvider({ children }: { children: React.ReactNode }) {
   };
   const stepRef = useRef(step);
   useEffect(() => {
-    live.current = { queue, idx, shuffle, repeat, time, volume };
+    live.current = { queue, idx, shuffle, repeat, time, volume, playing };
     stepRef.current = step;
   });
 
   useEffect(() => {
+    try {
+      /* eslint-disable react-hooks/set-state-in-effect -- localStorage is only readable after hydration */
+      const p = JSON.parse(localStorage.getItem(PREFS) ?? "null");
+      if (p) { setVol(p.volume ?? 100); setShuffle(!!p.shuffle); setRepeat(p.repeat ?? "off"); }
+      const l = JSON.parse(localStorage.getItem(LAST) ?? "null");
+      if (l?.song) { cue.current = l.t || 0; setQueue([l.song]); setTime(l.t || 0); }
+      /* eslint-enable react-hooks/set-state-in-effect */
+    } catch {}
+  }, []);
+  const savePrefs = (p: Partial<{ volume: number; shuffle: boolean; repeat: Repeat }>) => {
+    try { localStorage.setItem(PREFS, JSON.stringify({ volume, shuffle, repeat, ...p })); } catch {}
+  };
+
+  useEffect(() => {
     if (!current) return;
     let stale = false;
+    const r = cue.current; // non-null only for the song restored from the last visit: cue it, don't start it
+    cue.current = null;
+    try { localStorage.setItem(LAST, JSON.stringify({ song: current, t: r ?? 0 })); } catch {}
     audio.current?.pause(); // leaving a preview behind
     previewing.current = false;
     const fallback = (why: string) => {
       const url = previewUrl(current);
-      if (!url) return setError(why);
+      if (!url) {
+        setError(why);
+        // nothing to play: move on to the next song instead of sitting on the error
+        if (live.current.idx + 1 < live.current.queue.length) {
+          toast(`Skipped “${current.song_name}”: ${why}`, true);
+          setIdx(live.current.idx + 1);
+        }
+        return;
+      }
       player.current?.pauseVideo();
       if (!audio.current) {
         const a = new Audio();
@@ -123,16 +156,17 @@ export function PlayerProvider({ children }: { children: React.ReactNode }) {
       previewing.current = true;
       setPreviewId(current.song_id);
       setError("");
-      listen(current);
       audio.current.src = url;
       audio.current.volume = live.current.volume / 100;
+      if (r != null) return void (audio.current.currentTime = r);
+      listen(current);
       audio.current.play().catch(() => setError("Press play to start the preview"));
     };
     Promise.all([api<{ youtube_id: string }>(`/play/${current.song_id}`), loadYT()])
       .then(([{ youtube_id }]) => {
         if (stale) return;
         setError("");
-        listen(current);
+        if (r == null) listen(current);
         if (player.current) return player.current.loadVideoById(youtube_id);
         // YT replaces its mount node with an iframe, so give it a node React doesn't own
         const mount = document.getElementById("yt-slot")!.appendChild(document.createElement("div"));
@@ -140,9 +174,12 @@ export function PlayerProvider({ children }: { children: React.ReactNode }) {
           videoId: youtube_id,
           width: "100%",
           height: "100%",
-          playerVars: { autoplay: 1, playsinline: 1 },
+          playerVars: { autoplay: r == null ? 1 : 0, playsinline: 1 },
           events: {
-            onReady: (e: { target: YTPlayer }) => e.target.setVolume(live.current.volume),
+            onReady: (e: { target: YTPlayer }) => {
+              e.target.setVolume(live.current.volume);
+              if (r != null) { e.target.seekTo(r, true); e.target.pauseVideo(); }
+            },
             // 0 ended, 1 playing, 2 paused
             onStateChange: (e: { data: number }) => {
               if (previewing.current) return; // the video is only parked while a preview plays
@@ -156,7 +193,7 @@ export function PlayerProvider({ children }: { children: React.ReactNode }) {
     return () => {
       stale = true;
     };
-  }, [current]);
+  }, [current, toast]);
 
   // progress bar: YT has no time event, so poll while a song is loaded
   useEffect(() => {
@@ -170,13 +207,14 @@ export function PlayerProvider({ children }: { children: React.ReactNode }) {
         setTime(p.getCurrentTime());
         setDuration(p.getDuration() || current.duration);
       }
+      if (live.current.playing) try { localStorage.setItem(LAST, JSON.stringify({ song: current, t: live.current.time })); } catch {}
     }, 500);
     return () => clearInterval(t);
   }, [current]);
 
   const toggle = () => {
     if (previewing.current && audio.current) return void (audio.current.paused ? audio.current.play().catch(() => {}) : audio.current.pause());
-    return playing ? player.current?.pauseVideo() : player.current?.playVideo();
+    return playing ? player.current?.pauseVideo?.() : player.current?.playVideo?.(); // not there yet while the iframe is still loading
   };
   const ctx: Ctx = {
     current, queue, idx, playing, error, time, duration, volume, shuffle, repeat, panel, sheet, preview: previewId !== undefined && previewId === current?.song_id,
@@ -191,6 +229,7 @@ export function PlayerProvider({ children }: { children: React.ReactNode }) {
       if (!q.length) return;
       let i = Math.floor(Math.random() * q.length);
       if (q.length > 1 && q[i].song_id === current?.song_id) i = (i + 1) % q.length; // play() would pause the song that is already loaded
+      savePrefs({ shuffle: true });
       setShuffle(true);
       ctx.play(q, i);
     },
@@ -202,6 +241,7 @@ export function PlayerProvider({ children }: { children: React.ReactNode }) {
     },
     setVolume: (v) => {
       setVol(v);
+      savePrefs({ volume: v });
       player.current?.setVolume(v);
       if (audio.current) audio.current.volume = v / 100;
     },
@@ -210,8 +250,12 @@ export function PlayerProvider({ children }: { children: React.ReactNode }) {
       if (volume) lastVolume.current = volume; // un-mute returns to where it was, not always 100
       ctx.setVolume(volume ? 0 : lastVolume.current || 100);
     },
-    toggleShuffle: () => setShuffle((s) => !s),
-    cycleRepeat: () => setRepeat((r) => (r === "off" ? "all" : r === "all" ? "one" : "off")),
+    toggleShuffle: () => (savePrefs({ shuffle: !shuffle }), setShuffle(!shuffle)),
+    cycleRepeat: () => {
+      const r = repeat === "off" ? "all" : repeat === "all" ? "one" : "off";
+      savePrefs({ repeat: r });
+      setRepeat(r);
+    },
     addToQueue: (s) => (queue.length ? setQueue([...queue, s]) : (setQueue([s]), setIdx(0))),
     playNext: (s) => (queue.length ? setQueue([...queue.slice(0, idx + 1), s, ...queue.slice(idx + 1)]) : (setQueue([s]), setIdx(0))),
     removeFromQueue: (i) => {
@@ -219,28 +263,74 @@ export function PlayerProvider({ children }: { children: React.ReactNode }) {
       setQueue(queue.filter((_, j) => j !== i));
       if (i < idx) setIdx(idx - 1);
     },
+    moveInQueue: (from, to) => {
+      if (from === to) return;
+      const q = [...queue];
+      q.splice(to, 0, q.splice(from, 1)[0]);
+      setQueue(q);
+      setIdx(idx === from ? to : from < idx && to >= idx ? idx - 1 : from > idx && to <= idx ? idx + 1 : idx); // the playing song stays the playing song
+    },
     jump: setIdx,
     setPanel,
     setSheet,
   };
 
-  // Space = play / pause, unless a field or button has focus (Space already means something there)
-  const toggleRef = useRef(toggle);
+  // Space play / pause, ←/→ seek 5 s, Shift+↑/↓ volume, M mute, / focus search. Ignored while typing (arrows alone stay free to scroll the page)
+  const ctxRef = useRef(ctx);
   useEffect(() => {
-    toggleRef.current = toggle;
+    ctxRef.current = ctx;
   });
-  const hasSong = !!current;
   useEffect(() => {
-    if (!hasSong) return;
     const key = (e: KeyboardEvent) => {
       const t = e.target as HTMLElement;
-      if (e.code !== "Space" || e.repeat || t.closest("input, textarea, select, button, a, summary, [contenteditable], [role=dialog]")) return;
-      e.preventDefault();
-      toggleRef.current();
+      if (e.ctrlKey || e.metaKey || e.altKey || t.closest("input, textarea, select, [contenteditable], [role=dialog]")) return;
+      const c = ctxRef.current;
+      if (e.key === "/") {
+        e.preventDefault();
+        const box = document.querySelector<HTMLInputElement>("input[type=search]");
+        return box && (box.focus(), box.select());
+      }
+      if (!c.current) return;
+      const arrow = e.key === "ArrowLeft" || e.key === "ArrowRight" || (e.shiftKey && (e.key === "ArrowUp" || e.key === "ArrowDown"));
+      if (e.code === "Space" && !e.repeat && !t.closest("button, a, summary")) { // Space already means something on a button / link
+        e.preventDefault();
+        c.toggle();
+      } else if (arrow && !t.closest("[role=slider], [role=separator]")) { // those handle their own arrows
+        e.preventDefault();
+        if (e.key === "ArrowLeft" || e.key === "ArrowRight") c.seek(Math.max(0, Math.min(c.duration || c.current.duration, c.time + (e.key === "ArrowRight" ? 5 : -5))));
+        else c.setVolume(Math.max(0, Math.min(100, c.volume + (e.key === "ArrowUp" ? 5 : -5))));
+      } else if (e.key === "m") c.toggleMute();
     };
     addEventListener("keydown", key);
     return () => removeEventListener("keydown", key);
-  }, [hasSong]);
+  }, []);
+
+  // lock screen / media keys / headphone buttons
+  useEffect(() => {
+    if (!current || !("mediaSession" in navigator)) return;
+    const cover = art(current);
+    navigator.mediaSession.metadata = new MediaMetadata({ title: current.song_name, artist: current.artist_name, album: current.album_name ?? "", artwork: cover ? [{ src: cover }] : [] });
+  }, [current]);
+  useEffect(() => {
+    if ("mediaSession" in navigator) navigator.mediaSession.playbackState = current ? (playing ? "playing" : "paused") : "none";
+  }, [current, playing]);
+  useEffect(() => {
+    if (!("mediaSession" in navigator)) return;
+    const h: [MediaSessionAction, MediaSessionActionHandler][] = [
+      ["play", () => !ctxRef.current.playing && ctxRef.current.toggle()],
+      ["pause", () => ctxRef.current.playing && ctxRef.current.toggle()],
+      ["previoustrack", () => ctxRef.current.skip(-1)],
+      ["nexttrack", () => ctxRef.current.skip(1)],
+      ["seekto", (d) => d.seekTime != null && ctxRef.current.seek(d.seekTime)],
+    ];
+    h.forEach(([a, f]) => navigator.mediaSession.setActionHandler(a, f));
+    return () => h.forEach(([a]) => navigator.mediaSession.setActionHandler(a, null));
+  }, []);
+
+  // tab title; `path` is a dependency because Next rewrites the title on every navigation
+  useEffect(() => {
+    if (current) document.title = `${playing ? "▶ " : ""}${current.song_name} · ${current.artist_name}`;
+  }, [current, playing, path]);
   return <PlayerCtx.Provider value={ctx}>{children}</PlayerCtx.Provider>;
 }
 
@@ -285,7 +375,7 @@ function Lyrics({ song }: { song: Song }) {
 
 // YouTube terms: the player must stay visible (>= 200x200), so it lives here instead of being hidden
 export function NowPlaying() {
-  const { current, error, preview, queue, idx, panel, setPanel, jump, removeFromQueue, sheet, setSheet } = usePlayer();
+  const { current, error, preview, queue, idx, panel, setPanel, jump, removeFromQueue, moveInQueue, sheet, setSheet } = usePlayer();
   const tab = (p: Exclude<Panel, null>, label: string) => (
     <button onClick={() => setPanel(panel === p ? null : p)} className={`rounded-full px-3 py-1 text-sm font-bold ${panel === p ? "bg-white text-black" : "bg-raised hover:bg-white/15"}`}>
       {label}
@@ -318,7 +408,10 @@ export function NowPlaying() {
       {panel === "queue" && (
         <ol className="space-y-1 text-sm">
           {queue.map((s, i) => (
-            <li key={`${s.song_id}-${i}`} className={`group flex items-center gap-2 rounded p-1 hover:bg-white/[.07] ${i === idx ? "text-accent" : ""}`}>
+            <li key={`${s.song_id}-${i}`} draggable title="Drag to reorder"
+              onDragStart={(e) => e.dataTransfer.setData("text/plain", String(i))} onDragOver={(e) => e.preventDefault()}
+              onDrop={(e) => { e.preventDefault(); moveInQueue(+e.dataTransfer.getData("text/plain"), i); }}
+              className={`group flex items-center gap-2 rounded p-1 hover:bg-white/[.07] ${i === idx ? "text-accent" : ""}`}>
               <button onClick={() => jump(i)} className="flex min-w-0 flex-1 items-center gap-2 text-left">
                 <Cover name={s.song_name} src={art(s)} className="w-8 shrink-0" />
                 <span className="min-w-0"><span className="block truncate">{s.song_name}</span><span className="block truncate text-xs text-muted">{s.artist_name}</span></span>
