@@ -55,7 +55,11 @@ api.get("/meta", (req, res) =>
 // ---------- VIEWS (read-only) ----------
 api.get("/views/:name", async (req, res) => {
   if (!views[req.params.name]) return res.status(404).json({ error: "No such view" });
-  res.json(await db().collection(req.params.name).find(where(req.query)).toArray());
+  const { _sort, _limit, ...q } = req.query; // ?_sort=plays&_limit=20: top N by a column, so the home page needn't fetch every row
+  let cur = db().collection(req.params.name).find(where(q));
+  if (_sort) cur = cur.sort({ [_sort]: -1 });
+  if (_limit) cur = cur.limit(Math.min(+_limit || 0, 500));
+  res.json(await cur.toArray());
 });
 
 api.get("/search", async (req, res) => {
@@ -73,7 +77,12 @@ api.get("/search", async (req, res) => {
 });
 
 // ---------- STATS (public: only public playlists are counted) ----------
-api.get("/stats", async (req, res) => res.json(await stats(db())));
+// ponytail: 30 s in-memory cache (per instance); upgrade to Runtime Cache / $merge if stale numbers matter
+let statsCache = { at: 0, body: null };
+api.get("/stats", async (req, res) => {
+  if (Date.now() - statsCache.at > 30_000) statsCache = { at: Date.now(), body: await stats(db()) };
+  res.json(statsCache.body);
+});
 
 // ---------- PLAY: song -> YouTube video id, looked up once then cached in Songs.youtube_id ----------
 api.get("/play/:id", async (req, res) => {
@@ -128,6 +137,7 @@ const songsById = async (ids) => {
   const by = new Map(rows.map((r) => [r.song_id, r]));
   return ids.map((i) => by.get(i)).filter(Boolean);
 };
+api.get("/songs-by-id", async (req, res) => res.json(await songsById(String(req.query.ids ?? "").split(",").filter(Boolean).map(Number)))); // ?ids=1,2,3
 // INSERT IGNORE: already there = fine. Checked first, because a duplicate key error inside a transaction aborts it.
 const insertOnce = async (Model, row) => (await Model.exists(row)) || Model.create(row);
 

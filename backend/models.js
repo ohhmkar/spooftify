@@ -159,6 +159,13 @@ const listenSchema = new Schema(
 listenSchema.index({ song_id: 1 });
 listenSchema.index({ user_id: 1, played_at: -1 });
 
+// secondary indexes on the columns the FK/RESTRICT checks, cascades, views ($lookup foreignField) and artist/album pages filter by
+for (const [schema, key] of [
+  [songSchema, { artist_id: 1 }], [songSchema, { album_id: 1 }], [songSchema, { genre_id: 1 }], [albumSchema, { artist_id: 1 }],
+  [playlistSchema, { user_id: 1 }], [containsSchema, { song_id: 1 }], [likedSchema, { song_id: 1 }], [collabSchema, { user_id: 1 }],
+  [followSchema, { kind: 1, target_id: 1 }],
+]) schema.index(key);
+
 for (const s of [userSchema, artistSchema, genreSchema, albumSchema, songSchema, playlistSchema]) intPk(s);
 fk(songSchema, "artist_id", "Artist");
 fk(songSchema, "album_id", "Album");

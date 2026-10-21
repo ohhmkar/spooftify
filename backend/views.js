@@ -107,10 +107,13 @@ export const views = {
   },
 };
 
+// ponytail: compares viewOn + pipeline, so a cold start only pays one listCollections; changed views are dropped and rebuilt
 export async function createViews(db) {
-  const existing = new Set((await db.listCollections({}, { nameOnly: true }).toArray()).map((c) => c.name));
+  const existing = new Map((await db.listCollections().toArray()).map((c) => [c.name, c]));
   for (const [name, { on, pipeline }] of Object.entries(views)) {
-    if (existing.has(name)) await db.dropCollection(name);
+    const have = existing.get(name);
+    if (have?.options?.viewOn === on && JSON.stringify(have.options.pipeline) === JSON.stringify(pipeline)) continue;
+    if (have) await db.dropCollection(name);
     await db.createCollection(name, { viewOn: on, pipeline });
   }
 }

@@ -1,4 +1,5 @@
 // Server-component side of the API client: same as lib/api.ts but forwards the visitor's login cookie.
+import { cache } from "react";
 import { cookies } from "next/headers";
 import { API, type Me, type Row } from "./api";
 
@@ -10,4 +11,4 @@ export async function api<T = Row[]>(path: string): Promise<T> {
 }
 
 // null = logged out (or API offline)
-export const getMe = () => api<Me | null>("/me").catch(() => null);
+export const getMe = cache(() => api<Me | null>("/me").catch(() => null)); // layout, sidebar and page share one request

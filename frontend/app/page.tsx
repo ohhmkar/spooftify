@@ -8,22 +8,18 @@ const hours = (s: number) => `${Math.floor(s / 3600)}h ${Math.floor((s % 3600) /
 
 export default async function Home() {
   const me = await getMe();
-  const [songs, artists, playlists, albums, recent, stats] = await Promise.all([
-    api<Song[]>("/views/Song_Details"),
+  const [trending, artists, playlists, newest, recent, stats] = await Promise.all([
+    api<Song[]>("/views/Song_Details?_sort=plays&_limit=20"),
     api<ArtistSummary[]>("/views/Artist_Summary"),
     api<PlaylistSummary[]>("/views/Playlist_Summary?is_public=true"),
-    api<AlbumDetails[]>("/views/Album_Details"),
+    api<AlbumDetails[]>("/views/Album_Details?_sort=release_year&_limit=30"),
     me ? api<Song[]>("/me/recent") : [],
     api<Stats>("/stats"),
   ]);
   const { totals: t } = stats;
-  // trending = most played, newest first among ties
-  const trending = songs.toReversed().sort((a, b) => (b.plays ?? 0) - (a.plays ?? 0)).slice(0, 20);
-  const byId = new Map(songs.map((s) => [s.song_id, s]));
-  const inPlaylists = stats.most_in_playlists.map((x) => byId.get(x.song_id)!).filter(Boolean);
+  const inPlaylists = await api<Song[]>(`/songs-by-id?ids=${stats.most_in_playlists.map((x) => x.song_id)}`); // only the 10 shown, not the whole catalog
   const appearances = new Map(stats.top_artists.map((a) => [a.artist_id, a.playlists]));
   const popular = artists.toSorted((a, b) => (appearances.get(b.artist_id) ?? 0) - (appearances.get(a.artist_id) ?? 0) || (b.fans ?? 0) - (a.fans ?? 0)).slice(0, 30); // the full lists live behind "Show all"
-  const newest = albums.toSorted((a, b) => b.release_year - a.release_year).slice(0, 30);
   const albumOrArtist = (s: Song) => (s.album_id ? `/album/${s.album_id}` : `/artist/${s.artist_id}`);
   return (
     <div className="bg-gradient-to-b from-raised to-panel to-40% px-3 py-6">
