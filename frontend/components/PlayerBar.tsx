@@ -56,7 +56,7 @@ function SleepTimer({ className }: { className: string }) {
         <svg viewBox="0 0 16 16" className={icon} fill="currentColor"><path d="M6.5 1.5a6.5 6.5 0 1 0 8 8 5.5 5.5 0 0 1-8-8Z" /></svg>
         {sleep && <span className="absolute -top-1 -right-1 rounded bg-accent px-0.5 text-[9px] leading-tight font-bold text-black">{sleep === "end" ? "♪" : left}</span>}
       </summary>
-      <div className="absolute right-0 bottom-10 z-30 flex w-44 flex-col rounded-lg bg-raised p-1 text-sm shadow-xl shadow-black/60" onClick={(e) => (e.target as HTMLElement).tagName === "BUTTON" && close(e.target as HTMLElement)}>
+      <div className="absolute right-0 bottom-10 z-30 flex w-44 flex-col rounded-xl glass p-1 text-sm" onClick={(e) => (e.target as HTMLElement).tagName === "BUTTON" && close(e.target as HTMLElement)}>
         <p className="px-3 py-1.5 text-xs font-bold text-muted">Sleep timer</p>
         {SLEEP.map(([v, label]) => (
           <button key={v} onClick={() => setSleep(v)} className="rounded px-3 py-1.5 text-left hover:bg-white/10">{label}</button>
@@ -89,7 +89,12 @@ export function PlayerBar() {
   const btn = (on = false) => `grid size-8 place-items-center ${on ? "text-accent" : "text-muted hover:text-white"}`;
   const total = duration || current.duration;
   return (
-    <footer ref={bar} className="relative grid h-(--pb) shrink-0 grid-cols-[minmax(0,var(--pl))_minmax(0,1fr)_minmax(0,var(--pr))] items-center gap-4 px-4 max-md:grid-cols-[1fr_auto] max-md:gap-2">
+    <footer ref={bar} className="glass relative mx-2 mb-2 grid h-(--pb) shrink-0 rounded-xl grid-cols-[minmax(0,var(--pl))_minmax(0,1fr)_minmax(0,var(--pr))] items-center gap-4 px-4 max-md:grid-cols-[1fr_auto] max-md:gap-2">
+      {/* the album art, blurred to a wash, is what the glass shows through; clipped here so menus can still overflow the bar */}
+      <div aria-hidden className="pointer-events-none absolute inset-0 -z-10 overflow-hidden rounded-xl">
+        {/* eslint-disable-next-line @next/next/no-img-element -- remote art, no need for the image optimizer */}
+        {art(current) && <img src={art(current)} alt="" className="size-full scale-150 object-cover opacity-50 blur-3xl saturate-150" />}
+      </div>
       <Resizer v="--pb" side="top" label="player height" min={48} max={220} className="group absolute inset-x-0 -top-1 z-10 h-2 cursor-row-resize touch-none max-md:hidden" />
       <Resizer v="--pl" side="col-l" label="track info" min={120} max={600} className="group absolute z-10 h-full w-2 cursor-col-resize touch-none max-md:hidden" style={{ left: "calc(var(--pl) + 1.25rem)" }} />
       <Resizer v="--pr" side="col-r" label="volume and queue" min={120} max={600} className="group absolute z-10 h-full w-2 cursor-col-resize touch-none max-md:hidden" style={{ right: "calc(var(--pr) + 1.25rem)" }} />

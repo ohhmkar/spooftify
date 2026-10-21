@@ -43,7 +43,7 @@ export function TrackList({ songs, playlists, editPlaylist }: { songs: Song[]; p
     );
   const touch = () => matchMedia("(hover: none)").matches; // phones have no hover, so a tap on the row has to play it
   const closeMenu = (el: HTMLElement) => el.closest("details")?.removeAttribute("open"); // the ⋯ menu
-  const small = "whitespace-nowrap rounded px-2 py-1 text-xs text-muted hover:bg-white/10 hover:text-white disabled:opacity-30";
+  const small = "whitespace-nowrap rounded px-2 text-left py-1 text-xs text-muted hover:bg-white/10 hover:text-white disabled:opacity-30";
   const item = (a: Action, short: boolean) => {
     const text = short ? (a.short ?? a.label) : a.label;
     return a.href
@@ -104,7 +104,7 @@ export function TrackList({ songs, playlists, editPlaylist }: { songs: Song[]; p
             <td className="w-10 text-center">
               <details className="relative">
                 <summary aria-label={`More options for ${s.song_name}`} className="cursor-pointer list-none px-2 py-1 text-muted hover:text-white">⋯</summary>
-                <div className="absolute right-0 z-20 mt-1 flex w-44 flex-col gap-1 rounded-lg bg-raised p-2 text-left shadow-xl shadow-black/60" onClick={(e) => (e.target as HTMLElement).closest("button, a") && closeMenu(e.target as HTMLElement)}>
+                <div className="absolute right-0 z-20 mt-1 flex w-44 flex-col gap-1 rounded-xl glass p-2 text-left" onClick={(e) => (e.target as HTMLElement).closest("button, a") && closeMenu(e.target as HTMLElement)}>
                   {acts.filter((a) => !a.wide).map((a) => item(a, false))}
                   {addSelect(s, "rounded bg-white/10 px-2 py-1 text-xs")}
                 </div>

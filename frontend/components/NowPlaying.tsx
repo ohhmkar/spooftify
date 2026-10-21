@@ -85,7 +85,7 @@ export function NowPlaying() {
     </button>
   );
   return (
-    <aside className={`w-(--np) shrink-0 flex-col gap-3 overflow-y-auto rounded-lg bg-panel p-4 max-lg:fixed max-lg:inset-x-2 max-lg:top-16 max-lg:bottom-36 max-lg:z-40 max-lg:w-auto ${current ? "flex" : "hidden"} ${sheet ? "" : "max-lg:pointer-events-none max-lg:opacity-0"}`}>
+    <aside className={`w-(--np) shrink-0 flex-col gap-3 overflow-y-auto rounded-lg bg-panel p-4 max-lg:glass max-lg:fixed max-lg:inset-x-2 max-lg:top-16 max-lg:bottom-36 max-lg:z-40 max-lg:w-auto ${current ? "flex" : "hidden"} ${sheet ? "" : "max-lg:pointer-events-none max-lg:opacity-0"}`}>
       <div className="flex items-center justify-between">
         <p className="font-bold">Now playing</p>
         <button aria-label="Close" onClick={() => setSheet(false)} className="px-2 text-muted hover:text-white lg:hidden">✕</button>

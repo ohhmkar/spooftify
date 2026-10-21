@@ -21,3 +21,19 @@ select option {
 
 /* pane widths, changed by drag handles (components/Resizer.tsx) */
 :root { --sb: 20rem; --np: 18rem; --pb: 5rem; --pl: 25vw; --pr: 25vw; }
+
+/* liquid glass: frosted, colour-boosted backdrop, a bright rim catching light on the top edge, soft depth below.
+   It only reads over something (menus over the track list, toasts, the phone Now Playing sheet, the player bar's album art).
+   ponytail: no SVG refraction (backdrop-filter: url() is Chromium-only and costly); add it here if the bend matters */
+@utility glass {
+  background: rgb(255 255 255 / 0.07);
+  -webkit-backdrop-filter: blur(24px) saturate(180%);
+  backdrop-filter: blur(24px) saturate(180%);
+  border: 1px solid rgb(255 255 255 / 0.12);
+  box-shadow: inset 0 1px 0 rgb(255 255 255 / 0.22), inset 0 -1px 0 rgb(255 255 255 / 0.04), 0 10px 32px rgb(0 0 0 / 0.5);
+  @media (prefers-reduced-transparency: reduce) {
+    background: var(--color-raised);
+    -webkit-backdrop-filter: none;
+    backdrop-filter: none;
+  }
+}
