@@ -6,6 +6,7 @@ import { Cover } from "./ui";
 import { LikeButton } from "./Likes";
 import { Canvas } from "./Canvas";
 import { Visualizer } from "./Visualizer";
+import { Resizer, setPane } from "./Resizer";
 
 // Minimal slice of the YouTube IFrame API we use
 type YTPlayer = {
@@ -35,6 +36,7 @@ type Ctx = {
   current?: Song; queue: Song[]; idx: number; playing: boolean; error: string;
   time: number; duration: number; volume: number; shuffle: boolean; repeat: Repeat; panel: Panel; sheet: boolean; preview: boolean;
   play: (queue: Song[], index: number) => void;
+  shufflePlay: (queue: Song[]) => void;
   toggle: () => void;
   skip: (by: number) => void;
   seek: (s: number) => void;
@@ -185,6 +187,13 @@ export function PlayerProvider({ children }: { children: React.ReactNode }) {
       setIdx(i);
       if (same) toggle();
     },
+    shufflePlay: (q) => {
+      if (!q.length) return;
+      let i = Math.floor(Math.random() * q.length);
+      if (q.length > 1 && q[i].song_id === current?.song_id) i = (i + 1) % q.length; // play() would pause the song that is already loaded
+      setShuffle(true);
+      ctx.play(q, i);
+    },
     toggle,
     skip: (by) => step(by),
     seek: (s) => {
@@ -283,7 +292,7 @@ export function NowPlaying() {
     </button>
   );
   return (
-    <aside className={`w-72 shrink-0 flex-col gap-3 overflow-y-auto rounded-lg bg-panel p-4 max-lg:fixed max-lg:inset-x-2 max-lg:top-16 max-lg:bottom-36 max-lg:z-40 max-lg:w-auto ${current ? "flex" : "hidden"} ${sheet ? "" : "max-lg:pointer-events-none max-lg:opacity-0"}`}>
+    <aside className={`w-(--np) shrink-0 flex-col gap-3 overflow-y-auto rounded-lg bg-panel p-4 max-lg:fixed max-lg:inset-x-2 max-lg:top-16 max-lg:bottom-36 max-lg:z-40 max-lg:w-auto ${current ? "flex" : "hidden"} ${sheet ? "" : "max-lg:pointer-events-none max-lg:opacity-0"}`}>
       <div className="flex items-center justify-between">
         <p className="font-bold">Now playing</p>
         <button aria-label="Close" onClick={() => setSheet(false)} className="px-2 text-muted hover:text-white lg:hidden">✕</button>
@@ -324,18 +333,64 @@ export function NowPlaying() {
 }
 
 const icon = "size-4";
+
+// Seek / volume slider: grows on hover, shows the value under the pointer, keyboard and touch work (role=slider)
+function Slider({ label, value, max, onChange, fmt = String, className = "" }: { label: string; value: number; max: number; onChange: (v: number) => void; fmt?: (v: number) => string; className?: string }) {
+  const [hover, setHover] = useState<number | null>(null); // pointer position as a fraction of the track
+  const at = (e: React.PointerEvent<HTMLDivElement>) => {
+    const r = e.currentTarget.getBoundingClientRect();
+    return Math.min(1, Math.max(0, (e.clientX - r.left) / r.width));
+  };
+  const clamp = (n: number) => Math.min(max, Math.max(0, n));
+  return (
+    <div
+      role="slider" tabIndex={0} aria-label={label} aria-valuemin={0} aria-valuemax={max} aria-valuenow={value} aria-valuetext={fmt(value)}
+      className={`group relative flex h-4 cursor-pointer touch-none items-center ${className}`}
+      onPointerDown={(e) => { e.currentTarget.setPointerCapture(e.pointerId); onChange(Math.round(at(e) * max)); }}
+      onPointerMove={(e) => { setHover(at(e)); if (e.buttons) onChange(Math.round(at(e) * max)); }}
+      onPointerLeave={() => setHover(null)}
+      onKeyDown={(e) => {
+        const d = e.key === "ArrowRight" || e.key === "ArrowUp" ? 1 : e.key === "ArrowLeft" || e.key === "ArrowDown" ? -1 : 0;
+        if (d) { e.preventDefault(); onChange(clamp(value + d * Math.max(1, Math.round(max / 20)))); }
+      }}
+    >
+      <div className="h-1 w-full overflow-hidden rounded-full bg-white/20 transition-[height] group-hover:h-2 group-focus-visible:h-2">
+        <div className="h-full bg-white group-hover:bg-accent" style={{ width: `${(value / max) * 100}%` }} />
+      </div>
+      {hover != null && <span className="pointer-events-none absolute -top-7 -translate-x-1/2 rounded bg-raised px-1.5 py-0.5 text-xs shadow" style={{ left: `${hover * 100}%` }}>{fmt(Math.round(hover * max))}</span>}
+    </div>
+  );
+}
+
+// bar heights the chevron snaps between (px); the mode follows the real height, so dragging gets the same layouts
+const SNAPS = [52, 80, 160];
 export function PlayerBar() {
   const p = usePlayer();
   const { current, playing, toggle, skip, time, duration, seek, volume, setVolume, shuffle, repeat } = p;
   const [viz, setViz] = useState(false);
+  const bar = useRef<HTMLElement>(null);
+  const [mode, setMode] = useState<"compact" | "normal" | "large">("normal");
+  const mounted = !!current;
+  useEffect(() => {
+    const el = bar.current;
+    if (!el) return;
+    const ro = new ResizeObserver(() => setMode(el.offsetHeight < 64 ? "compact" : el.offsetHeight >= 130 ? "large" : "normal"));
+    ro.observe(el);
+    return () => ro.disconnect();
+  }, [mounted]);
   if (!current) return null;
+  const compact = mode === "compact", large = mode === "large";
+  const snap = () => bar.current && setPane("--pb", SNAPS[(SNAPS.findIndex((h) => h >= bar.current!.offsetHeight - 4) + 1) % SNAPS.length]);
   const btn = (on = false) => `grid size-8 place-items-center ${on ? "text-accent" : "text-muted hover:text-white"}`;
   const total = duration || current.duration;
   return (
-    <footer className="grid h-20 shrink-0 grid-cols-[1fr_2fr_1fr] items-center gap-4 px-4 max-md:grid-cols-[1fr_auto] max-md:gap-2">
-      <div className="flex min-w-0 items-center gap-3">
+    <footer ref={bar} className="relative grid h-(--pb) shrink-0 grid-cols-[minmax(0,var(--pl))_minmax(0,1fr)_minmax(0,var(--pr))] items-center gap-4 px-4 max-md:grid-cols-[1fr_auto] max-md:gap-2">
+      <Resizer v="--pb" side="top" label="player height" min={48} max={220} className="group absolute inset-x-0 -top-1 z-10 h-2 cursor-row-resize touch-none max-md:hidden" />
+      <Resizer v="--pl" side="col-l" label="track info" min={120} max={600} className="group absolute z-10 h-full w-2 cursor-col-resize touch-none max-md:hidden" style={{ left: "calc(var(--pl) + 1.25rem)" }} />
+      <Resizer v="--pr" side="col-r" label="volume and queue" min={120} max={600} className="group absolute z-10 h-full w-2 cursor-col-resize touch-none max-md:hidden" style={{ right: "calc(var(--pr) + 1.25rem)" }} />
+      <div data-col="l" className="flex min-w-0 items-center gap-3">
         <button aria-label="Open now playing" onClick={() => p.setSheet(!p.sheet)} className="flex min-w-0 items-center gap-3 text-left lg:pointer-events-none">
-          <Cover name={current.song_name} src={art(current)} className="w-12 shrink-0 max-sm:hidden" />
+          {!compact && <span className="shrink-0 max-sm:hidden" style={{ width: "clamp(3rem, calc(var(--pb) - 1.5rem), 9rem)" }}><Cover name={current.song_name} src={art(current)} className="w-full" /></span>}
           <span className="min-w-0">
             <span className="block truncate text-sm font-medium">{current.song_name}</span>
             <span className="block truncate text-xs text-muted">
@@ -345,22 +400,22 @@ export function PlayerBar() {
             {p.error && <span role="alert" className="block truncate text-xs text-red-300" title={p.error}>{p.error}</span>}
           </span>
         </button>
-        <LikeButton id={current.song_id} />
-        <button aria-label="Open visualizer" title="Visualizer" onClick={() => setViz(true)} className={btn(viz)}>
+        {!compact && <LikeButton id={current.song_id} />}
+        <button aria-label="Open visualizer" title="Visualizer" onClick={() => setViz(true)} className={`${btn(viz)} ${compact ? "hidden" : ""}`}>
           <svg viewBox="0 0 16 16" className={icon} fill="currentColor"><path d="M1 9h2v6H1zm4-5h2v11H5zm4 3h2v8H9zm4-6h2v14h-2z" /></svg>
         </button>
         {/* ponytail: the overlay covers the YT iframe while open; the song keeps playing underneath */}
         {viz && <Visualizer song={current} time={time} playing={playing} toggle={toggle} previewing={p.preview} getAudio={p.getAudio} onClose={() => setViz(false)} />}
       </div>
-      <div className="flex flex-col items-center gap-1">
-        <div className="flex items-center gap-3 max-md:gap-1">
+      <div className="flex min-w-0 flex-col items-center gap-1">
+        <div className={`flex items-center gap-3 max-md:gap-1 ${large ? "gap-5 [&_svg]:size-6" : ""}`}>
           <button aria-label="Shuffle" aria-pressed={shuffle} className={btn(shuffle)} onClick={p.toggleShuffle}>
             <svg viewBox="0 0 16 16" className={icon} fill="none" stroke="currentColor" strokeWidth="1.5"><path d="M1 4h2.5c3 0 4 8 7 8H14M1 12h2.5c1.2 0 2-1.5 2.8-3M14 4h-3.5c-1.2 0-2 1.2-2.8 2.5M12 2l2 2-2 2M12 10l2 2-2 2" /></svg>
           </button>
           <button aria-label="Previous" className={btn()} onClick={() => skip(-1)}>
             <svg viewBox="0 0 16 16" className={icon} fill="currentColor"><path d="M3 2h2v12H3zM6 8l8-6v12z" /></svg>
           </button>
-          <button aria-label={playing ? "Pause" : "Play"} onClick={toggle} className="grid size-9 place-items-center rounded-full bg-white text-black hover:scale-105">
+          <button aria-label={playing ? "Pause" : "Play"} onClick={toggle} className={`grid place-items-center rounded-full bg-white text-black hover:scale-105 ${large ? "size-14" : compact ? "size-7" : "size-9"}`}>
             <svg viewBox="0 0 16 16" className={icon} fill="currentColor"><path d={playing ? "M3 2h4v12H3zm6 0h4v12H9z" : "M4 2l10 6-10 6z"} /></svg>
           </button>
           <button aria-label="Next" className={btn()} onClick={() => skip(1)}>
@@ -373,11 +428,14 @@ export function PlayerBar() {
         </div>
         <div className="flex w-full items-center gap-2 text-xs text-muted tabular-nums max-md:w-44">
           <span className="w-10 text-right max-md:hidden">{mmss(Math.floor(time))}</span>
-          <input type="range" aria-label="Seek" min={0} max={Math.max(1, Math.floor(total))} value={Math.floor(time)} onChange={(e) => seek(+e.target.value)} className="h-1 flex-1 accent-accent" />
+          <Slider label="Seek" max={Math.max(1, Math.floor(total))} value={Math.floor(time)} onChange={seek} fmt={mmss} className="flex-1" />
           <span className="w-10 max-md:hidden">{mmss(Math.floor(total))}</span>
         </div>
       </div>
-      <div className="flex items-center justify-end gap-2 max-md:hidden">
+      <div data-col="r" className="flex items-center justify-end gap-2 max-md:hidden">
+        <button aria-label={compact ? "Expand player" : large ? "Shrink player" : "Enlarge player"} title="Player size" onClick={snap} className={btn()}>
+          <svg viewBox="0 0 16 16" className={`${icon} ${large ? "rotate-180" : ""}`} fill="none" stroke="currentColor" strokeWidth="1.5"><path d="M3 10l5-5 5 5" /></svg>
+        </button>
         <button aria-label="Lyrics" aria-pressed={p.panel === "lyrics"} onClick={() => p.setPanel(p.panel === "lyrics" ? null : "lyrics")} className={`${btn(p.panel === "lyrics")} text-xs font-bold`}>Aa</button>
         <button aria-label="Queue" aria-pressed={p.panel === "queue"} onClick={() => p.setPanel(p.panel === "queue" ? null : "queue")} className={btn(p.panel === "queue")}>
           <svg viewBox="0 0 16 16" className={icon} fill="currentColor"><path d="M1 3h10v1.5H1zm0 4h10v1.5H1zm0 4h6v1.5H1zm11-1 3 2-3 2z" /></svg>
@@ -385,9 +443,19 @@ export function PlayerBar() {
         <button aria-label={volume ? "Mute" : "Unmute"} onClick={p.toggleMute} className={btn()}>
           <svg viewBox="0 0 16 16" className={icon} fill="currentColor"><path d="M2 6h3l4-3v10l-4-3H2z" />{volume > 0 && <path d="M11 5.5a3.5 3.5 0 0 1 0 5" stroke="currentColor" fill="none" strokeWidth="1.3" />}</svg>
         </button>
-        <input type="range" aria-label="Volume" min={0} max={100} value={volume} onChange={(e) => setVolume(+e.target.value)} className="h-1 w-24 accent-accent" />
+        <Slider label="Volume" max={100} value={volume} onChange={setVolume} fmt={(n) => `${n}%`} className="w-24 min-w-12 shrink" />
       </div>
     </footer>
+  );
+}
+
+export function ShuffleButton({ songs, className = "" }: { songs: Song[]; className?: string }) {
+  const { shufflePlay } = usePlayer();
+  return (
+    <button disabled={!songs.length} onClick={() => shufflePlay(songs)} className={`flex items-center gap-2 rounded-full bg-raised px-5 py-3 font-bold hover:scale-105 hover:bg-white/15 disabled:opacity-40 ${className}`}>
+      <svg viewBox="0 0 16 16" className="size-4" fill="currentColor" aria-hidden><path d="M13.15.65a.5.5 0 0 1 .7 0l2 2a.5.5 0 0 1 0 .7l-2 2a.5.5 0 0 1-.7-.7L14.29 3.5h-1.4a3 3 0 0 0-2.4 1.2l-.99 1.32-.8-.6L9.7 4.1A4 4 0 0 1 12.9 2.5h1.39l-1.14-1.15a.5.5 0 0 1 0-.7ZM0 3.5h2.5a4 4 0 0 1 3.2 1.6l4.8 6.4a3 3 0 0 0 2.4 1.2h1.4l-1.15-1.15a.5.5 0 0 1 .7-.7l2 2a.5.5 0 0 1 0 .7l-2 2a.5.5 0 0 1-.7-.7L14.29 13.5h-1.4a4 4 0 0 1-3.2-1.6L4.9 5.5A3 3 0 0 0 2.5 4.3H0v-.8Z" /></svg>
+      Shuffle play
+    </button>
   );
 }
 

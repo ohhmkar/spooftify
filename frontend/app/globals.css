@@ -18,3 +18,6 @@ body {
 select option {
   background: var(--color-raised);
 }
+
+/* pane widths, changed by drag handles (components/Resizer.tsx) */
+:root { --sb: 20rem; --np: 18rem; --pb: 5rem; --pl: 25vw; --pr: 25vw; }

@@ -4,7 +4,7 @@ import type { PlaylistSummary, Song, Playlist, Follow } from "@/lib/api";
 import { api, getMe } from "@/lib/server";
 import { Hero } from "@/components/ui";
 import { TrackList } from "@/components/TrackList";
-import { PlayButton } from "@/components/Player";
+import { PlayButton, ShuffleButton } from "@/components/Player";
 import { PlaylistActions } from "@/components/PlaylistActions";
 import { FollowButton } from "@/components/Auth";
 
@@ -32,6 +32,7 @@ export default async function PlaylistPage({ params }: PageProps<"/playlist/[id]
       <div className="p-4">
         <div className="mb-4 flex items-center gap-4 pl-2">
           <PlayButton songs={tracks} className="size-14" />
+          <ShuffleButton songs={tracks} />
           {!own && <FollowButton kind="playlist" id={p.playlist_id} loggedIn={!!me} following={follows.some((f) => f.kind === "playlist" && f.target_id === p.playlist_id)} />}
         </div>
         <TrackList songs={tracks} playlists={mine} editPlaylist={canEdit ? p.playlist_id : undefined} />

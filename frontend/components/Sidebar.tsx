@@ -8,7 +8,7 @@ export async function Sidebar() {
   const me = await getMe();
   const mine = me ? await api<Playlist[]>("/me/playlists").catch(() => []) : [];
   return (
-    <aside className="flex w-80 shrink-0 flex-col rounded-lg bg-panel max-lg:w-20 max-md:hidden">
+    <aside className="flex w-(--sb) shrink-0 flex-col rounded-lg bg-panel max-lg:w-20 max-md:hidden">
       <div className="flex items-center justify-between p-4 pl-6">
         <h2 className="font-bold max-lg:sr-only">Your Library</h2>
         {me && <CreatePlaylist count={mine.filter((p) => !p.shared).length} userId={me.user_id} />}

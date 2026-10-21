@@ -9,6 +9,7 @@ import { LogoutButton } from "@/components/Auth";
 import { MobileNav } from "@/components/MobileNav";
 import { ToastProvider } from "@/components/Toast";
 import { SearchBox } from "@/components/SearchBox";
+import { Resizer } from "@/components/Resizer";
 import { getMe } from "@/lib/server";
 import "./globals.css";
 
@@ -59,7 +60,9 @@ export default async function RootLayout({ children }: LayoutProps<"/">) {
         </nav>
         <div className="flex min-h-0 flex-1 gap-2 px-2 pb-2">
           <Sidebar />
+          <Resizer v="--sb" side="left" label="library" />
           <main className="min-w-0 flex-1 overflow-y-auto rounded-lg bg-panel">{children}</main>
+          <Resizer v="--np" side="right" label="now playing" needsSong />
           <NowPlaying />
         </div>
         <PlayerBar />
