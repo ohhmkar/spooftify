@@ -6,6 +6,7 @@ import { Hero, Card, Shelf } from "@/components/ui";
 import { TrackList } from "@/components/TrackList";
 import { PlayButton } from "@/components/Player";
 import { FollowButton } from "@/components/Auth";
+import { ShareButton } from "@/components/ShareButton";
 
 export default async function ArtistPage({ params }: PageProps<"/artist/[id]">) {
   const { id } = await params;
@@ -32,6 +33,7 @@ export default async function ArtistPage({ params }: PageProps<"/artist/[id]">) 
         <div className="mb-4 flex items-center gap-4 pl-2">
           <PlayButton songs={popular} className="size-14" />
           <FollowButton kind="artist" id={artist.artist_id} following={following} loggedIn={!!me} />
+          <ShareButton title={artist.artist_name} />
         </div>
         <h2 className="mb-2 px-2 text-2xl font-bold">Popular</h2>
         <TrackList songs={popular} playlists={mine} />

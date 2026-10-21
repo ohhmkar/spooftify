@@ -3,6 +3,7 @@ import { useRouter } from "next/navigation";
 import { send, type PlaylistSummary } from "@/lib/api";
 import { UploadButton } from "./Upload";
 import { useToast } from "./Toast";
+import { useAction } from "./useAction";
 
 export function CreatePlaylist({ count, userId }: { count: number; userId: number }) {
   const router = useRouter();
@@ -23,7 +24,8 @@ export function CreatePlaylist({ count, userId }: { count: number; userId: numbe
 export function PlaylistActions({ p, collaborators }: { p: PlaylistSummary; collaborators: { user_id: number; user_name: string }[] }) {
   const router = useRouter();
   const toast = useToast();
-  const update = (changes: object) => send("PUT", `/Playlist/${p.playlist_id}`, changes).then(() => { router.refresh(); toast("Saved"); }).catch((e) => toast(e.message, true));
+  const run = useAction();
+  const update = (changes: object) => run(send("PUT", `/Playlist/${p.playlist_id}`, changes), "Saved");
 
   const remove = () => {
     if (!confirm(`Delete "${p.playlist_name}"? This can't be undone.`)) return;
@@ -68,7 +70,7 @@ export function PlaylistActions({ p, collaborators }: { p: PlaylistSummary; coll
         {collaborators.map((c) => (
           <span key={c.user_id} className="flex items-center gap-1 rounded-full bg-white/10 py-1 pr-1 pl-3 text-sm">
             {c.user_name}
-            <button aria-label={`Remove ${c.user_name}`} className="px-2 text-muted hover:text-white" onClick={() => send("DELETE", `/playlists/${p.playlist_id}/collaborators/${c.user_id}`).then(() => router.refresh()).catch((e) => toast(e.message, true))}>✕</button>
+            <button aria-label={`Remove ${c.user_name}`} className="px-2 text-muted hover:text-white" onClick={() => run(send("DELETE", `/playlists/${p.playlist_id}/collaborators/${c.user_id}`))}>✕</button>
           </span>
         ))}
         <form
@@ -76,7 +78,7 @@ export function PlaylistActions({ p, collaborators }: { p: PlaylistSummary; coll
           onSubmit={(e) => {
             e.preventDefault();
             const f = e.currentTarget;
-            send("POST", `/playlists/${p.playlist_id}/collaborators`, { user_name: new FormData(f).get("user_name") }).then(() => { f.reset(); router.refresh(); toast("Collaborator added"); }).catch((e) => toast(e.message, true));
+            run(send("POST", `/playlists/${p.playlist_id}/collaborators`, { user_name: new FormData(f).get("user_name") }).then(() => f.reset()), "Collaborator added");
           }}
         >
           <input name="user_name" required placeholder="Add by username" aria-label="Collaborator username" className="w-40 rounded bg-white/10 px-3 py-1.5 text-sm" />

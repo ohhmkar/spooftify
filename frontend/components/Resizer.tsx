@@ -1,6 +1,7 @@
 "use client";
 import { useEffect, useRef, type CSSProperties } from "react";
 import { usePlayer } from "./Player";
+import { store } from "@/lib/store";
 
 // Drag handle that writes a CSS variable (--sb, --np, --pb, --pl, --pr) which a pane's width / height reads, and remembers it.
 // side says which pane it resizes: left / right = the sibling before / after it, top = its parent (bar height, dragged upwards),
@@ -17,7 +18,7 @@ const SIDES = {
 export function setPane(v: string, px: number | null) {
   if (px == null) document.documentElement.style.removeProperty(v);
   else document.documentElement.style.setProperty(v, `${px}px`);
-  try { px == null ? localStorage.removeItem(v) : localStorage.setItem(v, String(px)); } catch {}
+  store.set(v, px ?? undefined);
 }
 
 export function Resizer({ v, side, label, needsSong, min = 160, max = 560, className = "group z-10 -mx-2 w-2 shrink-0 cursor-col-resize touch-none max-lg:hidden", style }: {
@@ -29,7 +30,8 @@ export function Resizer({ v, side, label, needsSong, min = 160, max = 560, class
   const set = (px: number) => setPane(v, Math.min(max, Math.max(min, px)));
   const size = (h: HTMLElement) => { const el = find(h) as HTMLElement | null; return (y ? el?.offsetHeight : el?.offsetWidth) ?? 0; };
   useEffect(() => {
-    try { const s = localStorage.getItem(v); if (s) document.documentElement.style.setProperty(v, `${s}px`); } catch {}
+    const px = store.get<number | null>(v, null);
+    if (px) document.documentElement.style.setProperty(v, `${px}px`);
   }, [v]);
   if (needsSong && !current) return null;
   return (

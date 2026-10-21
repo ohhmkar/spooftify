@@ -1,12 +1,10 @@
-import { getMe } from "@/lib/server";
-import { api } from "@/lib/server";
-import type { Playlist } from "@/lib/api";
+import { getMe, getLibrary } from "@/lib/server";
 import { CreatePlaylist } from "./PlaylistActions";
 import { Library } from "./Library";
 
 export async function Sidebar() {
   const me = await getMe();
-  const mine = me ? await api<Playlist[]>("/me/playlists").catch(() => []) : [];
+  const mine = me ? ((await getLibrary())?.playlists ?? []) : [];
   return (
     <aside className="flex w-(--sb) shrink-0 flex-col rounded-lg bg-panel max-lg:w-20 max-md:hidden">
       <div className="flex items-center justify-between p-4 pl-6">

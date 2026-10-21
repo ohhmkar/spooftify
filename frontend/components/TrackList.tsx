@@ -1,23 +1,38 @@
 "use client";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
-import { send, mmss, art, compact, type Song, type Playlist } from "@/lib/api";
+import { send, mmss, art, compact, SONG_DRAG, type Song, type Playlist } from "@/lib/api";
 import { usePlayer } from "./Player";
-import { LikeButton } from "./Likes";
+import { LikeButton, useLoggedIn } from "./Likes";
 import { Cover } from "./ui";
 import { useToast } from "./Toast";
-import { useLoggedIn } from "./Likes";
+import { useAction } from "./useAction";
+
+type Action = { label: string; short?: string; run?: () => void; href?: string; wide?: boolean; menu?: boolean };
 
 // editPlaylist: the playlist these rows belong to when the viewer may edit it (owner or collaborator): enables Remove and the move buttons
 export function TrackList({ songs, playlists, editPlaylist }: { songs: Song[]; playlists: Playlist[]; editPlaylist?: number }) {
-  const router = useRouter();
   const { current, playing, play, addToQueue, playNext } = usePlayer();
   const toast = useToast();
+  const run = useAction();
   const loggedIn = useLoggedIn();
-  const run = (p: Promise<unknown>, done?: string) => p.then(() => { router.refresh(); if (done) toast(done); }).catch((e) => toast(e.message, true));
   const addTo = (s: Song, id: string) => run(send("POST", `/playlists/${id}/songs`, { song_id: s.song_id }), `Added “${s.song_name}” to ${playlists.find((p) => String(p._id) === id)?.playlist_name}`);
-  const next = (s: Song) => (playNext(s), toast(`Playing “${s.song_name}” next`));
-  const queue = (s: Song) => (addToQueue(s), toast(`Added “${s.song_name}” to the queue`));
+  const move = (i: number, by: number) => {
+    const ids = songs.map((s) => s.song_id);
+    [ids[i], ids[i + by]] = [ids[i + by], ids[i]];
+    run(send("PUT", `/playlists/${editPlaylist}/order`, { song_ids: ids }));
+  };
+  // one list feeds both the ⋯ menu and the row's hover buttons (wide screens). menu: only in the ⋯ menu; wide: only on hover
+  const actions = (s: Song, i: number): Action[] => [
+    { label: "Play next", run: () => (playNext(s), toast(`Playing “${s.song_name}” next`)) },
+    { label: "Add to queue", short: "Queue", run: () => (addToQueue(s), toast(`Added “${s.song_name}” to the queue`)) },
+    { label: "Go to artist", href: `/artist/${s.artist_id}`, menu: true },
+    ...(s.album_id ? [{ label: "Go to album", href: `/album/${s.album_id}`, menu: true }] : []),
+    ...(editPlaylist ? [
+      { label: "Move up", short: "↑", run: i > 0 ? () => move(i, -1) : undefined, wide: true },
+      { label: "Move down", short: "↓", run: i < songs.length - 1 ? () => move(i, 1) : undefined, wide: true },
+      { label: "Remove", run: () => run(send("DELETE", `/playlists/${editPlaylist}/songs/${s.song_id}`), "Removed from playlist") },
+    ] : []),
+  ];
   // "+ Add to…" picker: only for logged-in users, and says so when there is nothing to pick yet
   const addSelect = (s: Song, cls: string) =>
     loggedIn && (
@@ -27,13 +42,14 @@ export function TrackList({ songs, playlists, editPlaylist }: { songs: Song[]; p
       </select>
     );
   const touch = () => matchMedia("(hover: none)").matches; // phones have no hover, so a tap on the row has to play it
-  const closeMenu = (el: HTMLElement) => el.closest("details")?.removeAttribute("open"); // the ⋯ menu on small screens
-  const move = (i: number, by: number) => {
-    const ids = songs.map((s) => s.song_id);
-    [ids[i], ids[i + by]] = [ids[i + by], ids[i]];
-    run(send("PUT", `/playlists/${editPlaylist}/order`, { song_ids: ids }));
+  const closeMenu = (el: HTMLElement) => el.closest("details")?.removeAttribute("open"); // the ⋯ menu
+  const small = "whitespace-nowrap rounded px-2 py-1 text-xs text-muted hover:bg-white/10 hover:text-white disabled:opacity-30";
+  const item = (a: Action, short: boolean) => {
+    const text = short ? (a.short ?? a.label) : a.label;
+    return a.href
+      ? <Link key={a.label} className={small} href={a.href}>{text}</Link>
+      : <button key={a.label} aria-label={short && a.short ? a.label : undefined} disabled={!a.run} className={small} onClick={a.run}>{text}</button>;
   };
-  const small = "whitespace-nowrap rounded px-2 py-1 text-xs text-muted hover:bg-white/10 hover:text-white";
 
   if (!songs.length) return <p className="px-6 py-8 text-muted">No songs here yet.</p>;
   return (
@@ -53,8 +69,11 @@ export function TrackList({ songs, playlists, editPlaylist }: { songs: Song[]; p
       <tbody>
         {songs.map((s, i) => {
           const now = current?.song_id === s.song_id;
+          const acts = actions(s, i);
           return (
+          // draggable: drop it on a playlist in the sidebar to add it there
           <tr key={s._id ?? s.song_id} className="group hover:bg-white/[.07]" onDoubleClick={() => play(songs, i)}
+            draggable={loggedIn} onDragStart={(e) => { e.dataTransfer.setData(SONG_DRAG, JSON.stringify({ song_id: s.song_id, song_name: s.song_name })); e.dataTransfer.effectAllowed = "copy"; }}
             onClick={(e) => touch() && !(e.target as HTMLElement).closest("a, button, select, summary, details") && play(songs, i)}>
             <td className="rounded-l-md py-2 text-center text-muted">
               <span className={`group-hover:hidden group-focus-within:hidden ${now ? "text-accent" : ""}`}>{now && playing ? "♪" : i + 1}</span>
@@ -85,28 +104,17 @@ export function TrackList({ songs, playlists, editPlaylist }: { songs: Song[]; p
             <td className="w-10 text-center">
               <details className="relative">
                 <summary aria-label={`More options for ${s.song_name}`} className="cursor-pointer list-none px-2 py-1 text-muted hover:text-white">⋯</summary>
-                <div className="absolute right-0 z-20 mt-1 flex w-44 flex-col gap-1 rounded-lg bg-raised p-2 text-left shadow-xl shadow-black/60" onClick={(e) => (e.target as HTMLElement).tagName === "BUTTON" && closeMenu(e.target as HTMLElement)}>
-                  <button className={small} onClick={() => next(s)}>Play next</button>
-                  <button className={small} onClick={() => queue(s)}>Add to queue</button>
+                <div className="absolute right-0 z-20 mt-1 flex w-44 flex-col gap-1 rounded-lg bg-raised p-2 text-left shadow-xl shadow-black/60" onClick={(e) => (e.target as HTMLElement).closest("button, a") && closeMenu(e.target as HTMLElement)}>
+                  {acts.filter((a) => !a.wide).map((a) => item(a, false))}
                   {addSelect(s, "rounded bg-white/10 px-2 py-1 text-xs")}
-                  <Link className={small} href={`/artist/${s.artist_id}`}>Go to artist</Link>
-                  {s.album_id && <Link className={small} href={`/album/${s.album_id}`}>Go to album</Link>}
-                  {editPlaylist && <button className={small} onClick={() => run(send("DELETE", `/playlists/${editPlaylist}/songs/${s.song_id}`), "Removed from playlist")}>Remove</button>}
                 </div>
               </details>
             </td>
             <td className="rounded-r-md pr-3 text-right max-xl:hidden">
               <div className="flex items-center justify-end gap-1 opacity-0 transition group-hover:opacity-100 focus-within:opacity-100">
-                <button className={small} onClick={() => next(s)}>Play next</button>
-                <button className={small} onClick={() => queue(s)}>Queue</button>
+                {acts.filter((a) => !a.menu).slice(0, 2).map((a) => item(a, true))}
                 {addSelect(s, "max-w-28 rounded bg-white/10 px-2 py-1 text-xs")}
-                {editPlaylist && (
-                  <>
-                    <button aria-label="Move up" disabled={i === 0} className={`${small} disabled:opacity-30`} onClick={() => move(i, -1)}>↑</button>
-                    <button aria-label="Move down" disabled={i === songs.length - 1} className={`${small} disabled:opacity-30`} onClick={() => move(i, 1)}>↓</button>
-                  </>
-                )}
-                {editPlaylist && <button className={small} onClick={() => run(send("DELETE", `/playlists/${editPlaylist}/songs/${s.song_id}`), "Removed from playlist")}>Remove</button>}
+                {acts.filter((a) => !a.menu).slice(2).map((a) => item(a, true))}
               </div>
             </td>
           </tr>

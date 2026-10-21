@@ -1,7 +1,7 @@
 import Link from "next/link";
-import type { PlaylistSummary, ArtistSummary, Follow, Playlist } from "@/lib/api";
-import { api, getMe } from "@/lib/server";
+import { getMe, getLibrary } from "@/lib/server";
 import { Cover } from "./ui";
+import { PlaylistDrop } from "./PlaylistDrop";
 
 const row = "flex items-center gap-3 rounded-md p-2 hover:bg-white/[.07]";
 
@@ -19,21 +19,11 @@ export async function Library({ wide = false }: { wide?: boolean }) {
         </li>
       </ul>
     );
-  const [all, mineRaw, follows, artists] = await Promise.all([
-    api<PlaylistSummary[]>("/views/Playlist_Summary").catch(() => null),
-    api<Playlist[]>("/me/playlists").catch(() => []),
-    api<Follow[]>("/me/follows").catch(() => []),
-    api<ArtistSummary[]>("/views/Artist_Summary").catch(() => []),
-  ]);
-  const byId = new Map((all ?? []).map((p) => [p.playlist_id, p]));
-  const mine = mineRaw.flatMap((p) => (byId.has(p._id) ? [{ ...byId.get(p._id)!, shared: p.shared }] : []));
-  const followed = (kind: string) => new Set(follows.filter((f) => f.kind === kind).map((f) => f.target_id));
-  const mineIds = new Set(mine.map((p) => p.playlist_id));
-  const followedPlaylists = (all ?? []).filter((p) => p.is_public && followed("playlist").has(p.playlist_id) && !mineIds.has(p.playlist_id));
-  const followedArtists = artists.filter((a) => followed("artist").has(a.artist_id));
+  const lib = await getLibrary();
+  const { playlists: mine, followedPlaylists, followedArtists } = lib ?? { playlists: [], followedPlaylists: [], followedArtists: [] };
   return (
     <ul className="px-2">
-      {all === null && <li className="p-4 text-sm text-muted">API offline — start the backend.</li>}
+      {lib === null && <li className="p-4 text-sm text-muted">API offline — start the backend.</li>}
       {[
         ["/collection/tracks", "Liked Songs", "Playlist", <div key="l" className="grid aspect-square w-12 shrink-0 place-items-center rounded-md bg-gradient-to-br from-indigo-600 to-slate-300 text-xl">♥</div>],
         ["/recent", "Recently Played", "History", <div key="r" className="grid aspect-square w-12 shrink-0 place-items-center rounded-md bg-gradient-to-br from-emerald-600 to-slate-700 text-xl">⟲</div>],
@@ -46,7 +36,7 @@ export async function Library({ wide = false }: { wide?: boolean }) {
         </li>
       ))}
       {mine.map((p) => (
-        <li key={p.playlist_id}>
+        <PlaylistDrop key={p.playlist_id} id={p.playlist_id} name={p.playlist_name}>
           <Link href={`/playlist/${p.playlist_id}`} className={row}>
             <Cover name={p.playlist_name} src={p.cover} className="w-12 shrink-0" />
             <div className={`min-w-0 ${txt}`}>
@@ -54,7 +44,7 @@ export async function Library({ wide = false }: { wide?: boolean }) {
               <p className="text-sm text-muted">Playlist • {p.song_count} songs {p.shared ? `• Shared by ${p.owner}` : p.is_public ? "" : "• Private"}</p>
             </div>
           </Link>
-        </li>
+        </PlaylistDrop>
       ))}
       {followedPlaylists.map((p) => (
         <li key={`fp${p.playlist_id}`}>

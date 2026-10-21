@@ -7,6 +7,7 @@ import { TrackList } from "@/components/TrackList";
 import { PlayButton, ShuffleButton } from "@/components/Player";
 import { PlaylistActions } from "@/components/PlaylistActions";
 import { FollowButton } from "@/components/Auth";
+import { ShareButton } from "@/components/ShareButton";
 
 export default async function PlaylistPage({ params }: PageProps<"/playlist/[id]">) {
   const { id } = await params;
@@ -34,6 +35,7 @@ export default async function PlaylistPage({ params }: PageProps<"/playlist/[id]
           <PlayButton songs={tracks} className="size-14" />
           <ShuffleButton songs={tracks} />
           {!own && <FollowButton kind="playlist" id={p.playlist_id} loggedIn={!!me} following={follows.some((f) => f.kind === "playlist" && f.target_id === p.playlist_id)} />}
+          {p.is_public && <ShareButton title={p.playlist_name} />}
         </div>
         <TrackList songs={tracks} playlists={mine} editPlaylist={canEdit ? p.playlist_id : undefined} />
       </div>

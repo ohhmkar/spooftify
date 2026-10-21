@@ -119,7 +119,8 @@ const playlistSchema = new Schema(
 );
 
 const containsSchema = new Schema(
-  { playlist_id: { ...int, ref: "Playlist" }, song_id: { ...int, ref: "Songs" }, position: { type: Number, min: 0 } }, // position: extra vs SQL, track order
+  // extra vs SQL: position (track order), added_at (the follow feed's "added to a playlist" events)
+  { playlist_id: { ...int, ref: "Playlist" }, song_id: { ...int, ref: "Songs" }, position: { type: Number, min: 0 }, added_at: { type: Date, default: Date.now } },
   opts("Contains"),
 );
 containsSchema.index({ playlist_id: 1, song_id: 1 }, { unique: true }); // PRIMARY KEY (playlist_id, song_id)

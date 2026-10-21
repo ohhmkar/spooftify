@@ -7,6 +7,7 @@
 import { useEffect, useRef, useState } from "react";
 import { thumb, type Song } from "@/lib/api";
 import { hue } from "./ui";
+import { store } from "@/lib/store";
 
 type VizSong = Song & { audio_file?: string; bpm?: number };
 type Real = "" | "own" | "capture" | "shared";
@@ -51,7 +52,7 @@ function coverHues(img: HTMLImageElement) {
 }
 
 export function Visualizer({ song, time, playing, toggle, previewing, getAudio, onClose }: { song: VizSong; time: number; playing: boolean; toggle: () => void; previewing: boolean; getAudio: () => HTMLAudioElement | null; onClose: () => void }) {
-  const [mode, setMode] = useState<Mode>(() => { const m = localStorage.getItem("viz-mode"); return m && m in MODES ? (m as Mode) : "bars"; });
+  const [mode, setMode] = useState<Mode>(() => { const m = store.get<string>("viz-mode", "bars"); return m in MODES ? (m as Mode) : "bars"; });
   const [previewOf, setPreviewOf] = useState<number | null>(null); // keyed by song, so a song change turns preview off
   const [err, setErr] = useState("");
   const [capture, setCapture] = useState(false); // tab audio is being analysed
@@ -150,7 +151,7 @@ export function Visualizer({ song, time, playing, toggle, previewing, getAudio, 
     };
   }, []);
 
-  const pick = (m: Mode) => { setMode(m); localStorage.setItem("viz-mode", m); };
+  const pick = (m: Mode) => { setMode(m); store.set("viz-mode", m); };
   const fullscreen = () => (document.fullscreenElement ? document.exitFullscreen() : root.current?.requestFullscreen())?.catch(() => {});
   useEffect(() => {
     const key = (e: KeyboardEvent) => {

@@ -1,11 +1,10 @@
 "use client";
 import { useEffect, useRef, useState } from "react";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
+import { store } from "@/lib/store";
 
 const RECENT = "spoot-recent";
-const recent = (): string[] => {
-  try { return JSON.parse(localStorage.getItem(RECENT) ?? "[]"); } catch { return []; }
-};
+const recent = () => store.get<string[]>(RECENT, []);
 
 // the top search field: searches as you type (debounced), shows what you searched for on the results page, remembers recent searches
 export function SearchBox() {
@@ -27,7 +26,7 @@ export function SearchBox() {
     v = v.trim();
     if (v.length < 2) return;
     const next = [v, ...recent().filter((r) => r !== v)].slice(0, 8);
-    try { localStorage.setItem(RECENT, JSON.stringify(next)); } catch {}
+    store.set(RECENT, next);
     setPast(next);
   };
   return (

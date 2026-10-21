@@ -1,6 +1,6 @@
 "use client";
 import { useState } from "react";
-import { useToast } from "./Toast";
+import { useAction } from "./useAction";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { send } from "@/lib/api";
@@ -49,15 +49,12 @@ export function LogoutButton() {
 
 export function FollowButton({ kind, id, following, loggedIn }: { kind: "artist" | "user" | "playlist"; id: number; following: boolean; loggedIn: boolean }) {
   const router = useRouter();
-  const toast = useToast();
+  const run = useAction();
   const [busy, setBusy] = useState(false);
   const click = () => {
     if (!loggedIn) return router.push("/login");
     setBusy(true);
-    send(following ? "DELETE" : "PUT", `/follow/${kind}/${id}`)
-      .then(() => router.refresh())
-      .catch((e) => toast(e.message, true))
-      .finally(() => setBusy(false));
+    run(send(following ? "DELETE" : "PUT", `/follow/${kind}/${id}`)).finally(() => setBusy(false));
   };
   return (
     <button

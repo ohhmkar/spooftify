@@ -239,7 +239,7 @@ function Grid({ kind, name, def }: { kind: "table" | "view"; name: string; def?:
           aria-label="Filter"
           className="w-80 rounded bg-white/10 px-3 py-2 font-mono text-sm"
         />
-        <span className="text-sm text-muted">{rows.length} rows{rows.length > shown && `, showing ${shown}`}</span>
+        <span className="text-sm text-muted">{rows.length} rows{kind === "table" && rows.length >= 1000 && " (the API sends the first 1000: filter to narrow)"}{rows.length > shown && `, showing ${shown}`}</span>
         {kind === "table" && (
           <button onClick={() => setDraft({ json: template() })} className="ml-auto rounded-full bg-accent px-4 py-2 text-sm font-bold text-black">
             + Insert row

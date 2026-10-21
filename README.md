@@ -11,6 +11,7 @@ mongosh --eval 'rs.initiate({ _id: "rs0", members: [{ _id: 0, host: "127.0.0.1:2
 cd backend  && npm run seed && npm run dev            # API on :5050 (:1312 if backend/.env says so)
 cd frontend && npm i && npm run dev                   # UI on :3000
 cd backend  && npm run check                          # ACID check on a scratch database (local only)
+cd backend  && npm run check:api                      # HTTP smoke test of the routes (logins, guards, validation); undoes its own writes
 ```
 
 Using `brew services` instead? Add `replication: { replSetName: rs0 }` to its `mongod.conf`, restart, then run the same `rs.initiate`. Atlas is already a replica set.
@@ -27,16 +28,16 @@ Every seeded user logs in with the password `spooftify123` (for example `omkar@g
 | --- | --- | --- |
 | Tables, PK, FK, CHECK | Mongoose schemas + validators, FK/RESTRICT hooks | `backend/models.js` |
 | Triggers | Mongoose `pre`/`post` middleware, same names as the SQL | `backend/models.js` |
-| Transactions (ACID) | every write route runs in a multi-document transaction (snapshot, majority), triggers included; `AUTO_INCREMENT` via a `Counters` collection | `backend/server.js` (`tx`), `backend/check-acid.js` |
+| Transactions (ACID) | every write route runs in a multi-document transaction (snapshot, majority), triggers included; `AUTO_INCREMENT` via a `Counters` collection | `backend/lib.js` (`tx`), `backend/check-acid.js` |
 | Views | Native `db.createView` aggregation pipelines | `backend/views.js` |
 | Sample data | Real artists, albums and songs from `backend/seed-data.json` + users, playlists, listens, likes, follows | `backend/seed.js` |
-| Accounts | scrypt password hashes, signed session cookie | `backend/auth.js`, `backend/server.js` |
+| Accounts | scrypt password hashes, signed session cookie | `backend/auth.js`, `backend/routes/auth.js` |
 
 The **DB Console** (`/db`) runs CRUD on every table, queries every view, and lists every trigger.
 
 ## Features
 
-Playback (seek, volume, shuffle, repeat, queue, lyrics via LRCLIB), accounts, liked songs, follows (artists, users, playlists), playlist editing (rename, cover, reorder), albums, artist pages (bio, top tracks, listeners), and public stats (`/stats` and on every page).
+Playback (seek, volume, shuffle, repeat, queue, lyrics via LRCLIB, song radio when the queue runs out, sleep timer, keyboard shortcuts and media keys), accounts, liked songs, follows (artists, users, playlists), playlist editing (rename, cover, reorder), albums, artist pages (bio, top tracks, listeners), public stats (`/stats` and on every page), your own listening stats (`/stats/you`), a follow feed (`/feed`), share links, and drag a song onto a sidebar playlist to add it.
 
 **Playback.** Full songs play through the YouTube IFrame API; the video id is looked up on first play and cached in `Songs.youtube_id`. That lookup costs 100 of the 10,000 daily YouTube quota units, so on a big catalog some songs will fail to resolve. When that happens (no `YOUTUBE_API_KEY`, quota used up, video not embeddable) the player falls back to the 30-second iTunes preview and says so (`30s PREVIEW`). Space plays / pauses, from anywhere except a text field.
 

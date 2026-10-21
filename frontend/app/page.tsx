@@ -1,3 +1,4 @@
+import Link from "next/link";
 import { compact, art, type Song, type ArtistSummary, type PlaylistSummary, type AlbumDetails } from "@/lib/api";
 import { api, getMe } from "@/lib/server";
 import { Card, Shelf } from "@/components/ui";
@@ -25,7 +26,7 @@ export default async function Home() {
     <div className="bg-gradient-to-b from-raised to-panel to-40% px-3 py-6">
       <p className="mb-6 px-3 text-sm text-muted">
         {t.songs} songs • {t.artists} artists • {t.public_playlists} public playlists • {hours(t.total_seconds)} of music • {compact(t.total_plays)} plays •{" "}
-        <a href="/stats" className="text-white hover:underline">All stats</a>
+        <Link href="/stats" className="text-white hover:underline">All stats</Link>
       </p>
       {recent.length > 0 && (
         <Shelf title="Recently played">

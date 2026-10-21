@@ -3,7 +3,9 @@ import { Figtree } from "next/font/google";
 import { Suspense } from "react";
 import Link from "next/link";
 import { Sidebar } from "@/components/Sidebar";
-import { PlayerProvider, NowPlaying, PlayerBar } from "@/components/Player";
+import { PlayerProvider } from "@/components/Player";
+import { NowPlaying } from "@/components/NowPlaying";
+import { PlayerBar } from "@/components/PlayerBar";
 import { LikesProvider } from "@/components/Likes";
 import { LogoutButton } from "@/components/Auth";
 import { MobileNav } from "@/components/MobileNav";
@@ -40,6 +42,7 @@ export default async function RootLayout({ children }: LayoutProps<"/">) {
           </Link>
           <Suspense fallback={<div className="h-12 w-full max-w-md rounded-full bg-raised" />}><SearchBox /></Suspense>
           <div className="ml-auto flex items-center gap-2 max-md:hidden">
+          {me && <Link href="/feed" className="shrink-0 rounded-full px-4 py-3 font-bold text-muted hover:scale-105 hover:text-white">Feed</Link>}
           <Link href="/stats" className="shrink-0 rounded-full px-4 py-3 font-bold text-muted hover:scale-105 hover:text-white">
             Stats
           </Link>

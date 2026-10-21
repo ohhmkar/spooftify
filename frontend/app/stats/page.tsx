@@ -63,7 +63,8 @@ export default async function Stats() {
   const song = (x: { song_id: number; artist_name: string; youtube_id?: string }) => ({ key: x.song_id, sub: x.artist_name, img: thumb(x.youtube_id) ?? "" });
   return (
     <div className="px-6 py-8">
-      <h1 className="mb-6 text-5xl font-black tracking-tight">Spooftify stats</h1>
+      <h1 className="mb-2 text-5xl font-black tracking-tight">Spooftify stats</h1>
+      <Link href="/stats/you" className="mb-6 inline-block text-sm font-bold text-muted hover:text-white hover:underline">Your listening stats →</Link>
       <div className="mb-6 grid grid-cols-2 gap-3 md:grid-cols-3 xl:grid-cols-6">
         {counters.map(([k, v]) => (
           <div key={k} className="rounded-lg bg-raised p-4">
