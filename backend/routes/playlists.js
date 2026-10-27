@@ -6,7 +6,6 @@ import { db, tx, needUser, editable, insertOnce } from "../lib.js";
 const api = express.Router();
 export default api;
 
-// ---------- PLAYLIST EDITING: the owner and collaborators may change songs, only the owner manages collaborators ----------
 api.get("/me/playlists", needUser, async (req, res) => {
   const shared = (await tables.Collaborators.find({ user_id: req.user })).map((c) => c.playlist_id);
   const rows = await tables.Playlist.find({ $or: [{ user_id: req.user }, { _id: { $in: shared } }] }).sort({ _id: 1 });

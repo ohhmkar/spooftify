@@ -58,7 +58,6 @@ const clean = (t) => t.replace(/\s*[([](feat|ft|with|from|prod|radio edit|origin
 const credits = (t) => [t.artistName, ...t.artistName.split(/\s*(?:,|&|\bx\b|\bfeat\.?|\bft\.?|\bwith\b|\band\b)\s*/i), ...[...t.trackName.matchAll(/\b(?:feat|ft|with)\.?\s+([^)\]]+)/gi)].flatMap((m) => m[1].split(/\s*(?:,|&|\band\b)\s*/i))].map(norm).filter(Boolean);
 const primary = (t, name) => { const a = t.artistName.toLowerCase(), n = name.toLowerCase(); return norm(t.artistName) === norm(name) || (a.startsWith(n) && /^(\s*[,&(]|\s+(feat|ft|x|with|and)\b)/.test(a.slice(n.length))); };
 
-// ---- existing catalog indexes
 const artistNorm = new Map(data.artists.map((a) => [a.id, norm(a.name)]));
 const songsByName = new Map(); // norm(song name) -> [artist ids]
 const indexSong = (s) => songsByName.set(norm(s.name), [...(songsByName.get(norm(s.name)) ?? []), s.artist_id]);
@@ -104,7 +103,6 @@ async function addBpm(dzId, songs) {
 }
 const deezerArtist = async (name) => ((await dz(`/search/artist?limit=10&q=${encodeURIComponent(name)}`)).data ?? []).filter((d) => norm(d.name) === norm(name)).sort((x, y) => y.nb_fan - x.nb_fan)[0];
 
-// ==================== new artists ====================
 const only = typeof arg("only") === "string" ? arg("only").split(",").map(norm) : null;
 const have = new Set(data.artists.map((a) => norm(a.name)));
 let list = readFileSync(`${import.meta.dirname}/artists-to-add.txt`, "utf8").split("\n").map((l) => l.split("|").map((x) => x.trim())).filter(([n, c]) => n && c);
@@ -152,7 +150,7 @@ for (const [name, country, itunesName] of list) {
   console.log(`${id} ${name} | ${hit?.nb_fan ?? "-"} fans | ${page?.title ?? "-"} | ${rows.length} songs, ${bpm} bpm | ${rows.map((r) => r.name).join(", ")}`);
 }
 
-// ==================== bpm for the songs that were already there (the only change to existing rows) ====================
+// bpm for the songs that were already there (the only change to existing rows)
 if (!only && !arg("limit")) {
   for (const a of data.artists.filter((a) => !state.bpm_done.includes(a.id))) {
     const n = await addBpm((await deezerArtist(a.name))?.id, data.songs.filter((s) => s.artist_id === a.id));

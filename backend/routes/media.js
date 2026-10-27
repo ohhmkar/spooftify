@@ -7,7 +7,6 @@ import { db, needUser, editable } from "../lib.js";
 const api = express.Router();
 export default api;
 
-// ---------- MEDIA IN THE DATABASE: photos as BinData inside the document, Canvas videos in GridFS ----------
 // the file is the raw request body (no multer); its Content-Type says what it is. 4 MB cap: Vercel rejects bodies over 4.5 MB
 const MAX_UPLOAD = 4 * 1024 * 1024;
 const mime = (req) => String(req.headers["content-type"] ?? "").split(";")[0].trim().toLowerCase();

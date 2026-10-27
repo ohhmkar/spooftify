@@ -28,7 +28,6 @@ const oldArtists = await db.collection("Artist").find().sort({ _id: 1 }).toArray
 const oldSongs = await db.collection("Songs").find().sort({ _id: 1 }).toArray();
 const artistName = (a) => ARTIST_FIX[a.artist_name] ?? a.artist_name;
 
-// ---- artists
 const artists = [];
 for (const a of oldArtists) {
   const name = artistName(a);
@@ -46,7 +45,7 @@ for (const a of oldArtists) {
 const byId = new Map(artists.map((a) => [a.id, a]));
 const idByName = new Map(artists.map((a) => [a.name, a.id]));
 
-// ---- songs + albums (iTunes Search API: no key, ~20 requests/minute; Deezer's track search returns nothing from here)
+// songs + albums (iTunes Search API: no key, ~20 requests/minute; Deezer's track search returns nothing from here)
 const BAD_ALBUM = /hits|best of|greatest|mix|playlist|essentials|karaoke|tribute|workout|party|lofi|remix|version|deluxe|anthems|top \d/i;
 const itunes = async (term, country) => {
   for (let i = 0; i < 5; i++) {

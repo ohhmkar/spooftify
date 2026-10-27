@@ -7,7 +7,7 @@ import { tx } from "../lib.js";
 const api = express.Router();
 export default api;
 
-// ---------- SESSION: cookie "spoot" is set by login/signup; req.user = user_id or null ----------
+// session: cookie "spoot" is set by login/signup; req.user = user_id or null
 const cookieOf = (req, name) => req.headers.cookie?.split("; ").find((c) => c.startsWith(name + "="))?.slice(name.length + 1);
 api.use((req, res, next) => {
   req.user = readToken(cookieOf(req, "spoot"));

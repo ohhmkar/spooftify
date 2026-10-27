@@ -77,7 +77,7 @@ function Triggers({ meta }: { meta: Meta }) {
   );
 }
 
-// ---------- TCL: START TRANSACTION ... COMMIT / ROLLBACK through POST /api/tx ----------
+// TCL: START TRANSACTION ... COMMIT / ROLLBACK through POST /api/tx
 type Op = { op: "insert" | "update" | "delete" | "savepoint" | "rollback_to"; table?: string; id?: string | number; doc?: Row; name?: string };
 type TxResult = {
   status: "COMMIT" | "ROLLBACK"; reason: string;

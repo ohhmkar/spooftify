@@ -30,7 +30,6 @@ export const tx = (handler) => {
   return run;
 };
 
-// ---------- GUARDS ----------
 export const needUser = (req, res, next) => (req.user ? next() : res.status(401).json({ error: "Log in first" }));
 export const editable = async (req, res, next) => {
   const p = await tables.Playlist.findById(req.params.id);
@@ -41,7 +40,6 @@ export const editable = async (req, res, next) => {
   next();
 };
 
-// ---------- SHARED QUERIES ----------
 export const songsById = async (ids) => {
   const rows = await db().collection("Song_Details").find({ song_id: { $in: ids } }).toArray();
   const by = new Map(rows.map((r) => [r.song_id, r]));

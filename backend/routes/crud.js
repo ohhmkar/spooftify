@@ -6,7 +6,6 @@ import { tx, where } from "../lib.js";
 const api = express.Router();
 export default api;
 
-// ---------- GENERIC CRUD on tables ----------
 // update = load + set + save and delete = findOneAndDelete, so the triggers fire
 api.param("table", (req, res, next, t) => {
   req.Model = tables[t];

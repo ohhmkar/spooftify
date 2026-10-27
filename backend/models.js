@@ -38,8 +38,6 @@ function restrict(schema, child, field) {
   });
 }
 
-// ==================== SCHEMA ====================
-
 const userSchema = new Schema(
   {
     _id: Number, // user_id
@@ -182,8 +180,6 @@ fk(followSchema, "user_id", "User");
 fk(playlistSchema, "user_id", "User");
 fk(containsSchema, "playlist_id", "Playlist");
 fk(containsSchema, "song_id", "Songs");
-
-// ==================== TRIGGERS ====================
 
 // before_song_insert: trim and uppercase song names
 songSchema.pre("save", function () {

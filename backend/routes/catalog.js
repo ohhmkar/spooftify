@@ -9,7 +9,6 @@ import { db, esc, where, songsById } from "../lib.js";
 const api = express.Router();
 export default api;
 
-// ---------- VIEWS (read-only) ----------
 api.get("/views/:name", async (req, res) => {
   if (!views[req.params.name]) return res.status(404).json({ error: "No such view" });
   const { _sort, _limit, ...q } = req.query; // ?_sort=plays&_limit=20: top N by a column, so the home page needn't fetch every row
@@ -33,7 +32,7 @@ api.get("/search", async (req, res) => {
   res.json({ songs, artists, albums, playlists });
 });
 
-// ---------- STATS (public: only public playlists are counted) ----------
+// stats are public, so only public playlists are counted
 // ponytail: 30 s in-memory cache (per instance); upgrade to Runtime Cache / $merge if stale numbers matter
 let statsCache = { at: 0, body: null };
 api.get("/stats", async (req, res) => {
@@ -41,7 +40,7 @@ api.get("/stats", async (req, res) => {
   res.json(statsCache.body);
 });
 
-// ---------- PLAY: song -> YouTube video id, looked up once then cached in Songs.youtube_id ----------
+// play: song -> YouTube video id, looked up once then cached in Songs.youtube_id
 // two people pressing play on the same uncached song share one search (100 quota units), not one each
 const lookups = new Map(); // song_id -> Promise<youtube_id | null>
 const lookup = (song) => {
@@ -68,7 +67,7 @@ api.get("/play/:id", async (req, res) => {
 });
 
 // ?ids=1,2,3 in that order
-api.get("/songs-by-id", async (req, res) => res.json(await songsById(String(req.query.ids ?? "").split(",").filter(Boolean).map(Number)))); // ?ids=1,2,3
+api.get("/songs-by-id", async (req, res) => res.json(await songsById(String(req.query.ids ?? "").split(",").filter(Boolean).map(Number))));
 
 // song radio: what to play once the queue runs out. Same genre (same artist when it has none), tempo close to the seed,
 // at most 2 songs per artist so it doesn't turn into one artist's discography. ?exclude=1,2,3 = already queued.
@@ -102,7 +101,7 @@ api.get("/artists/:id/stats", async (req, res) => {
   res.json({ monthly_listeners: listeners?.n ?? 0, followers: await tables.Follows.countDocuments({ kind: "artist", target_id: artist_id }) });
 });
 
-// ---------- LYRICS: fetched live from LRCLIB (free, no key), kept in memory only — nothing is stored in the DB ----------
+// lyrics: fetched live from LRCLIB (free, no key), kept in memory only — nothing is stored in the DB
 // ponytail: Map insertion order makes it a FIFO of the last 500 songs; good enough, an LRU only if memory matters
 const lyricsCache = new Map();
 api.get("/lyrics/:id", async (req, res) => {

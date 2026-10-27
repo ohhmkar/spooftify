@@ -1,22 +1,18 @@
 {
   "name": "backend",
   "version": "1.0.0",
-  "description": "",
-  "main": "index.js",
+  "private": true,
+  "type": "module",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
     "dev": "node --watch --env-file-if-exists=.env server.js",
     "start": "node --env-file-if-exists=.env server.js",
     "media": "node --env-file-if-exists=.env fetch-media.js",
     "seed": "node --env-file-if-exists=.env seed.js",
     "db": "mkdir -p data && mongod --dbpath ./data --bind_ip 127.0.0.1 --replSet rs0",
     "check": "node check-acid.js",
-    "check:api": "node --env-file-if-exists=.env check-api.js"
+    "check:api": "node --env-file-if-exists=.env check-api.js",
+    "check:media": "node --env-file-if-exists=.env check-media.js"
   },
-  "keywords": [],
-  "author": "",
-  "license": "ISC",
-  "type": "module",
   "dependencies": {
     "cors": "^2.8.6",
     "express": "^5.2.1",

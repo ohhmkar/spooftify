@@ -1,4 +1,3 @@
-// TCL demo for the DB Console
 import express from "express";
 import mongoose from "mongoose";
 import { tables } from "../models.js";
@@ -6,7 +5,7 @@ import { tables } from "../models.js";
 const api = express.Router();
 export default api;
 
-// ---------- TCL demo: START TRANSACTION ... COMMIT / ROLLBACK (needs a replica set) ----------
+// TCL demo: START TRANSACTION ... COMMIT / ROLLBACK (needs a replica set)
 // body: { ops: [{ op: "insert"|"update"|"delete", table, id?, doc? } | { op: "savepoint"|"rollback_to", name }], fail_at?: N }
 // "$N" in id or doc = the _id step N inserted (like SET @stepN = LAST_INSERT_ID()), so presets need no hard-coded ids.
 // Every op goes through the models, so CHECKs, FKs and triggers run inside the transaction and roll back with it.

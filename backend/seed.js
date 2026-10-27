@@ -13,7 +13,7 @@ await mongoose.connect(process.env.MONGODB_URI ?? "mongodb://127.0.0.1:27017/spo
 await mongoose.connection.dropDatabase();
 await Promise.all([User, Artist, Genre, Album, Songs, Playlist, Contains, Liked, Follow, Listen, Collaborator].map((m) => m.syncIndexes()));
 
-// ---------- User (id, name, email, phone) ----------
+// User (id, name, email, phone)
 // emails are deliberately mixed-case: before_user_insert lowercases them. Phones are dummy numbers in a valid 10-digit format.
 const password_hash = hashPassword("spooftify123");
 const users = [
@@ -27,7 +27,7 @@ const users = [
 const moreUsers = "riya_s aditya_v sneha_r karan_m pooja_d nikhil_b tanvi_k yash_p neha_a sid_c kavya_l rahul_n priya_t aman_g zoya_h dev_j isha_w manav_o sara_q varun_e anika_f harsh_u myra_i om_y tara_z".split(" ");
 users.push(...moreUsers.map((n, i) => [16 + i, n, `${n.replace("_", ".")}@Gmail.com`]));
 
-// ---------- Playlists: [id, name, is_public, user_id, "SONG, SONG, ..."] (songs matched by name) ----------
+// Playlists: [id, name, is_public, user_id, "SONG, SONG, ..."] (songs matched by name)
 const playlists = [
   [1, "LATE NIGHT VIBES", true, 1, "BLINDING LIGHTS, DIE FOR YOU, STARBOY, OCEAN EYES, CARDIGAN, KUN FAYA KUN"],
   [2, "WORKOUT MIX", true, 1, "STRONGER, BELIEVER, THUNDER, GOOD 4 U, UPTOWN FUNK, HUMBLE."],
@@ -59,7 +59,6 @@ const collaborators = [[15, 7], [15, 8], [1, 2], [4, 4], [9, 5], [18, 13], [10, 
 // songs taken out of a playlist later: [playlist_id, song]. after_contains_delete logs each one to Removed_Songs
 const removals = [[17, "PERFECT"], [6, "SUNFLOWER"], [12, "HELLO"], [2, "UPTOWN FUNK"]];
 
-// ==================== INSERTS ====================
 await Artist.create(data.artists.map((a) => ({ _id: a.id, artist_name: a.name, country: a.country, image: a.image, bio: a.bio, bio_url: a.bio_url, fans: a.fans })));
 await User.create(users.map(([_id, user_name, email]) => ({ _id, user_name, email, phone: 9_000_000_000 + _id, password_hash })));
 await Genre.create(data.genres.map((g) => ({ _id: g.id, genre_name: g.name })));
@@ -87,7 +86,7 @@ for (const [playlist_id, user_id] of collaborators) await Collaborator.create({ 
 for (const [playlist_id, name] of removals) await Contains.findOneAndDelete({ playlist_id, song_id: idOf(name) });
 for (const [playlist_id, name] of removals) inPlaylist.set(playlist_id, inPlaylist.get(playlist_id).filter((id) => id !== idOf(name)));
 
-// ---------- activity: listens, likes, follows (deterministic, so every seed run gives the same numbers) ----------
+// activity: listens, likes, follows (deterministic, so every seed run gives the same numbers)
 // Each user mostly listens to their own playlists, plus whatever is popular. The after_listen_insert trigger fills Songs.plays.
 let state = 20260924;
 const rand = () => ((state = (state * 1664525 + 1013904223) >>> 0) / 2 ** 32);

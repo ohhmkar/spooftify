@@ -12,7 +12,7 @@ import media from "./routes/media.js";
 import txDemo from "./routes/tx.js";
 import crud from "./routes/crud.js";
 
-const PORT = process.env.PORT ?? 5050;
+const PORT = process.env.PORT ?? 1312;
 mongoose.set("transactionAsyncLocalStorage", true); // every query inside connection.transaction(fn), triggers included, joins its session
 await mongoose.connect(process.env.MONGODB_URI ?? "mongodb://127.0.0.1:27017/spotify_miniproject");
 await createViews(mongoose.connection.db);
