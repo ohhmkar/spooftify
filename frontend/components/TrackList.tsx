@@ -75,12 +75,12 @@ export function TrackList({ songs, playlists, editPlaylist }: { songs: Song[]; p
           <tr key={s._id ?? s.song_id} className="group hover:bg-white/[.07]" onDoubleClick={() => play(songs, i)}
             draggable={loggedIn} onDragStart={(e) => { e.dataTransfer.setData(SONG_DRAG, JSON.stringify({ song_id: s.song_id, song_name: s.song_name })); e.dataTransfer.effectAllowed = "copy"; }}
             onClick={(e) => touch() && !(e.target as HTMLElement).closest("a, button, select, summary, details") && play(songs, i)}>
-            <td className="rounded-l-md py-2 text-center text-muted">
+            <td className="relative rounded-l-md py-2 text-center text-muted">
               <span className={`group-hover:hidden group-focus-within:hidden ${now ? "text-accent" : ""}`}>{now && playing ? "♪" : i + 1}</span>
               {/* sr-only until hover / keyboard focus, so Tab can reach it */}
               <button aria-label={`${now && playing ? "Pause" : "Play"} ${s.song_name}`} onClick={() => play(songs, i)} className="sr-only w-full text-white group-hover:not-sr-only group-focus-within:not-sr-only">{now && playing ? "❚❚" : "▶"}</button>
             </td>
-            <td className="flex min-w-0 items-center gap-3 py-1">
+            <td className="min-w-0 py-1"><div className="flex min-w-0 items-center gap-3">
               {/* clicking the cover plays too; the number cell holds the keyboard-reachable button */}
               <button tabIndex={-1} aria-hidden onClick={() => play(songs, i)} className="group/cover relative shrink-0">
                 <Cover name={s.song_name} src={art(s)} className="w-10" />
@@ -90,7 +90,7 @@ export function TrackList({ songs, playlists, editPlaylist }: { songs: Song[]; p
                 <p className={`line-clamp-1 font-medium ${now ? "text-accent" : "text-white"}`}>{s.song_name}</p>
                 <Link href={`/artist/${s.artist_id}`} className="text-muted hover:text-white hover:underline">{s.artist_name}</Link>
               </div>
-            </td>
+            </div></td>
             <td className="max-lg:hidden">
               {s.album_id && <Link href={`/album/${s.album_id}`} className="line-clamp-1 text-muted hover:text-white hover:underline">{s.album_name}</Link>}
             </td>

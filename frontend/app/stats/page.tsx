@@ -24,7 +24,7 @@ const n = (x: number) => x.toLocaleString("en-IN");
 
 function Box({ title, children }: { title: string; children: React.ReactNode }) {
   return (
-    <section className="rounded-lg bg-raised p-4">
+    <section className="min-w-0 rounded-lg bg-raised p-4">
       <h2 className="mb-3 text-lg font-bold">{title}</h2>
       {children}
     </section>
